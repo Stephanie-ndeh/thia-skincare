@@ -1,0 +1,16 @@
+{
+  "name": "thia",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "apps/frontend",
+    "apps/backend",
+    "packages/shared"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "typecheck:shared": "npm run typecheck --workspace=packages/shared"
+  }
+}
