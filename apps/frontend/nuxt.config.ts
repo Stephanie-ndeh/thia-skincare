@@ -1,4 +1,5 @@
 import tailwindcss from '@tailwindcss/vite'
+import { resolve } from 'path'
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -15,8 +16,17 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  build: {
+    transpile: ['@thia/shared'],
+  },
+
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        '@thia/shared': resolve(__dirname, '../../packages/shared/index.ts'),
+      },
+    },
   },
 
   components: {
