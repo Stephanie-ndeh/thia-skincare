@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand colors — placeholder values until client provides style guide */
+  --color-brand-primary: #1a1a1a;
+  --color-brand-secondary: #f5f0eb;
+  --color-brand-accent: #c9a96e;
+  --color-brand-dark: #111111;
+  --color-brand-light: #faf8f5;
+
+  /* Semantic tokens */
+  --color-surface: var(--color-brand-light);
+  --color-text-primary: var(--color-brand-dark);
+  --color-text-muted: #6b7280;
+
+  /* Brand fonts — placeholder until client provides style guide */
+  --font-heading: ui-serif, Georgia, "Times New Roman", serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
