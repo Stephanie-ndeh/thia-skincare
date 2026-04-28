@@ -103,7 +103,11 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function resetPassword(email: string) {
-    const { error } = await supabase.auth.resetPasswordForEmail(email)
+    const config = useRuntimeConfig()
+    const siteUrl = config.public.siteUrl || (import.meta.client ? window.location.origin : '')
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${siteUrl}/auth/reset-password`,
+    })
     if (error) throw error
   }
 
