@@ -12,7 +12,12 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxtjs/supabase',
     'shadcn-nuxt',
+    '@nuxt/image',
   ],
+
+  image: {
+    domains: ['fudrvtugylvtnplykczs.supabase.co'],
+  },
 
   css: ['~/assets/css/main.css'],
 
