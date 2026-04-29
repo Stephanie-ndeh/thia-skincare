@@ -48,6 +48,7 @@ async function handleLogout() {
 
       <!-- Desktop right actions -->
       <div class="hidden items-center gap-3 md:flex">
+        <SearchBar />
         <!-- Cart -->
         <button type="button" class="relative p-2" @click="uiStore.openCart()" aria-label="Open cart">
           <ShoppingBag class="h-5 w-5 text-brand-dark" />
@@ -105,6 +106,7 @@ async function handleLogout() {
 
       <!-- Mobile right actions -->
       <div class="flex items-center gap-2 md:hidden">
+        <SearchBar />
         <button type="button" class="relative p-2" @click="uiStore.openCart()" aria-label="Open cart">
           <ShoppingBag class="h-5 w-5 text-brand-dark" />
           <span
