@@ -22,6 +22,7 @@ async function handleLogout() {
 </script>
 
 <template>
+  <CartDrawer />
   <header class="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/95 backdrop-blur">
     <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
       <!-- Logo -->
@@ -48,7 +49,7 @@ async function handleLogout() {
       <!-- Desktop right actions -->
       <div class="hidden items-center gap-3 md:flex">
         <!-- Cart -->
-        <NuxtLink to="/cart" class="relative p-2">
+        <button type="button" class="relative p-2" @click="uiStore.openCart()" aria-label="Open cart">
           <ShoppingBag class="h-5 w-5 text-brand-dark" />
           <span
             v-if="cartStore.itemCount > 0"
@@ -56,7 +57,7 @@ async function handleLogout() {
           >
             {{ cartStore.itemCount }}
           </span>
-        </NuxtLink>
+        </button>
 
         <!-- Guest: Login link -->
         <NuxtLink
@@ -104,7 +105,7 @@ async function handleLogout() {
 
       <!-- Mobile right actions -->
       <div class="flex items-center gap-2 md:hidden">
-        <NuxtLink to="/cart" class="relative p-2">
+        <button type="button" class="relative p-2" @click="uiStore.openCart()" aria-label="Open cart">
           <ShoppingBag class="h-5 w-5 text-brand-dark" />
           <span
             v-if="cartStore.itemCount > 0"
@@ -112,7 +113,7 @@ async function handleLogout() {
           >
             {{ cartStore.itemCount }}
           </span>
-        </NuxtLink>
+        </button>
         <button
           class="p-2 text-brand-dark"
           aria-label="Open menu"
