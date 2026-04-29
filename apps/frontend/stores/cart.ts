@@ -38,7 +38,6 @@ function clearCartStorage() {
 
 export const useCartStore = defineStore('cart', () => {
   const supabaseUser = useSupabaseUser()
-  const config = useRuntimeConfig()
 
   const items = ref<CartItemWithProduct[]>([])
   const discountCode = ref<string | null>(null)
@@ -104,16 +103,9 @@ export const useCartStore = defineStore('cart', () => {
     if (import.meta.client) clearCartStorage()
   }
 
-  async function applyDiscount(code: string) {
-    isLoading.value = true
-    try {
-      // TODO: call GET ${config.public.apiBaseUrl}/discount-codes/validate?code=${code}
-      // For now, stub — discount validation requires backend implementation
-      const _baseUrl = config.public.apiBaseUrl
-      throw new Error('Discount validation not yet implemented')
-    } finally {
-      isLoading.value = false
-    }
+  function applyDiscount(code: string, amount: number) {
+    discountCode.value = code
+    discountAmount.value = amount
   }
 
   function removeDiscount() {

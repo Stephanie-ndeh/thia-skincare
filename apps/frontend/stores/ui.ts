@@ -10,6 +10,7 @@ export interface Toast {
 
 export const useUiStore = defineStore('ui', () => {
   const isMobileMenuOpen = ref(false)
+  const isCartOpen = ref(false)
   const toasts = ref<Toast[]>([])
   const isGlobalLoading = ref(false)
 
@@ -21,6 +22,20 @@ export const useUiStore = defineStore('ui', () => {
 
   function closeMobileMenu() {
     isMobileMenuOpen.value = false
+  }
+
+  // ── Cart drawer ────────────────────────────────────────────────────────────
+
+  function openCart() {
+    isCartOpen.value = true
+  }
+
+  function closeCart() {
+    isCartOpen.value = false
+  }
+
+  function toggleCart() {
+    isCartOpen.value = !isCartOpen.value
   }
 
   // ── Toasts ─────────────────────────────────────────────────────────────────
@@ -51,10 +66,14 @@ export const useUiStore = defineStore('ui', () => {
 
   return {
     isMobileMenuOpen,
+    isCartOpen,
     toasts,
     isGlobalLoading,
     toggleMobileMenu,
     closeMobileMenu,
+    openCart,
+    closeCart,
+    toggleCart,
     addToast,
     removeToast,
     setGlobalLoading,
