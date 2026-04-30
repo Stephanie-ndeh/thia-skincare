@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-  <section class="relative min-h-[520px] lg:min-h-[640px] flex items-center justify-center overflow-hidden bg-brand-dark">
+  <section class="relative min-h-[520px] lg:min-h-[640px] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#1a1a1a] via-[#2a1f10] to-[#1a1a1a]">
     <!-- Background image -->
     <NuxtImg
       v-if="imageUrl"

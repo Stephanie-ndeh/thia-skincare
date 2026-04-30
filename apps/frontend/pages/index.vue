@@ -201,9 +201,11 @@ useHead({
               />
               <div
                 v-else
-                class="w-full h-full flex items-center justify-center text-text-muted text-xs"
+                class="w-full h-full flex items-center justify-center"
               >
-                {{ category.name.charAt(0) }}
+                <span class="font-heading text-3xl font-semibold text-brand-accent/40">
+                  {{ category.name.charAt(0) }}
+                </span>
               </div>
             </div>
             <span class="font-body text-sm font-medium text-brand-dark text-center group-hover:text-brand-accent transition-colors">

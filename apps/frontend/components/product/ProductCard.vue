@@ -48,9 +48,11 @@ const props = defineProps<{
       />
       <div
         v-else
-        class="w-full h-full flex items-center justify-center text-text-muted text-sm"
+        class="w-full h-full flex items-center justify-center"
       >
-        No image
+        <span class="font-heading text-4xl font-semibold text-brand-accent/30">
+          {{ product.name.charAt(0) }}
+        </span>
       </div>
     </div>
 
