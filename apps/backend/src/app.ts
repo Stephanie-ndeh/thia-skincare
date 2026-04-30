@@ -1,9 +1,14 @@
 import Fastify from 'fastify'
+import { ZodError } from 'zod'
 import corsPlugin from './plugins/cors'
 import rateLimitPlugin from './plugins/rate-limit'
-import errorHandlerPlugin from './plugins/error-handler'
+import errorHandlerPlugin, { AppError } from './plugins/error-handler'
 import authPlugin from './plugins/auth'
 import healthRoutes from './routes/health'
+import categoriesRoutes from './routes/categories/index'
+import productsRoutes from './routes/products/index'
+import searchRoutes from './routes/search/index'
+import testimonialsRoutes from './routes/testimonials/index'
 
 export async function buildApp() {
   const fastify = Fastify({
@@ -15,11 +20,36 @@ export async function buildApp() {
     },
   })
 
+  fastify.setErrorHandler((error, _request, reply) => {
+    if (error instanceof AppError) {
+      return reply.status(error.statusCode).send({
+        error: { code: error.code, message: error.message, details: error.details ?? [] },
+      })
+    }
+    if (error instanceof ZodError) {
+      return reply.status(400).send({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Request validation failed',
+          details: error.errors.map((e) => ({ field: e.path.join('.'), message: e.message })),
+        },
+      })
+    }
+    fastify.log.error(error)
+    return reply.status(500).send({
+      error: { code: 'INTERNAL_ERROR', message: 'An unexpected error occurred', details: [] },
+    })
+  })
+
   await fastify.register(corsPlugin)
   await fastify.register(rateLimitPlugin)
   await fastify.register(errorHandlerPlugin)
   await fastify.register(authPlugin)
   await fastify.register(healthRoutes)
+  await fastify.register(categoriesRoutes)
+  await fastify.register(productsRoutes)
+  await fastify.register(searchRoutes)
+  await fastify.register(testimonialsRoutes)
 
   return fastify
 }
