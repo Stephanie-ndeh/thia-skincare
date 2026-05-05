@@ -125,11 +125,16 @@ export const useCartStore = defineStore('cart', () => {
 
   async function loadFromServer() {
     if (!isAuthenticated.value) return
+    const session = await useSupabaseClient().auth.getSession()
+    const token = session.data.session?.access_token
+    if (!token) return
     isLoading.value = true
     try {
-      // TODO: GET ${config.public.apiBaseUrl}/cart — replace with actual API call
-      // const data = await $fetch(`${config.public.apiBaseUrl}/cart`, { headers: { Authorization: `Bearer ${token}` } })
-      // items.value = data
+      const data = await $fetch<CartItemWithProduct[]>(
+        `${useRuntimeConfig().public.apiBaseUrl}/cart`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+      items.value = data
     } finally {
       isLoading.value = false
     }
@@ -137,9 +142,16 @@ export const useCartStore = defineStore('cart', () => {
 
   async function syncToServer() {
     if (!isAuthenticated.value) return
+    const session = await useSupabaseClient().auth.getSession()
+    const token = session.data.session?.access_token
+    if (!token) return
     isLoading.value = true
     try {
-      // TODO: POST ${config.public.apiBaseUrl}/cart/sync — replace with actual API call
+      await $fetch(`${useRuntimeConfig().public.apiBaseUrl}/cart/sync`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: { items: items.value },
+      })
     } finally {
       isLoading.value = false
     }
