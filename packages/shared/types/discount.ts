@@ -4,20 +4,23 @@ export interface DiscountCode {
   id: string
   code: string
   type: DiscountType
-  value: number           // percentage (1-100) or fixed XAF amount
-  minimumOrder: number    // XAF integer
-  usageLimit: number | null
-  usageCount: number
+  value: number
   isActive: boolean
-  startsAt: string
   expiresAt: string | null
-  createdAt: string
-  updatedAt: string
+  timesUsed: number
+  usageLimit: number | null
+  minOrderAmount: number
 }
 
-export interface ValidateDiscountResult {
+export interface DiscountValidateRequest {
+  code: string
+  subtotal?: number
+}
+
+export interface DiscountValidateResponse {
   valid: boolean
-  type?: DiscountType
-  value?: number
+  type: DiscountType
+  value: number
   message: string
+  code: string
 }
