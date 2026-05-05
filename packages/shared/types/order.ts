@@ -52,6 +52,25 @@ export interface Order {
   items?: OrderItem[]
 }
 
+export interface CreateOrderRequest {
+  items: Array<{
+    variantId: string
+    quantity: number
+    unitPrice: number
+  }>
+  discountCode?: string
+  discountAmount?: number
+  shippingZoneId?: string
+  shippingAmount: number
+  deliveryAddress: {
+    fullName: string
+    phone: string
+    city: string
+    address: string
+    region: string
+  }
+}
+
 export interface CreateOrderPayload {
   shippingAddress: {
     fullName: string
