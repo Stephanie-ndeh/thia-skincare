@@ -10,6 +10,36 @@ Thia is a Cameroonian skincare e-commerce platform. It is a monorepo with three 
 - `apps/backend` — Fastify 5 REST API (most routes are stubs awaiting implementation)
 - `packages/shared` — Shared TypeScript types, constants, and validators consumed by both apps
 
+## Git Workflow
+
+Every fix, feature, or story follows this exact sequence — no exceptions.
+
+**Before starting any work:**
+```bash
+git checkout develop
+git pull origin develop
+git rebase origin/develop        # resolve any conflicts here
+git checkout -b <branch-name>    # e.g. feat/us-2.4-pdp, fix/cart-summary-props
+```
+
+Branch naming convention:
+- `feat/us-<id>-<short-description>` — new feature tied to a user story
+- `fix/<short-description>` — bug fix
+- `chore/<short-description>` — tooling, config, dependency updates
+
+**When work is complete and approved:**
+```bash
+git checkout develop
+git pull origin develop
+git checkout <branch-name>
+git rebase develop               # resolve conflicts if any, then git rebase --continue
+# push and open PR
+git push origin <branch-name>
+gh pr create --base develop --title "..." --body "..."
+```
+
+PRs always target `develop`, never `main`. Merge into `main` is a separate deliberate step for releases only.
+
 ## Commands
 
 All commands must be run from the relevant app directory, not the root.

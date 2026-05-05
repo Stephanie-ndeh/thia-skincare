@@ -1,12 +1,10 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'default' })
+definePageMeta({
+  layout: 'default',
+  ssr: false,
+})
 
 const cartStore = useCartStore()
-const supabaseUser = useSupabaseUser()
-
-const checkoutHref = computed(() =>
-  supabaseUser.value ? '/checkout' : '/auth/login?redirect=/checkout'
-)
 
 useHead({ title: 'Cart — Thia' })
 </script>
@@ -31,31 +29,19 @@ useHead({ title: 'Cart — Thia' })
             :item="item"
           />
 
-          <div class="mt-4 pt-4 border-t border-brand-dark/10">
-            <NuxtLink
-              to="/categories"
-              class="font-body text-sm text-text-muted hover:text-brand-dark transition-colors"
-            >
-              ← Continue Shopping
-            </NuxtLink>
-          </div>
         </div>
 
         <!-- Order summary sidebar (1/3) -->
         <div class="bg-white rounded-xl p-6 h-fit">
           <h2 class="font-heading text-lg font-semibold text-brand-dark mb-2">Order Summary</h2>
           <DiscountCodeInput />
-          <CartSummary />
-
-          <NuxtLink
-            :to="checkoutHref"
-            class="block w-full text-center rounded-lg font-body text-sm font-medium py-3 mt-4 transition-colors"
-            :class="cartStore.isEmpty
-              ? 'bg-brand-dark/20 text-text-muted cursor-not-allowed pointer-events-none'
-              : 'bg-brand-dark text-white hover:bg-brand-accent'"
-          >
-            Proceed to Checkout
-          </NuxtLink>
+          <CartSummary
+            :subtotal="cartStore.subtotal"
+            :discount-amount="cartStore.discountAmount"
+            :total="cartStore.total"
+            :is-empty="cartStore.isEmpty"
+            :discount-code="cartStore.discountCode"
+          />
         </div>
       </div>
     </div>

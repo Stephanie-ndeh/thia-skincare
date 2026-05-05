@@ -3,11 +3,6 @@ import { X } from 'lucide-vue-next'
 
 const uiStore = useUiStore()
 const cartStore = useCartStore()
-const supabaseUser = useSupabaseUser()
-
-const checkoutHref = computed(() =>
-  supabaseUser.value ? '/checkout' : '/auth/login?redirect=/checkout'
-)
 </script>
 
 <template>
@@ -44,18 +39,13 @@ const checkoutHref = computed(() =>
       <!-- Footer -->
       <div v-if="!cartStore.isEmpty" class="px-5 pb-6 border-t border-brand-dark/10">
         <DiscountCodeInput />
-        <CartSummary />
-
-        <NuxtLink
-          :to="checkoutHref"
-          class="block w-full text-center rounded-lg font-body text-sm font-medium py-3 transition-colors mt-3"
-          :class="cartStore.isEmpty
-            ? 'bg-brand-dark/20 text-text-muted cursor-not-allowed pointer-events-none'
-            : 'bg-brand-dark text-white hover:bg-brand-accent'"
-          @click="uiStore.closeCart()"
-        >
-          Proceed to Checkout
-        </NuxtLink>
+        <CartSummary
+          :subtotal="cartStore.subtotal"
+          :discount-amount="cartStore.discountAmount"
+          :total="cartStore.total"
+          :is-empty="cartStore.isEmpty"
+          :discount-code="cartStore.discountCode"
+        />
       </div>
     </SheetContent>
   </Sheet>

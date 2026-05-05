@@ -2,6 +2,14 @@ import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import type { CartItemWithProduct } from '@thia/shared'
 
+interface DiscountValidateResponse {
+  valid: boolean
+  type: 'percentage' | 'fixed'
+  value: number
+  message: string
+  code: string
+}
+
 const STORAGE_KEY = 'thia-cart'
 
 type AddItemInput = Omit<CartItemWithProduct, 'id' | 'userId' | 'createdAt' | 'updatedAt'>
@@ -103,9 +111,19 @@ export const useCartStore = defineStore('cart', () => {
     if (import.meta.client) clearCartStorage()
   }
 
-  function applyDiscount(code: string, amount: number) {
-    discountCode.value = code
-    discountAmount.value = amount
+  async function applyDiscount(code: string) {
+    const apiBase = useRuntimeConfig().public.apiBaseUrl
+    const result = await $fetch<DiscountValidateResponse>(
+      `${apiBase}/discount-codes/validate`,
+      { method: 'POST', body: { code } },
+    )
+    if (!result.valid) throw new Error(result.message)
+    if (result.type === 'percentage') {
+      discountAmount.value = Math.floor(subtotal.value * (result.value / 100))
+    } else {
+      discountAmount.value = Math.min(result.value, subtotal.value)
+    }
+    discountCode.value = result.code
   }
 
   function removeDiscount() {
