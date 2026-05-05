@@ -1,0 +1,187 @@
+import { randomBytes } from 'crypto'
+import type { FastifyInstance } from 'fastify'
+import { z } from 'zod'
+import { supabaseAdmin } from '../../config/supabase'
+import { AppError } from '../../plugins/error-handler'
+import type { CreateOrderRequest } from '@thia/shared'
+
+const deliveryAddressSchema = z.object({
+  fullName: z.string().min(1),
+  phone: z.string().min(1),
+  city: z.string().min(1),
+  address: z.string().min(1),
+  region: z.string().min(1),
+})
+
+const createOrderSchema = z.object({
+  items: z.array(
+    z.object({
+      variantId: z.string().uuid(),
+      quantity: z.number().int().positive(),
+      unitPrice: z.number().int().nonnegative(),
+    }),
+  ).min(1),
+  discountCode: z.string().optional(),
+  discountAmount: z.number().int().nonnegative().optional(),
+  shippingZoneId: z.string().uuid().optional(),
+  shippingAmount: z.number().int().nonnegative(),
+  deliveryAddress: deliveryAddressSchema,
+}) satisfies z.ZodType<CreateOrderRequest>
+
+const paginationSchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(100).default(10),
+})
+
+export default async function ordersRoutes(fastify: FastifyInstance) {
+  fastify.post(
+    '/orders',
+    { preHandler: [fastify.authenticate] },
+    async (request, reply) => {
+      const body = createOrderSchema.parse(request.body)
+      const userId = request.user!.id
+
+      // Validate stock for every item
+      const variantSnapshots: Array<{ productName: string; variantLabel: string }> = []
+      for (const item of body.items) {
+        const { data: variant, error } = await supabaseAdmin
+          .from('product_variants')
+          .select('stock_quantity, sku, size_label, scent_label, products(name)')
+          .eq('id', item.variantId)
+          .single()
+
+        if (error || !variant) {
+          throw new AppError(400, 'INVALID_ITEM', `Variant ${item.variantId} not found`)
+        }
+        const productRecord = variant.products as unknown as { name: string } | { name: string }[] | null
+        const productName = Array.isArray(productRecord)
+          ? (productRecord[0]?.name ?? '')
+          : (productRecord?.name ?? '')
+
+        if (variant.stock_quantity < item.quantity) {
+          throw new AppError(400, 'OUT_OF_STOCK', `"${productName || 'Item'}" does not have enough stock`)
+        }
+
+        const labelParts = [variant.size_label, variant.scent_label].filter(Boolean)
+        variantSnapshots.push({
+          productName,
+          variantLabel: labelParts.length > 0 ? labelParts.join(' / ') : variant.sku,
+        })
+      }
+
+      // Compute amounts (integers only)
+      const subtotal = body.items.reduce(
+        (sum, item) => sum + item.unitPrice * item.quantity,
+        0,
+      )
+      const discountAmount = body.discountAmount ?? 0
+      const total = subtotal - discountAmount + body.shippingAmount
+
+      // Generate human-readable reference
+      const reference = 'THIA-' + randomBytes(3).toString('hex').toUpperCase()
+
+      // Insert order
+      const { data: order, error: orderError } = await supabaseAdmin
+        .from('orders')
+        .insert({
+          reference,
+          user_id: userId,
+          status: 'pending',
+          payment_status: 'pending',
+          subtotal,
+          shipping_cost: body.shippingAmount,
+          discount_amount: discountAmount,
+          total,
+          discount_code: body.discountCode ?? null,
+          shipping_zone_id: body.shippingZoneId ?? null,
+          shipping_name: body.deliveryAddress.fullName,
+          shipping_phone: body.deliveryAddress.phone,
+          shipping_city: body.deliveryAddress.city,
+          shipping_address: body.deliveryAddress.address,
+          shipping_region: body.deliveryAddress.region,
+        })
+        .select()
+        .single()
+
+      if (orderError || !order) {
+        throw new AppError(500, 'DB_ERROR', orderError?.message ?? 'Failed to create order')
+      }
+
+      // Insert order items
+      const orderItems = body.items.map((item, idx) => ({
+        order_id: order.id,
+        variant_id: item.variantId,
+        quantity: item.quantity,
+        unit_price: item.unitPrice,
+        line_total: item.unitPrice * item.quantity,
+        product_name: variantSnapshots[idx].productName,
+        variant_label: variantSnapshots[idx].variantLabel,
+      }))
+
+      const { data: items, error: itemsError } = await supabaseAdmin
+        .from('order_items')
+        .insert(orderItems)
+        .select()
+
+      if (itemsError) {
+        // Best-effort rollback
+        await supabaseAdmin.from('orders').delete().eq('id', order.id)
+        throw new AppError(500, 'DB_ERROR', itemsError.message)
+      }
+
+      return reply.status(201).send({ data: { ...order, items: items ?? [] } })
+    },
+  )
+
+  fastify.get(
+    '/orders',
+    { preHandler: [fastify.authenticate] },
+    async (request, reply) => {
+      const { page, limit } = paginationSchema.parse(request.query)
+      const userId = request.user!.id
+      const offset = (page - 1) * limit
+
+      const { data, error, count } = await supabaseAdmin
+        .from('orders')
+        .select('*, order_items(*)', { count: 'exact' })
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1)
+
+      if (error) throw new AppError(500, 'DB_ERROR', error.message)
+
+      const total = count ?? 0
+      return reply.send({
+        data: data ?? [],
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      })
+    },
+  )
+
+  fastify.get<{ Params: { id: string } }>(
+    '/orders/:id',
+    { preHandler: [fastify.authenticate] },
+    async (request, reply) => {
+      const { id } = request.params
+      const userId = request.user!.id
+
+      const { data: order, error } = await supabaseAdmin
+        .from('orders')
+        .select('*, order_items(*)')
+        .eq('id', id)
+        .eq('user_id', userId)
+        .single()
+
+      if (error || !order) {
+        throw new AppError(404, 'ORDER_NOT_FOUND', `Order ${id} not found`)
+      }
+
+      return reply.send({ data: order })
+    },
+  )
+}
