@@ -1,14 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import type { CartItemWithProduct } from '@thia/shared'
-
-interface DiscountValidateResponse {
-  valid: boolean
-  type: 'percentage' | 'fixed'
-  value: number
-  message: string
-  code: string
-}
+import type { CartItemWithProduct, DiscountValidateResponse } from '@thia/shared'
 
 const STORAGE_KEY = 'thia-cart'
 
