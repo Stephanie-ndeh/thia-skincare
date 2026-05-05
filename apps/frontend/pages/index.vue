@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import type { Category, Testimonial } from '@thia/shared'
+
 definePageMeta({ layout: 'default' })
 
 const supabase = useSupabaseClient()
 
 // ── Types for raw Supabase rows ──────────────────────────────────────────────
 
-interface RawCategory {
-  id: string
-  name: string
-  slug: string
+type RawCategoryWithCount = Pick<Category, 'id' | 'name' | 'slug'> & {
   image_url: string | null
+  products: Array<{ count: number }>
 }
 
 interface RawProductVariant {
@@ -21,7 +21,7 @@ interface RawProductImage {
   is_primary: boolean
 }
 
-interface RawCategory2 {
+interface RawCategoryName {
   name: string
 }
 
@@ -29,7 +29,7 @@ interface RawProduct {
   id: string
   name: string
   slug: string
-  categories: RawCategory2 | null
+  categories: RawCategoryName | null
   product_variants: RawProductVariant[]
   product_images: RawProductImage[]
 }
@@ -41,6 +41,9 @@ interface RawTestimonial {
   photo_url: string | null
   is_featured: boolean
   display_order: number
+  storage_path: string | null
+  created_at: string
+  updated_at: string
 }
 
 interface HeroSettings {
@@ -78,12 +81,16 @@ const heroSettings = computed((): HeroSettings => {
 const { data: categoriesRaw } = await useAsyncData('homepage-categories', async () => {
   const { data } = await supabase
     .from('categories')
-    .select('id,name,slug,image_url')
+    .select('id,name,slug,image_url,products(count)')
     .order('display_order')
-  return data as RawCategory[] | null
+  return data as RawCategoryWithCount[] | null
 })
 
 const categories = computed(() => categoriesRaw.value ?? [])
+
+function getProductCount(category: RawCategoryWithCount): number {
+  return category.products?.[0]?.count ?? 0
+}
 
 // ── Fetch featured products ──────────────────────────────────────────────────
 
@@ -127,26 +134,24 @@ const featuredProducts = computed((): ProductCardData[] => {
 const { data: testimonialsRaw } = await useAsyncData('featured-testimonials', async () => {
   const { data } = await supabase
     .from('testimonials')
-    .select('id,customer_name,text,photo_url,is_featured,display_order')
+    .select('id,customer_name,text,photo_url,is_featured,display_order,storage_path,created_at,updated_at')
     .eq('is_featured', true)
     .order('display_order')
     .limit(6)
   return data as RawTestimonial[] | null
 })
 
-interface TestimonialDisplay {
-  id: string
-  customerName: string
-  text: string
-  photoUrl: string | null
-}
-
-const testimonials = computed((): TestimonialDisplay[] => {
+const testimonials = computed((): Testimonial[] => {
   return (testimonialsRaw.value ?? []).map(t => ({
     id: t.id,
     customerName: t.customer_name,
     text: t.text,
     photoUrl: t.photo_url,
+    storagePath: t.storage_path,
+    isFeatured: t.is_featured,
+    displayOrder: t.display_order,
+    createdAt: t.created_at,
+    updatedAt: t.updated_at,
   }))
 })
 
@@ -176,7 +181,10 @@ useHead({
       :cta-link="heroSettings.cta_link"
     />
 
-    <!-- 2. Featured categories -->
+    <!-- 2. Announcement strip -->
+    <AnnouncementStrip />
+
+    <!-- 3. Featured categories -->
     <section v-if="categories.length > 0" class="py-16 px-4 bg-brand-light">
       <div class="max-w-7xl mx-auto">
         <h2 class="font-heading text-2xl sm:text-3xl font-semibold text-brand-dark mb-8 text-center">
@@ -211,12 +219,17 @@ useHead({
             <span class="font-body text-sm font-medium text-brand-dark text-center group-hover:text-brand-accent transition-colors">
               {{ category.name }}
             </span>
+            <span class="font-body text-xs text-text-muted text-center">
+              {{ getProductCount(category) > 0
+                ? `${getProductCount(category)} products`
+                : 'Coming soon' }}
+            </span>
           </NuxtLink>
         </div>
       </div>
     </section>
 
-    <!-- 3. Best sellers / featured products -->
+    <!-- 4. Best sellers / featured products -->
     <section v-if="featuredProducts.length > 0" class="py-16 px-4 bg-white">
       <div class="max-w-7xl mx-auto">
         <h2 class="font-heading text-2xl sm:text-3xl font-semibold text-brand-dark mb-2 text-center">
@@ -237,7 +250,7 @@ useHead({
       </div>
     </section>
 
-    <!-- 4. Testimonials carousel -->
+    <!-- 5. Testimonials carousel + client photos -->
     <section v-if="testimonials.length > 0" class="py-16 px-4 bg-brand-secondary">
       <div class="max-w-7xl mx-auto">
         <h2 class="font-heading text-2xl sm:text-3xl font-semibold text-brand-dark mb-2 text-center">
@@ -247,10 +260,11 @@ useHead({
           Real results from real people
         </p>
         <TestimonialCarousel :testimonials="testimonials" />
+        <ClientPhotosGrid :testimonials="testimonials" />
       </div>
     </section>
 
-    <!-- 5. Newsletter signup -->
+    <!-- 6. Newsletter signup -->
     <NewsletterSection />
   </div>
 </template>

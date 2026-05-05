@@ -8,12 +8,22 @@ interface ProductCardData {
   price: number
   categoryName: string
   primaryImageUrl: string | null
+  reviews?: Array<{ rating: number }>
 }
 
 const props = defineProps<{
   product?: ProductCardData
   loading?: boolean
 }>()
+
+const averageRating = computed<number>(() => {
+  const reviews = props.product?.reviews
+  if (!reviews || reviews.length === 0) return 0
+  const sum = reviews.reduce((acc: number, r: { rating: number }) => acc + r.rating, 0)
+  return Math.round((sum / reviews.length) * 10) / 10
+})
+
+const reviewCount = computed<number>(() => props.product?.reviews?.length ?? 0)
 </script>
 
 <template>
@@ -66,6 +76,7 @@ const props = defineProps<{
       <p class="font-body text-sm text-brand-accent font-semibold">
         {{ formatXAF(product.price) }}
       </p>
+      <StarRating v-if="reviewCount > 0" :rating="averageRating" size="sm" />
     </div>
   </NuxtLink>
 </template>

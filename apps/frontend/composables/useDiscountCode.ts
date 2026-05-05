@@ -54,14 +54,12 @@ export function useDiscountCode() {
         return
       }
 
-      const amount = dc.type === 'percentage'
-        ? Math.floor(subtotal * dc.value / 100)
-        : Math.min(dc.value, subtotal)
-
-      cartStore.applyDiscount(dc.code.toUpperCase(), amount)
-      appliedCode.value = dc.code.toUpperCase()
-      appliedAmount.value = amount
+      await cartStore.applyDiscount(dc.code.toUpperCase())
+      appliedCode.value = cartStore.discountCode
+      appliedAmount.value = cartStore.discountAmount
       code.value = ''
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Failed to apply discount code.'
     } finally {
       loading.value = false
     }

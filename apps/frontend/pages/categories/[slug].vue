@@ -138,6 +138,9 @@ const filteredProducts = computed((): ProductCardData[] => {
     case 'price_desc':
       result.sort((a, b) => b.price - a.price)
       break
+    case 'name_asc':
+      result.sort((a, b) => a.name.localeCompare(b.name))
+      break
     default:
       break
   }

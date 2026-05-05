@@ -1,4 +1,4 @@
-export type SortOption = 'newest' | 'price_asc' | 'price_desc' | 'best_rated'
+export type SortOption = 'newest' | 'price_asc' | 'price_desc' | 'best_rated' | 'name_asc'
 export type ViewMode = 'grid' | 'list'
 
 export interface ActiveFilter {
@@ -11,6 +11,7 @@ const SORT_LABELS: Record<SortOption, string> = {
   price_asc: 'Price: Low to High',
   price_desc: 'Price: High to Low',
   best_rated: 'Best Rated',
+  name_asc: 'Name A–Z',
 }
 
 export function useProductFilters() {

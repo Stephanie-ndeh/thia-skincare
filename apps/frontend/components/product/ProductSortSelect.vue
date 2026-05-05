@@ -21,6 +21,7 @@ const emit = defineEmits<{
       <option value="price_asc">Price: Low to High</option>
       <option value="price_desc">Price: High to Low</option>
       <option value="best_rated">Best Rated</option>
+      <option value="name_asc">Name A–Z</option>
     </select>
     <svg
       class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted"
