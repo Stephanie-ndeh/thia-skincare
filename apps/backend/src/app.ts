@@ -12,6 +12,8 @@ import testimonialsRoutes from './routes/testimonials/index'
 import shippingRoutes from './routes/shipping/index'
 import ordersRoutes from './routes/orders/index'
 import discountCodesRoutes from './routes/discount-codes/index'
+import paymentsRoutes from './routes/payments/index'
+import paymentsWebhookRoutes from './routes/payments/webhook'
 
 export async function buildApp() {
   const fastify = Fastify({
@@ -56,6 +58,8 @@ export async function buildApp() {
   await fastify.register(shippingRoutes)
   await fastify.register(ordersRoutes)
   await fastify.register(discountCodesRoutes)
+  await fastify.register(paymentsRoutes)
+  await fastify.register(paymentsWebhookRoutes)
 
   return fastify
 }
