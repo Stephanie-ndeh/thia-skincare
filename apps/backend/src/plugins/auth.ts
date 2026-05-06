@@ -1,3 +1,4 @@
+import fp from 'fastify-plugin'
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
 import type { User } from '@supabase/supabase-js'
 import { supabaseAdmin } from '../config/supabase'
@@ -12,7 +13,7 @@ declare module 'fastify' {
   }
 }
 
-export default async function authPlugin(fastify: FastifyInstance) {
+export default fp(async function authPlugin(fastify: FastifyInstance) {
   fastify.decorateRequest('user', null)
 
   fastify.decorate(
@@ -49,4 +50,4 @@ export default async function authPlugin(fastify: FastifyInstance) {
       }
     }
   )
-}
+})
