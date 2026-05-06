@@ -124,20 +124,21 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   async function loadFromServer() {
-    if (!isAuthenticated.value) return
-    const session = await useSupabaseClient().auth.getSession()
-    const token = session.data.session?.access_token
-    if (!token) return
-    isLoading.value = true
-    try {
-      const data = await $fetch<CartItemWithProduct[]>(
-        `${useRuntimeConfig().public.apiBaseUrl}/cart`,
-        { headers: { Authorization: `Bearer ${token}` } },
-      )
-      items.value = data
-    } finally {
-      isLoading.value = false
-    }
+    // TODO Story 3.7 — implement when GET /cart backend route is built
+    // if (!isAuthenticated.value) return
+    // const session = await useSupabaseClient().auth.getSession()
+    // const token = session.data.session?.access_token
+    // if (!token) return
+    // isLoading.value = true
+    // try {
+    //   const data = await $fetch<CartItemWithProduct[]>(
+    //     `${useRuntimeConfig().public.apiBaseUrl}/cart`,
+    //     { headers: { Authorization: `Bearer ${token}` } },
+    //   )
+    //   items.value = data
+    // } finally {
+    //   isLoading.value = false
+    // }
   }
 
   async function syncToServer() {
@@ -152,6 +153,8 @@ export const useCartStore = defineStore('cart', () => {
         headers: { Authorization: `Bearer ${token}` },
         body: { items: items.value },
       })
+    } catch {
+      // Cart API not yet available — local state is preserved
     } finally {
       isLoading.value = false
     }
