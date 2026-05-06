@@ -40,6 +40,17 @@ gh pr create --base develop --title "..." --body "..."
 
 PRs always target `develop`, never `main`. Merge into `main` is a separate deliberate step for releases only.
 
+## Approval Gate — No Push Without Confirmation
+
+After completing any fix or story implementation, **stop and wait for the user to confirm the fix works** before pushing or creating a PR. The sequence is:
+
+1. Apply the fix / finish the implementation
+2. Run typecheck and report the result
+3. **Tell the user what to test and wait for their explicit "it works" / approval**
+4. Only after approval: checkout develop → pull → checkout branch → rebase → push → PR
+
+This prevents orphaned branches from fixes that need further iteration.
+
 ## Commands
 
 All commands must be run from the relevant app directory, not the root.
