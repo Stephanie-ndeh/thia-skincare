@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ShoppingBag, Loader2 } from 'lucide-vue-next'
+import { ShoppingBag, Loader2, Heart } from 'lucide-vue-next'
 import { formatXAF } from '@thia/shared'
 
 definePageMeta({ layout: 'default' })
@@ -100,6 +100,7 @@ watch(selectedVariant, () => { quantity.value = 1 })
 const cartStore = useCartStore()
 const uiStore = useUiStore()
 const authStore = useAuthStore()
+const wishlistStore = useWishlistStore()
 
 const reviewListRef = useTemplateRef<{ refresh: () => Promise<void> }>('reviewList')
 const isAddingToCart = ref(false)
@@ -289,6 +290,22 @@ useHead({
               <Loader2 v-if="isAddingToCart" class="w-4 h-4 animate-spin" />
               <ShoppingBag v-else class="w-4 h-4" />
               {{ selectedVariant && selectedVariant.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart' }}
+            </button>
+
+            <!-- Wishlist toggle (authenticated users only) -->
+            <button
+              v-if="authStore.isAuthenticated"
+              type="button"
+              class="flex items-center justify-center w-12 h-12 rounded-lg border border-brand-dark/20 hover:border-brand-accent transition-colors shrink-0"
+              :aria-label="wishlistStore.isWishlisted(product!.id) ? 'Remove from wishlist' : 'Add to wishlist'"
+              @click="wishlistStore.toggleWishlist(product!.id)"
+            >
+              <Heart
+                class="w-5 h-5 transition-colors"
+                :class="wishlistStore.isWishlisted(product!.id)
+                  ? 'fill-red-500 text-red-500'
+                  : 'text-brand-dark'"
+              />
             </button>
           </div>
         </div>
