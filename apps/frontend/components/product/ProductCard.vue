@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { formatXAF } from '@thia/shared'
+import { Heart } from 'lucide-vue-next'
 
 interface ProductCardData {
   id: string
@@ -16,6 +17,9 @@ const props = defineProps<{
   loading?: boolean
 }>()
 
+const authStore = useAuthStore()
+const wishlistStore = useWishlistStore()
+
 const averageRating = computed<number>(() => {
   const reviews = props.product?.reviews
   if (!reviews || reviews.length === 0) return 0
@@ -24,6 +28,14 @@ const averageRating = computed<number>(() => {
 })
 
 const reviewCount = computed<number>(() => props.product?.reviews?.length ?? 0)
+
+function handleWishlistToggle(event: MouseEvent) {
+  event.preventDefault()
+  event.stopPropagation()
+  if (props.product) {
+    wishlistStore.toggleWishlist(props.product.id)
+  }
+}
 </script>
 
 <template>
@@ -64,6 +76,22 @@ const reviewCount = computed<number>(() => props.product?.reviews?.length ?? 0)
           {{ product.name.charAt(0) }}
         </span>
       </div>
+
+      <!-- Wishlist heart button (authenticated users only) -->
+      <button
+        v-if="authStore.isAuthenticated"
+        type="button"
+        class="absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-full bg-white/80 hover:bg-white transition-colors shadow-sm"
+        :aria-label="wishlistStore.isWishlisted(product.id) ? 'Remove from wishlist' : 'Add to wishlist'"
+        @click="handleWishlistToggle"
+      >
+        <Heart
+          class="w-4 h-4 transition-colors"
+          :class="wishlistStore.isWishlisted(product.id)
+            ? 'fill-red-500 text-red-500'
+            : 'text-gray-400'"
+        />
+      </button>
     </div>
 
     <div class="p-3 flex flex-col gap-1">
