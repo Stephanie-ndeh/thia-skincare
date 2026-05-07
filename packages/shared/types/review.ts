@@ -18,3 +18,9 @@ export interface CreateReviewPayload {
   rating: number
   text: string
 }
+
+export interface CreateReviewRequest {
+  product_id: string
+  rating: number
+  text: string
+}
