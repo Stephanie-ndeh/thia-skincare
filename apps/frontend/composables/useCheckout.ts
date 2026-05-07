@@ -1,4 +1,5 @@
 import type { DeliveryData } from '~/components/checkout/DeliveryForm.vue'
+import type { Address } from '@thia/shared'
 
 interface CheckoutState {
   isLoading: boolean
@@ -134,6 +135,34 @@ export function useCheckout() {
       state.isLoading = false
     }
   }
+
+  async function prefillFromDefaultAddress(): Promise<void> {
+    if (state.deliveryData !== null) return
+    try {
+      const session = await supabase.auth.getSession()
+      const token = session.data.session?.access_token
+      if (!token) return
+      const response = await $fetch<{ data: Address[] }>(`${apiBase}/addresses`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const defaultAddr = response.data.find((a) => a.isDefault) ?? response.data[0] ?? null
+      if (defaultAddr) {
+        state.deliveryData = {
+          fullName: defaultAddr.fullName,
+          phone: defaultAddr.phone,
+          city: defaultAddr.city,
+          address: defaultAddr.addressLine,
+          region: defaultAddr.region,
+        }
+      }
+    } catch {
+      // Pre-fill is best-effort — silently ignore errors
+    }
+  }
+
+  onMounted(() => {
+    prefillFromDefaultAddress()
+  })
 
   return { state, calculateShipping, placeOrder, verifyPayment }
 }

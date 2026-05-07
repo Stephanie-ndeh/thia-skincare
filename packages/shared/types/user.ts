@@ -1,5 +1,10 @@
 export type UserRole = 'customer' | 'admin'
 
+export interface UpdateProfileRequest {
+  full_name?: string
+  phone?: string
+}
+
 export interface Profile {
   id: string
   fullName: string
