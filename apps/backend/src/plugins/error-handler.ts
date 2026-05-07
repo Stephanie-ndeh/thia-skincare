@@ -1,3 +1,4 @@
+import fp from 'fastify-plugin'
 import type { FastifyInstance } from 'fastify'
 import { ZodError } from 'zod'
 
@@ -15,7 +16,7 @@ export class AppError extends Error {
   }
 }
 
-export default async function errorHandlerPlugin(fastify: FastifyInstance) {
+export default fp(async function errorHandlerPlugin(fastify: FastifyInstance) {
   fastify.setErrorHandler((error, _request, reply) => {
     if (error instanceof AppError) {
       return reply.status(error.statusCode).send({
@@ -49,4 +50,4 @@ export default async function errorHandlerPlugin(fastify: FastifyInstance) {
       },
     })
   })
-}
+})
