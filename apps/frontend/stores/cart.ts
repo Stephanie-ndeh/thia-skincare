@@ -105,10 +105,11 @@ export const useCartStore = defineStore('cart', () => {
 
   async function applyDiscount(code: string) {
     const apiBase = useRuntimeConfig().public.apiBaseUrl
-    const result = await $fetch<DiscountValidateResponse>(
+    const response = await $fetch<{ data: DiscountValidateResponse }>(
       `${apiBase}/discount-codes/validate`,
-      { method: 'POST', body: { code } },
+      { method: 'POST', body: { code, subtotal: subtotal.value } },
     )
+    const result = response.data
     if (!result.valid) throw new Error(result.message)
     if (result.type === 'percentage') {
       discountAmount.value = Math.floor(subtotal.value * (result.value / 100))

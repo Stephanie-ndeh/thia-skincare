@@ -10,6 +10,8 @@ defineProps<{
   discountCode: string | null
   total: number
 }>()
+
+const cartStore = useCartStore()
 </script>
 
 <template>
@@ -50,7 +52,17 @@ defineProps<{
       </div>
 
       <div v-if="discountAmount > 0" class="flex justify-between text-green-600">
-        <span>Discount <span v-if="discountCode" class="font-mono text-xs">({{ discountCode }})</span></span>
+        <span class="flex items-center gap-2">
+          Discount
+          <span v-if="discountCode" class="font-mono text-xs">({{ discountCode }})</span>
+          <button
+            type="button"
+            class="text-xs text-text-muted hover:text-red-600 transition-colors underline"
+            @click="cartStore.removeDiscount()"
+          >
+            Remove
+          </button>
+        </span>
         <span>- {{ formatXAF(discountAmount) }}</span>
       </div>
 
