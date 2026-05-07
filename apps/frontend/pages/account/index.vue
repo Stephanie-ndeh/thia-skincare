@@ -1,10 +1,12 @@
 <script setup lang="ts">
-definePageMeta({ middleware: 'auth' })
+definePageMeta({ layout: 'default', ssr: false, middleware: 'auth' })
 </script>
 
 <template>
-  <div class="mx-auto max-w-4xl px-4 py-8">
-    <h1 class="text-2xl font-semibold text-brand-dark">Account Dashboard</h1>
-    <p class="mt-2 text-text-muted">Your orders, profile, and settings will appear here.</p>
+  <div class="mx-auto max-w-6xl px-4 py-8">
+    <div class="lg:flex lg:items-start lg:gap-8">
+      <AccountSidebar />
+      <AccountOverview class="min-w-0 flex-1" />
+    </div>
   </div>
 </template>
