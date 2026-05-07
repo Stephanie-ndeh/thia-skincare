@@ -47,6 +47,8 @@ async function fetchReviews(reset = false) {
 
 await fetchReviews(true)
 
+defineExpose({ refresh: () => fetchReviews(true) })
+
 const averageRating = computed(() => {
   if (reviews.value.length === 0) return 0
   const sum = reviews.value.reduce((acc, r) => acc + r.rating, 0)

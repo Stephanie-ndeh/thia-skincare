@@ -99,6 +99,9 @@ watch(selectedVariant, () => { quantity.value = 1 })
 
 const cartStore = useCartStore()
 const uiStore = useUiStore()
+const authStore = useAuthStore()
+
+const reviewListRef = useTemplateRef<{ refresh: () => Promise<void> }>('reviewList')
 const isAddingToCart = ref(false)
 
 async function addToCart() {
@@ -302,7 +305,24 @@ useHead({
 
       <!-- Reviews -->
       <div class="bg-white rounded-xl p-6 sm:p-8 mb-12">
-        <ReviewList :product-id="product!.id" />
+        <ReviewList ref="reviewList" :product-id="product!.id" />
+
+        <div class="mt-8 border-t border-brand-dark/10 pt-8">
+          <WriteReviewForm
+            v-if="authStore.isAuthenticated"
+            :product-id="product!.id"
+            @submitted="reviewListRef?.refresh()"
+          />
+          <p v-else class="text-sm text-text-muted">
+            <NuxtLink
+              to="/auth/login"
+              class="font-medium text-brand-dark hover:underline"
+            >
+              Login
+            </NuxtLink>
+            to write a review
+          </p>
+        </div>
       </div>
 
       <!-- Related products -->
