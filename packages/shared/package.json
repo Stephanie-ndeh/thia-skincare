@@ -5,7 +5,9 @@
   "types": "./index.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
+      "require": "./index.ts",
+      "import": "./index.ts",
+      "default": "./index.ts",
       "types": "./index.ts"
     }
   },
