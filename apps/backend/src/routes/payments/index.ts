@@ -26,7 +26,7 @@ export default async function paymentsRoutes(fastify: FastifyInstance) {
       // Fetch order to get amount and description
       const { data: order, error } = await supabaseAdmin
         .from('orders')
-        .select('id, total, reference')
+        .select('id, total, order_number')
         .eq('id', body.orderId)
         .eq('user_id', request.user!.id)
         .single()
@@ -41,7 +41,7 @@ export default async function paymentsRoutes(fastify: FastifyInstance) {
         email: body.email,
         phone: body.phone,
         channel: body.channel,
-        description: `Thia order ${order.reference}`,
+        description: `Thia order ${order.order_number}`,
         callbackUrl: body.callbackUrl,
       })
 
