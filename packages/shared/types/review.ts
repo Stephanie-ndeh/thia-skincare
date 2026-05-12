@@ -24,3 +24,20 @@ export interface CreateReviewRequest {
   rating: number
   text: string
 }
+
+export interface ReviewListItem {
+  id: string
+  product_id: string
+  product_name: string
+  product_slug: string
+  customer_name: string
+  rating: number
+  text: string
+  status: ReviewStatus
+  created_at: string
+}
+
+export interface BulkReviewRequest {
+  ids: string[]
+  status: 'approved' | 'rejected'
+}
