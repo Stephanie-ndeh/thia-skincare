@@ -1,4 +1,5 @@
 import Fastify from 'fastify'
+import multipart from '@fastify/multipart'
 import { ZodError } from 'zod'
 import corsPlugin from './plugins/cors'
 import rateLimitPlugin from './plugins/rate-limit'
@@ -19,6 +20,7 @@ import wishlistRoutes from './routes/wishlist/index'
 import profileRoutes from './routes/profile/index'
 import addressesRoutes from './routes/addresses/index'
 import adminRoutes from './routes/admin/index'
+import adminProductsRoutes from './routes/admin/products'
 
 export async function buildApp() {
   const fastify = Fastify({
@@ -51,6 +53,7 @@ export async function buildApp() {
     })
   })
 
+  await fastify.register(multipart, { limits: { fileSize: 5 * 1024 * 1024 } })
   await fastify.register(corsPlugin)
   await fastify.register(rateLimitPlugin)
   await fastify.register(errorHandlerPlugin)
@@ -70,6 +73,7 @@ export async function buildApp() {
   await fastify.register(profileRoutes)
   await fastify.register(addressesRoutes)
   await fastify.register(adminRoutes, { prefix: '/admin' })
+  await fastify.register(adminProductsRoutes, { prefix: '/admin' })
 
   return fastify
 }
