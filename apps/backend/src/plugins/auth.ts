@@ -43,7 +43,13 @@ export default fp(async function authPlugin(fastify: FastifyInstance) {
       await fastify.authenticate(request, reply)
       if (reply.sent) return
 
-      if (request.user?.app_metadata?.role !== 'admin') {
+      const { data: profile } = await supabaseAdmin
+        .from('profiles')
+        .select('role')
+        .eq('id', request.user!.id)
+        .single()
+
+      if (!profile || (profile as { role: string }).role !== 'admin') {
         return reply.status(403).send({
           error: { code: 'FORBIDDEN', message: 'Admin access required', details: [] },
         })
