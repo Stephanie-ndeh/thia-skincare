@@ -110,19 +110,4 @@ export default async function adminRoutes(fastify: FastifyInstance) {
     },
   )
 
-  fastify.get(
-    '/orders',
-    { preHandler: [fastify.requireAdmin] },
-    async (_request, reply) => {
-      const { data, error } = await supabaseAdmin
-        .from('orders')
-        .select('id, order_number, status, payment_status, total, created_at, shipping_name')
-        .order('created_at', { ascending: false })
-        .limit(10)
-
-      if (error) throw new AppError(500, 'DB_ERROR', error.message)
-
-      return reply.send({ data: data ?? [] })
-    },
-  )
 }
