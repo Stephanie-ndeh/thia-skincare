@@ -31,3 +31,17 @@ export interface ToggleProductRequest {
   field: 'is_published' | 'is_featured'
   value: boolean
 }
+
+export interface CreateTestimonialRequest {
+  customer_name: string
+  text: string
+  is_featured: boolean
+  display_order: number
+}
+
+export interface UpdateTestimonialRequest {
+  customer_name?: string
+  text?: string
+  is_featured?: boolean
+  display_order?: number
+}

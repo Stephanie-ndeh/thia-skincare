@@ -1,11 +1,11 @@
 export interface Testimonial {
   id: string
-  customerName: string
+  customer_name: string
   text: string
-  photoUrl: string | null
-  storagePath: string | null
-  isFeatured: boolean
-  displayOrder: number
-  createdAt: string
-  updatedAt: string
+  photo_url: string | null
+  storage_path: string | null
+  is_featured: boolean
+  display_order: number
+  created_at: string
+  updated_at: string
 }

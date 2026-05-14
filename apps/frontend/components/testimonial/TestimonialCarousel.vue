@@ -3,9 +3,9 @@ import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
 interface Testimonial {
   id: string
-  customerName: string
+  customer_name: string
   text: string
-  photoUrl: string | null
+  photo_url: string | null
 }
 
 const props = defineProps<{

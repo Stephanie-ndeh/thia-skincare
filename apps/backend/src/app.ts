@@ -23,6 +23,7 @@ import adminRoutes from './routes/admin/index'
 import adminProductsRoutes from './routes/admin/products'
 import adminOrdersRoutes from './routes/admin/orders'
 import adminReviewsRoutes from './routes/admin/reviews'
+import adminTestimonialsRoutes from './routes/admin/testimonials'
 
 export async function buildApp() {
   const fastify = Fastify({
@@ -78,6 +79,7 @@ export async function buildApp() {
   await fastify.register(adminProductsRoutes, { prefix: '/admin' })
   await fastify.register(adminOrdersRoutes, { prefix: '/admin' })
   await fastify.register(adminReviewsRoutes, { prefix: '/admin' })
+  await fastify.register(adminTestimonialsRoutes, { prefix: '/admin' })
 
   return fastify
 }
