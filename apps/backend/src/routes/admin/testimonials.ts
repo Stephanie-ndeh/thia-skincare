@@ -17,7 +17,7 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
     { preHandler: [fastify.requireAdmin] },
     async (_request, reply) => {
       const { data, error } = await supabaseAdmin
-        .from('testimonials')
+        .from('testimonial-photos')
         .select('*')
         .order('display_order', { ascending: true })
 
@@ -65,20 +65,20 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
       if (photoBuffer && photoBuffer.length > 0) {
         const storagePath = `testimonials/${Date.now()}-${photoFilename}`
         const { error: storageError } = await supabaseAdmin.storage
-          .from('testimonials')
+          .from('testimonial-photos')
           .upload(storagePath, photoBuffer, { contentType: photoMimetype, upsert: false })
         if (storageError) throw new AppError(500, 'STORAGE_ERROR', storageError.message)
 
         const {
           data: { publicUrl },
-        } = supabaseAdmin.storage.from('testimonials').getPublicUrl(storagePath)
+        } = supabaseAdmin.storage.from('testimonial-photos').getPublicUrl(storagePath)
 
         photo_url = publicUrl
         storage_path = storagePath
       }
 
       const { data, error } = await supabaseAdmin
-        .from('testimonials')
+        .from('testimonial-photos')
         .insert({ customer_name, text, is_featured, display_order, photo_url, storage_path })
         .select()
         .single()
@@ -99,7 +99,7 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
       const body = updateBodySchema.parse(request.body)
 
       const { data, error } = await supabaseAdmin
-        .from('testimonials')
+        .from('testimonial-photos')
         .update({ ...body, updated_at: new Date().toISOString() })
         .eq('id', id)
         .select()
@@ -120,7 +120,7 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
       const { id } = request.params
 
       const { data: existing, error: fetchError } = await supabaseAdmin
-        .from('testimonials')
+        .from('testimonial-photos')
         .select('storage_path')
         .eq('id', id)
         .single()
@@ -131,11 +131,11 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
 
       const row = existing as { storage_path: string | null }
       if (row.storage_path) {
-        await supabaseAdmin.storage.from('testimonials').remove([row.storage_path])
+        await supabaseAdmin.storage.from('testimonial-photos').remove([row.storage_path])
       }
 
       const { error: deleteError } = await supabaseAdmin
-        .from('testimonials')
+        .from('testimonial-photos')
         .delete()
         .eq('id', id)
 
@@ -152,7 +152,7 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
       const { id } = request.params
 
       const { data: existing, error: fetchError } = await supabaseAdmin
-        .from('testimonials')
+        .from('testimonial-photos')
         .select('storage_path')
         .eq('id', id)
         .single()
@@ -166,24 +166,24 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
 
       const row = existing as { storage_path: string | null }
       if (row.storage_path) {
-        await supabaseAdmin.storage.from('testimonials').remove([row.storage_path])
+        await supabaseAdmin.storage.from('testimonial-photos').remove([row.storage_path])
       }
 
       const buffer = await fileData.toBuffer()
       const storagePath = `testimonials/${Date.now()}-${fileData.filename}`
 
       const { error: storageError } = await supabaseAdmin.storage
-        .from('testimonials')
+        .from('testimonial-photos')
         .upload(storagePath, buffer, { contentType: fileData.mimetype, upsert: false })
 
       if (storageError) throw new AppError(500, 'STORAGE_ERROR', storageError.message)
 
       const {
         data: { publicUrl },
-      } = supabaseAdmin.storage.from('testimonials').getPublicUrl(storagePath)
+      } = supabaseAdmin.storage.from('testimonial-photos').getPublicUrl(storagePath)
 
       const { data: updated, error: updateError } = await supabaseAdmin
-        .from('testimonials')
+        .from('testimonial-photos')
         .update({
           photo_url: publicUrl,
           storage_path: storagePath,
