@@ -17,7 +17,7 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
     { preHandler: [fastify.requireAdmin] },
     async (_request, reply) => {
       const { data, error } = await supabaseAdmin
-        .from('testimonial-photos')
+        .from('testimonials')
         .select('*')
         .order('display_order', { ascending: true })
 
@@ -78,7 +78,7 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
       }
 
       const { data, error } = await supabaseAdmin
-        .from('testimonial-photos')
+        .from('testimonials')
         .insert({ customer_name, text, is_featured, display_order, photo_url, storage_path })
         .select()
         .single()
@@ -99,7 +99,7 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
       const body = updateBodySchema.parse(request.body)
 
       const { data, error } = await supabaseAdmin
-        .from('testimonial-photos')
+        .from('testimonials')
         .update({ ...body, updated_at: new Date().toISOString() })
         .eq('id', id)
         .select()
@@ -120,7 +120,7 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
       const { id } = request.params
 
       const { data: existing, error: fetchError } = await supabaseAdmin
-        .from('testimonial-photos')
+        .from('testimonials')
         .select('storage_path')
         .eq('id', id)
         .single()
@@ -135,7 +135,7 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
       }
 
       const { error: deleteError } = await supabaseAdmin
-        .from('testimonial-photos')
+        .from('testimonials')
         .delete()
         .eq('id', id)
 
@@ -152,7 +152,7 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
       const { id } = request.params
 
       const { data: existing, error: fetchError } = await supabaseAdmin
-        .from('testimonial-photos')
+        .from('testimonials')
         .select('storage_path')
         .eq('id', id)
         .single()
@@ -183,7 +183,7 @@ export default async function adminTestimonialsRoutes(fastify: FastifyInstance) 
       } = supabaseAdmin.storage.from('testimonial-photos').getPublicUrl(storagePath)
 
       const { data: updated, error: updateError } = await supabaseAdmin
-        .from('testimonial-photos')
+        .from('testimonials')
         .update({
           photo_url: publicUrl,
           storage_path: storagePath,

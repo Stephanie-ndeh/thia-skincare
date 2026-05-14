@@ -237,7 +237,7 @@ useHead({
           Real results from real people
         </p>
         <TestimonialCarousel :testimonials="testimonials" />
-        <ClientPhotosGrid :testimonials="testimonials" />
+        <!-- <ClientPhotosGrid :testimonials="testimonials" /> -->
       </div>
     </section>
 

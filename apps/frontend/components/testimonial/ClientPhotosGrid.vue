@@ -14,7 +14,7 @@ const photosWithImages = computed<Testimonial[]>(() =>
 <template>
   <div
     v-if="photosWithImages.length > 0"
-    class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8"
+    class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8 px-4"
   >
     <div
       v-for="testimonial in photosWithImages"
