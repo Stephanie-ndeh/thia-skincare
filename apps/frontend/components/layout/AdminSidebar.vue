@@ -24,7 +24,7 @@ const navItems = [
   { label: 'Products',     to: '/admin/products',     icon: Package },
   { label: 'Categories',   to: '/admin/categories',   icon: Tag },
   { label: 'Orders',       to: '/admin/orders',       icon: ShoppingCart },
-  { label: 'Discount Codes', to: '/admin/discount-codes', icon: Ticket },
+  { label: 'Discount Codes', to: '/admin/discounts', icon: Ticket },
   { label: 'Reviews',        to: '/admin/reviews',        icon: Star },
   { label: 'Client Photos',  to: '/admin/photos',  icon: MessageSquare },
   { label: 'Shipping',     to: '/admin/shipping',     icon: Truck },

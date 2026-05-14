@@ -37,7 +37,7 @@ export default async function discountCodesRoutes(fastify: FastifyInstance) {
       return reply.send({ data: res })
     }
 
-    if (dc.usage_limit !== null && dc.times_used >= dc.usage_limit) {
+    if (dc.usage_limit !== null && dc.usage_count >= dc.usage_limit) {
       const res: DiscountValidateResponse = {
         ...INVALID,
         message: 'This discount code has reached its usage limit.',
@@ -45,10 +45,10 @@ export default async function discountCodesRoutes(fastify: FastifyInstance) {
       return reply.send({ data: res })
     }
 
-    if (body.subtotal !== undefined && body.subtotal < dc.min_order_amount) {
+    if (body.subtotal !== undefined && dc.minimum_order && body.subtotal < dc.minimum_order) {
       const res: DiscountValidateResponse = {
         ...INVALID,
-        message: `A minimum order of ${dc.min_order_amount} XAF is required.`,
+        message: `A minimum order of ${dc.minimum_order} XAF is required.`,
       }
       return reply.send({ data: res })
     }
