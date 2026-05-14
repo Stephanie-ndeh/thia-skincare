@@ -34,17 +34,6 @@ interface RawProduct {
   product_images: RawProductImage[]
 }
 
-interface RawTestimonial {
-  id: string
-  customer_name: string
-  text: string
-  photo_url: string | null
-  is_featured: boolean
-  display_order: number
-  storage_path: string | null
-  created_at: string
-  updated_at: string
-}
 
 interface HeroSettings {
   image_url: string
@@ -138,22 +127,10 @@ const { data: testimonialsRaw } = await useAsyncData('featured-testimonials', as
     .eq('is_featured', true)
     .order('display_order')
     .limit(6)
-  return data as RawTestimonial[] | null
+  return data as Testimonial[] | null
 })
 
-const testimonials = computed((): Testimonial[] => {
-  return (testimonialsRaw.value ?? []).map(t => ({
-    id: t.id,
-    customerName: t.customer_name,
-    text: t.text,
-    photoUrl: t.photo_url,
-    storagePath: t.storage_path,
-    isFeatured: t.is_featured,
-    displayOrder: t.display_order,
-    createdAt: t.created_at,
-    updatedAt: t.updated_at,
-  }))
-})
+const testimonials = computed((): Testimonial[] => testimonialsRaw.value ?? [])
 
 // ── SEO ──────────────────────────────────────────────────────────────────────
 

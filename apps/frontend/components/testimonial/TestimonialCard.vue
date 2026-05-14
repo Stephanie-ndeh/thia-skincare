@@ -1,9 +1,9 @@
 <script setup lang="ts">
 defineProps<{
   testimonial: {
-    customerName: string
+    customer_name: string
     text: string
-    photoUrl: string | null
+    photo_url: string | null
   }
 }>()
 </script>
@@ -13,9 +13,9 @@ defineProps<{
     <!-- Photo -->
     <div class="w-16 h-16 rounded-full overflow-hidden bg-brand-secondary mb-4 shrink-0">
       <NuxtImg
-        v-if="testimonial.photoUrl"
-        :src="testimonial.photoUrl"
-        :alt="testimonial.customerName"
+        v-if="testimonial.photo_url"
+        :src="testimonial.photo_url"
+        :alt="testimonial.customer_name"
         class="w-full h-full object-cover"
         loading="lazy"
         width="64"
@@ -25,7 +25,7 @@ defineProps<{
         v-else
         class="w-full h-full flex items-center justify-center text-brand-dark font-heading text-xl font-semibold"
       >
-        {{ testimonial.customerName.charAt(0).toUpperCase() }}
+        {{ testimonial.customer_name.charAt(0).toUpperCase() }}
       </div>
     </div>
 
@@ -36,7 +36,7 @@ defineProps<{
 
     <!-- Name -->
     <span class="font-body text-sm font-semibold text-brand-dark">
-      {{ testimonial.customerName }}
+      {{ testimonial.customer_name }}
     </span>
   </div>
 </template>

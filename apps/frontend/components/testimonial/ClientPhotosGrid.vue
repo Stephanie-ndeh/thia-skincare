@@ -7,7 +7,7 @@ interface Props {
 const props = defineProps<Props>()
 
 const photosWithImages = computed<Testimonial[]>(() =>
-  props.testimonials.filter(t => t.photoUrl !== null).slice(0, 8),
+  props.testimonials.filter(t => t.photo_url !== null).slice(0, 8),
 )
 </script>
 
@@ -22,8 +22,8 @@ const photosWithImages = computed<Testimonial[]>(() =>
       class="aspect-square overflow-hidden rounded-lg"
     >
       <img
-        :src="testimonial.photoUrl!"
-        :alt="testimonial.customerName"
+        :src="testimonial.photo_url!"
+        :alt="testimonial.customer_name"
         class="w-full h-full object-cover"
         loading="lazy"
       />
