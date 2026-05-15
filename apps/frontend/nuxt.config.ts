@@ -51,6 +51,7 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'en' },
       meta: [
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
         { name: 'theme-color', content: '#2C2C2A' },
         { property: 'og:site_name', content: 'Thia' },
         { property: 'og:type', content: 'website' },

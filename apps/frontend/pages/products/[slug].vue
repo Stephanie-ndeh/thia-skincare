@@ -276,7 +276,7 @@ useHead({
           />
 
           <!-- Quantity + Add to cart -->
-          <div class="flex items-center gap-3 flex-wrap">
+          <div class="flex flex-wrap items-center gap-3">
             <QuantitySelector
               v-model="quantity"
               :max="selectedVariant?.stock_quantity ?? 1"
@@ -285,7 +285,7 @@ useHead({
 
             <button
               type="button"
-              class="flex-1 min-w-[180px] inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-body text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              class="w-full md:flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-body text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               :class="selectedVariant && selectedVariant.stock_quantity > 0
                 ? 'bg-brand-dark text-white hover:bg-brand-accent'
                 : 'bg-brand-dark/10 text-text-muted cursor-not-allowed'"

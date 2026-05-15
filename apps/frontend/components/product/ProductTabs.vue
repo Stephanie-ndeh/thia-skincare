@@ -10,7 +10,7 @@ defineProps<{
 
 <template>
   <TabsRoot default-value="description">
-    <TabsList class="flex border-b border-brand-dark/10 mb-6">
+    <TabsList class="flex overflow-x-auto border-b border-brand-dark/10 mb-6 hide-scrollbar">
       <TabsTrigger
         value="description"
         class="px-5 py-3 font-body text-sm font-medium text-text-muted border-b-2 border-transparent transition-colors data-[state=active]:text-brand-dark data-[state=active]:border-brand-dark -mb-px"

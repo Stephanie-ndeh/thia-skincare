@@ -30,7 +30,6 @@ function prev() {
 function next() {
   activeIndex.value = (activeIndex.value + 1) % props.images.length
 }
-
 </script>
 
 <template>
@@ -48,11 +47,11 @@ function next() {
         height="600"
       />
 
-      <!-- Prev/next arrows (always present, useful on mobile too) -->
+      <!-- Prev/next arrows — 44px touch target -->
       <button
         v-if="images.length > 1"
         type="button"
-        class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow hover:bg-white transition-colors"
+        class="absolute left-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow hover:bg-white transition-colors"
         @click="prev"
         aria-label="Previous image"
       >
@@ -61,7 +60,7 @@ function next() {
       <button
         v-if="images.length > 1"
         type="button"
-        class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow hover:bg-white transition-colors"
+        class="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow hover:bg-white transition-colors"
         @click="next"
         aria-label="Next image"
       >
@@ -69,13 +68,13 @@ function next() {
       </button>
     </div>
 
-    <!-- Thumbnails -->
-    <div v-if="images.length > 1" class="flex gap-2 overflow-x-auto pb-1">
+    <!-- Thumbnails — horizontal scroll, hidden scrollbar -->
+    <div v-if="images.length > 1" class="flex gap-2 overflow-x-auto pb-2 hide-scrollbar">
       <button
         v-for="(img, idx) in images"
         :key="idx"
         type="button"
-        class="shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors"
+        class="shrink-0 min-w-[64px] w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors"
         :class="idx === activeIndex ? 'border-brand-dark' : 'border-transparent hover:border-brand-dark/30'"
         @click="activeIndex = idx"
         :aria-label="`View image ${idx + 1}`"

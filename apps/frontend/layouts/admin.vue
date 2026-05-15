@@ -3,6 +3,7 @@ import { LogOut } from 'lucide-vue-next'
 
 const authStore = useAuthStore()
 const router = useRouter()
+const { isCollapsed } = useAdminSidebar()
 
 useSeoMeta({ robots: 'noindex, nofollow' })
 
@@ -16,11 +17,15 @@ async function handleLogout() {
   <div class="flex min-h-screen bg-gray-50">
     <AdminSidebar />
 
-    <!-- Main area (offset for sidebar on desktop) -->
-    <div class="flex flex-1 flex-col md:ml-64">
+    <!-- Main area — offset reacts to sidebar collapsed state -->
+    <div
+      :class="[
+        'flex flex-1 flex-col transition-all duration-200',
+        isCollapsed ? 'md:ml-12' : 'md:ml-60',
+      ]"
+    >
       <!-- Top bar -->
       <header class="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-white px-6 shadow-sm">
-        <!-- Page title slot or placeholder -->
         <h1 class="text-base font-semibold text-brand-dark">Admin Panel</h1>
 
         <div class="flex items-center gap-3">

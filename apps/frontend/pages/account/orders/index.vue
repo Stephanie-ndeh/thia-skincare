@@ -122,6 +122,7 @@ watch(currentPage, (page) => fetchOrders(page), { immediate: true })
         <!-- Orders list -->
         <template v-else>
           <div class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+            <div class="overflow-x-auto">
             <table class="w-full text-sm">
               <thead class="border-b border-gray-100 bg-gray-50">
                 <tr>
@@ -176,6 +177,7 @@ watch(currentPage, (page) => fetchOrders(page), { immediate: true })
                 </tr>
               </tbody>
             </table>
+            </div>
           </div>
 
           <!-- Pagination -->

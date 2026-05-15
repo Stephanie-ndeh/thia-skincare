@@ -31,7 +31,7 @@ async function handleLogout() {
         </button>
       </div>
 
-      <nav class="flex flex-col px-4 py-4">
+      <nav class="flex flex-col px-4 py-4 safe-bottom">
         <!-- Main nav -->
         <NuxtLink
           to="/"

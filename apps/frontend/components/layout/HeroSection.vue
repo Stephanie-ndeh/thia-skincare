@@ -35,7 +35,7 @@ defineProps<{
       </p>
       <NuxtLink
         :to="ctaLink"
-        class="inline-flex items-center justify-center rounded-md bg-brand-accent text-white font-body font-medium text-sm sm:text-base px-8 py-3 hover:bg-brand-accent/90 transition-colors"
+        class="inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-brand-accent text-white font-body font-medium text-sm sm:text-base px-8 py-3 hover:bg-brand-accent/90 transition-colors"
       >
         {{ ctaText }}
       </NuxtLink>

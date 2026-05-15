@@ -15,7 +15,7 @@ const cartStore = useCartStore()
         </h2>
         <button
           type="button"
-          class="text-text-muted hover:text-brand-dark transition-colors"
+          class="min-w-[44px] min-h-[44px] flex items-center justify-center text-text-muted hover:text-brand-dark transition-colors"
           @click="uiStore.closeCart()"
           aria-label="Close cart"
         >
@@ -37,7 +37,7 @@ const cartStore = useCartStore()
       </div>
 
       <!-- Footer -->
-      <div v-if="!cartStore.isEmpty" class="px-5 pb-6 border-t border-brand-dark/10">
+      <div v-if="!cartStore.isEmpty" class="px-5 pt-4 pb-6 border-t border-brand-dark/10 safe-bottom">
         <DiscountCodeInput />
         <CartSummary
           :subtotal="cartStore.subtotal"

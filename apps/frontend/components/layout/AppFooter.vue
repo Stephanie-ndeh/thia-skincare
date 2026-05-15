@@ -13,7 +13,7 @@ const categories = [
 </script>
 
 <template>
-  <footer class="bg-brand-dark text-white">
+  <footer class="bg-brand-dark text-white safe-bottom">
     <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 gap-10 md:grid-cols-3">
         <!-- Brand column -->

@@ -24,9 +24,12 @@ async function handleLogout() {
 <template>
   <CartDrawer />
   <header class="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/95 backdrop-blur">
-    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-      <!-- Logo -->
-      <NuxtLink to="/" class="font-heading text-2xl font-semibold text-brand-dark">
+    <div class="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <!-- Logo — centered on mobile, left-aligned on desktop -->
+      <NuxtLink
+        to="/"
+        class="absolute left-1/2 -translate-x-1/2 font-heading text-2xl font-semibold text-brand-dark md:static md:left-auto md:translate-x-0"
+      >
         Thia
       </NuxtLink>
 
@@ -51,11 +54,16 @@ async function handleLogout() {
         <LanguageSwitcher />
         <SearchBar />
         <!-- Cart -->
-        <button type="button" class="relative p-2" @click="uiStore.openCart()" aria-label="Open cart">
+        <button
+          type="button"
+          class="relative min-w-[44px] min-h-[44px] flex items-center justify-center"
+          @click="uiStore.openCart()"
+          aria-label="Open cart"
+        >
           <ShoppingBag class="h-5 w-5 text-brand-dark" />
           <span
             v-if="cartStore.itemCount > 0"
-            class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-brand-accent text-[10px] font-bold text-white"
+            class="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-brand-accent text-[10px] font-bold text-white"
           >
             {{ cartStore.itemCount }}
           </span>
@@ -106,19 +114,24 @@ async function handleLogout() {
       </div>
 
       <!-- Mobile right actions -->
-      <div class="flex items-center gap-2 md:hidden">
+      <div class="flex items-center gap-1 md:hidden ml-auto">
         <SearchBar />
-        <button type="button" class="relative p-2" @click="uiStore.openCart()" aria-label="Open cart">
+        <button
+          type="button"
+          class="relative min-w-[44px] min-h-[44px] flex items-center justify-center"
+          @click="uiStore.openCart()"
+          aria-label="Open cart"
+        >
           <ShoppingBag class="h-5 w-5 text-brand-dark" />
           <span
             v-if="cartStore.itemCount > 0"
-            class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-brand-accent text-[10px] font-bold text-white"
+            class="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-brand-accent text-[10px] font-bold text-white"
           >
             {{ cartStore.itemCount }}
           </span>
         </button>
         <button
-          class="p-2 text-brand-dark"
+          class="min-w-[44px] min-h-[44px] flex items-center justify-center text-brand-dark"
           aria-label="Open menu"
           @click="uiStore.toggleMobileMenu()"
         >
