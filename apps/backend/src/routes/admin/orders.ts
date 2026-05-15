@@ -150,10 +150,12 @@ export default async function adminOrdersRoutes(fastify: FastifyInstance) {
       if (search) {
         if (matchingUserIds.length > 0) {
           query = query.or(
-            `order_number.ilike.%${search}%,user_id.in.(${matchingUserIds.join(',')})`,
+            `order_number.ilike.%${search}%,shipping_name.ilike.%${search}%,user_id.in.(${matchingUserIds.join(',')})`,
           )
         } else {
-          query = query.ilike('order_number', `%${search}%`)
+          query = query.or(
+            `order_number.ilike.%${search}%,shipping_name.ilike.%${search}%`,
+          )
         }
       }
 
@@ -167,7 +169,7 @@ export default async function adminOrdersRoutes(fastify: FastifyInstance) {
         const profileRecord = Array.isArray(row.profiles) ? row.profiles[0] : row.profiles
         return {
           id: row.id,
-          reference: row.order_number,
+          order_number: row.order_number,
           created_at: row.created_at,
           status: row.status as OrderStatus,
           payment_status: row.payment_status as import('@thia/shared').PaymentStatus,

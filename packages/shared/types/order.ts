@@ -89,7 +89,7 @@ export interface CreateOrderPayload {
 
 export interface OrderListItem {
   id: string
-  reference: string
+  order_number: string
   created_at: string
   status: OrderStatus
   payment_status: PaymentStatus
