@@ -67,9 +67,23 @@ const categories = [
           </ul>
         </div>
 
-        <!-- Contact column -->
+        <!-- Company + Contact column -->
         <div>
           <p class="text-sm font-semibold uppercase tracking-wider text-gray-300">
+            Company
+          </p>
+          <ul class="mt-4 space-y-2">
+            <li>
+              <NuxtLink to="/about" class="text-sm text-gray-400 hover:text-white">Notre Histoire</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/faq" class="text-sm text-gray-400 hover:text-white">FAQ</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/contact" class="text-sm text-gray-400 hover:text-white">Contact</NuxtLink>
+            </li>
+          </ul>
+          <p class="mt-6 text-sm font-semibold uppercase tracking-wider text-gray-300">
             Contact
           </p>
           <ul class="mt-4 space-y-2 text-sm text-gray-400">
