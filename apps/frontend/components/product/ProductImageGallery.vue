@@ -30,6 +30,7 @@ function prev() {
 function next() {
   activeIndex.value = (activeIndex.value + 1) % props.images.length
 }
+
 </script>
 
 <template>

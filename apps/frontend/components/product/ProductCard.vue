@@ -36,19 +36,20 @@ function handleWishlistToggle(event: MouseEvent) {
     wishlistStore.toggleWishlist(props.product.id)
   }
 }
+
 </script>
 
 <template>
   <!-- Skeleton state -->
   <div
     v-if="loading || !product"
-    class="flex flex-col rounded-lg overflow-hidden bg-white animate-pulse"
+    class="flex flex-col rounded-lg overflow-hidden bg-white"
   >
-    <div class="aspect-[4/5] bg-gray-200 w-full" />
+    <div class="aspect-[4/5] skeleton w-full rounded-t-lg" />
     <div class="p-3 space-y-2">
-      <div class="h-3 bg-gray-200 rounded w-1/3" />
-      <div class="h-4 bg-gray-200 rounded w-3/4" />
-      <div class="h-4 bg-gray-200 rounded w-1/2" />
+      <div class="h-3 skeleton rounded w-1/3" />
+      <div class="h-4 skeleton rounded w-3/4" />
+      <div class="h-4 skeleton rounded w-1/2" />
     </div>
   </div>
 
@@ -56,7 +57,7 @@ function handleWishlistToggle(event: MouseEvent) {
   <NuxtLink
     v-else
     :to="`/products/${product.slug}`"
-    class="group flex flex-col rounded-lg overflow-hidden bg-white hover:shadow-md transition-shadow duration-200"
+    class="product-card group flex flex-col rounded-lg overflow-hidden bg-white"
   >
     <div class="aspect-[4/5] overflow-hidden bg-brand-secondary relative">
       <NuxtImg

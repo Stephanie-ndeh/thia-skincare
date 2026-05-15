@@ -43,17 +43,3 @@ const colorMap = {
   </Teleport>
 </template>
 
-<style scoped>
-.toast-enter-active,
-.toast-leave-active {
-  transition: all 0.25s ease;
-}
-.toast-enter-from {
-  opacity: 0;
-  transform: translateX(1rem);
-}
-.toast-leave-to {
-  opacity: 0;
-  transform: translateX(1rem);
-}
-</style>

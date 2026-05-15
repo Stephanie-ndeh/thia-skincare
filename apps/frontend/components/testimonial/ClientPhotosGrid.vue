@@ -26,6 +26,7 @@ const photosWithImages = computed<Testimonial[]>(() =>
         :alt="testimonial.customer_name"
         class="w-full h-full object-cover"
         loading="lazy"
+        @error="(e: Event) => (e.target as HTMLElement | null)?.parentElement?.classList.add('hidden')"
       />
     </div>
   </div>
