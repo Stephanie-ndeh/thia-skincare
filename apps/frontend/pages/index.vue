@@ -134,16 +134,25 @@ const testimonials = computed((): Testimonial[] => testimonialsRaw.value ?? [])
 
 // ── SEO ──────────────────────────────────────────────────────────────────────
 
+const { t } = useI18n()
+const config = useRuntimeConfig()
+const siteUrl = computed(() => config.public.siteUrl || 'https://thia.cm')
+
+useSeoMeta({
+  title: () => t('seo.home_title'),
+  description: () => t('seo.home_desc'),
+  ogTitle: () => t('seo.home_title'),
+  ogDescription: () => t('seo.home_desc'),
+  ogType: 'website',
+  ogUrl: () => siteUrl.value,
+  ogImage: () => heroSettings.value.image_url || undefined,
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => t('seo.home_title'),
+  twitterDescription: () => t('seo.home_desc'),
+})
+
 useHead({
-  title: 'Thia — Natural Skincare from Cameroon',
-  meta: [
-    {
-      name: 'description',
-      content: 'Thia offers premium natural skincare products handcrafted with African botanicals. Shop cleansers, moisturizers, serums, and more.',
-    },
-    { property: 'og:title', content: 'Thia — Natural Skincare from Cameroon' },
-    { property: 'og:description', content: 'Handcrafted African skincare. Shop Thia.' },
-  ],
+  link: [{ rel: 'canonical', href: () => siteUrl.value }],
 })
 </script>
 
@@ -165,7 +174,7 @@ useHead({
     <section v-if="categories.length > 0" class="py-16 px-4 bg-brand-light">
       <div class="max-w-7xl mx-auto">
         <h2 class="font-heading text-2xl sm:text-3xl font-semibold text-brand-dark mb-8 text-center">
-          Shop by Category
+          {{ $t('home.shop_by_category') }}
         </h2>
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           <NuxtLink
@@ -210,7 +219,7 @@ useHead({
     <section v-if="featuredProducts.length > 0" class="py-16 px-4 bg-white">
       <div class="max-w-7xl mx-auto">
         <h2 class="font-heading text-2xl sm:text-3xl font-semibold text-brand-dark mb-2 text-center">
-          Best Sellers
+          {{ $t('home.best_sellers') }}
         </h2>
         <p class="font-body text-sm text-text-muted text-center mb-8">
           Our most loved natural skincare picks
@@ -231,7 +240,7 @@ useHead({
     <section v-if="testimonials.length > 0" class="py-16 px-4 bg-brand-secondary">
       <div class="max-w-7xl mx-auto">
         <h2 class="font-heading text-2xl sm:text-3xl font-semibold text-brand-dark mb-2 text-center">
-          What Our Customers Say
+          {{ $t('home.customers_say') }}
         </h2>
         <p class="font-body text-sm text-text-muted text-center mb-10">
           Real results from real people

@@ -1,0 +1,111 @@
+{
+  "nav": {
+    "categories": "Catégories",
+    "testimonials": "Témoignages",
+    "search": "Rechercher des produits...",
+    "cart": "Panier",
+    "account": "Compte",
+    "login": "Se connecter",
+    "logout": "Se déconnecter"
+  },
+  "home": {
+    "hero_title": "Soins Naturels du Cameroun",
+    "hero_subtitle": "Fabriqués avec des plantes africaines pour une peau radieuse et saine.",
+    "shop_now": "Acheter maintenant",
+    "our_story": "Notre histoire",
+    "shop_by_category": "Acheter par catégorie",
+    "best_sellers": "Meilleures ventes",
+    "customers_say": "Ce que disent nos clients",
+    "free_delivery": "Livraison gratuite au-dessus de 15 000 XAF",
+    "mobile_money": "Mobile Money et Orange Money acceptés",
+    "products_available": "30 produits disponibles",
+    "nationwide": "Livraison dans tout le Cameroun"
+  },
+  "product": {
+    "add_to_cart": "Ajouter au panier",
+    "out_of_stock": "Rupture de stock",
+    "in_stock": "En stock",
+    "add_to_wishlist": "Ajouter aux favoris",
+    "size": "Taille",
+    "scent": "Parfum",
+    "description": "Description",
+    "ingredients": "Ingrédients",
+    "how_to_use": "Comment utiliser",
+    "reviews": "Avis",
+    "no_reviews": "Pas encore d'avis. Soyez le premier!",
+    "write_review": "Écrire un avis",
+    "login_to_review": "Connectez-vous pour écrire un avis"
+  },
+  "cart": {
+    "title": "Votre Panier",
+    "empty": "Votre panier est vide",
+    "empty_cta": "Parcourir les produits",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "shipping_calculated": "Calculé à la caisse",
+    "discount": "Réduction",
+    "total": "Total",
+    "checkout": "Passer à la caisse",
+    "continue": "Continuer les achats",
+    "promo_code": "Vous avez un code promo?",
+    "apply": "Appliquer",
+    "remove": "Supprimer"
+  },
+  "checkout": {
+    "title": "Paiement",
+    "delivery": "Contact et livraison",
+    "full_name": "Nom complet",
+    "phone": "Numéro de téléphone",
+    "city": "Ville",
+    "address": "Adresse de livraison",
+    "region": "Région",
+    "payment": "Mode de paiement",
+    "place_order": "Passer la commande",
+    "mtn_desc": "Payez via MTN MoMo — recevez une invite sur votre téléphone",
+    "orange_desc": "Payez via Orange Money — confirmation instantanée"
+  },
+  "account": {
+    "title": "Mon Compte",
+    "overview": "Aperçu",
+    "orders": "Commandes",
+    "wishlist": "Favoris",
+    "profile": "Profil",
+    "addresses": "Adresses",
+    "logout": "Se déconnecter",
+    "welcome": "Bon retour, {name}!",
+    "no_orders": "Vous n'avez pas encore passé de commande",
+    "shop_now": "Acheter maintenant"
+  },
+  "auth": {
+    "login": "Se connecter",
+    "register": "Créer un compte",
+    "email": "Email",
+    "password": "Mot de passe",
+    "forgot_password": "Mot de passe oublié?",
+    "no_account": "Pas encore de compte?",
+    "has_account": "Déjà un compte?",
+    "sign_up": "S'inscrire"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "retry": "Réessayer",
+    "back": "Retour",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "coming_soon": "Bientôt disponible",
+    "products": "produits"
+  },
+  "seo": {
+    "home_title": "Thia — Soins Naturels du Cameroun",
+    "home_desc": "Découvrez des produits de soin premium fabriqués avec des plantes africaines. Nettoyants, sérums, hydratants et plus. Livraison dans tout le Cameroun.",
+    "cart_title": "Votre Panier — Thia",
+    "checkout_title": "Paiement — Thia",
+    "account_title": "Mon Compte — Thia",
+    "login_title": "Connexion — Thia",
+    "register_title": "Créer un compte — Thia"
+  }
+}

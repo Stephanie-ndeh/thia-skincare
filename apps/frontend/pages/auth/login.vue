@@ -1,6 +1,9 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'auth' })
 
+const { t } = useI18n()
+useSeoMeta({ title: () => t('seo.login_title') })
+
 const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()

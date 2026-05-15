@@ -4,6 +4,7 @@ import { isValidCameroonPhone, CAMEROON_REGIONS } from '@thia/shared'
 import type { Address } from '@thia/shared'
 
 definePageMeta({ layout: 'default', ssr: false, middleware: 'auth' })
+useSeoMeta({ title: 'My Account — Thia', robots: 'noindex, nofollow' })
 
 const uiStore = useUiStore()
 

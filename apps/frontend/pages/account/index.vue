@@ -1,5 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'default', ssr: false, middleware: 'auth' })
+
+const { t } = useI18n()
+useSeoMeta({ title: () => t('seo.account_title'), robots: 'noindex, nofollow' })
 </script>
 
 <template>

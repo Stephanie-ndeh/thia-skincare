@@ -187,20 +187,25 @@ const primaryImage = computed(() =>
   sortedImages.value.find(i => i.is_primary) ?? sortedImages.value[0] ?? null
 )
 
+const config = useRuntimeConfig()
+const siteUrl = computed(() => config.public.siteUrl || 'https://thia.cm')
+
+useSeoMeta({
+  title: () => `${product.value!.name} — Thia Skincare`,
+  description: () => (product.value!.description ?? `Shop ${product.value!.name} from Thia — natural skincare from Cameroon.`).slice(0, 160),
+  ogTitle: () => `${product.value!.name} — Thia Skincare`,
+  ogDescription: () => (product.value!.description ?? `Shop ${product.value!.name} from Thia.`).slice(0, 160),
+  ogImage: () => primaryImage.value?.url,
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+})
+
 useHead({
-  title: `${product.value!.name} — Thia`,
-  meta: [
-    {
-      name: 'description',
-      content: (product.value!.description ?? `Shop ${product.value!.name} from Thia — natural skincare from Cameroon.`).slice(0, 160),
-    },
-    { property: 'og:title', content: `${product.value!.name} — Thia` },
-    ...(primaryImage.value ? [{ property: 'og:image', content: primaryImage.value.url }] : []),
-  ],
+  link: [{ rel: 'canonical', href: () => `${siteUrl.value}/products/${slug}` }],
   script: [
     {
       type: 'application/ld+json',
-      innerHTML: JSON.stringify({
+      innerHTML: () => JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'Product',
         name: product.value!.name,

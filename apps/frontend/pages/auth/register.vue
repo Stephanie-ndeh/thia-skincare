@@ -3,6 +3,9 @@ import { isValidCameroonPhone } from '@thia/shared'
 
 definePageMeta({ layout: 'auth' })
 
+const { t } = useI18n()
+useSeoMeta({ title: () => t('seo.register_title') })
+
 const authStore = useAuthStore()
 const router = useRouter()
 

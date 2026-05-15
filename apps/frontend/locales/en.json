@@ -1,0 +1,111 @@
+{
+  "nav": {
+    "categories": "Categories",
+    "testimonials": "Testimonials",
+    "search": "Search products...",
+    "cart": "Cart",
+    "account": "Account",
+    "login": "Sign in",
+    "logout": "Sign out"
+  },
+  "home": {
+    "hero_title": "Natural Skincare from Cameroon",
+    "hero_subtitle": "Handcrafted with African botanicals for radiant, healthy skin.",
+    "shop_now": "Shop Now",
+    "our_story": "Our Story",
+    "shop_by_category": "Shop by Category",
+    "best_sellers": "Best Sellers",
+    "customers_say": "What Our Customers Say",
+    "free_delivery": "Free delivery above 15,000 XAF",
+    "mobile_money": "Mobile Money & Orange Money accepted",
+    "products_available": "30 products available",
+    "nationwide": "Nationwide shipping across Cameroon"
+  },
+  "product": {
+    "add_to_cart": "Add to Cart",
+    "out_of_stock": "Out of Stock",
+    "in_stock": "In Stock",
+    "add_to_wishlist": "Add to Wishlist",
+    "size": "Size",
+    "scent": "Scent",
+    "description": "Description",
+    "ingredients": "Ingredients",
+    "how_to_use": "How to Use",
+    "reviews": "Reviews",
+    "no_reviews": "No reviews yet. Be the first!",
+    "write_review": "Write a Review",
+    "login_to_review": "Login to write a review"
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty",
+    "empty_cta": "Browse products",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "shipping_calculated": "Calculated at checkout",
+    "discount": "Discount",
+    "total": "Total",
+    "checkout": "Proceed to Checkout",
+    "continue": "Continue Shopping",
+    "promo_code": "Have a promo code?",
+    "apply": "Apply",
+    "remove": "Remove"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "delivery": "Contact & Delivery",
+    "full_name": "Full Name",
+    "phone": "Phone Number",
+    "city": "City / Town",
+    "address": "Delivery Address",
+    "region": "Region",
+    "payment": "Payment Method",
+    "place_order": "Place Order",
+    "mtn_desc": "Pay via MTN MoMo — receive a prompt on your phone",
+    "orange_desc": "Pay via Orange Money — instant confirmation"
+  },
+  "account": {
+    "title": "My Account",
+    "overview": "Overview",
+    "orders": "Orders",
+    "wishlist": "Wishlist",
+    "profile": "Profile",
+    "addresses": "Addresses",
+    "logout": "Sign Out",
+    "welcome": "Welcome back, {name}!",
+    "no_orders": "You haven't placed any orders yet",
+    "shop_now": "Shop Now"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Create Account",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot password?",
+    "no_account": "Don't have an account?",
+    "has_account": "Already have an account?",
+    "sign_up": "Sign Up"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "coming_soon": "Coming soon",
+    "products": "products"
+  },
+  "seo": {
+    "home_title": "Thia — Natural Skincare from Cameroon",
+    "home_desc": "Discover premium natural skincare products handcrafted with African botanicals. Shop cleansers, serums, moisturizers and more. Nationwide delivery in Cameroon.",
+    "cart_title": "Your Cart — Thia",
+    "checkout_title": "Checkout — Thia",
+    "account_title": "My Account — Thia",
+    "login_title": "Sign In — Thia",
+    "register_title": "Create Account — Thia"
+  }
+}

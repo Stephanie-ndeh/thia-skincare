@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@nuxt/image": "^2.0.0",
+    "@nuxtjs/i18n": "^10.3.0",
+    "@nuxtjs/sitemap": "^8.0.15",
     "@nuxtjs/supabase": "^1.4.6",
     "@pinia/nuxt": "^0.9.0",
     "@thia/shared": "*",

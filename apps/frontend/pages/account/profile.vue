@@ -2,6 +2,7 @@
 import { isValidCameroonPhone } from '@thia/shared'
 
 definePageMeta({ layout: 'default', ssr: false, middleware: 'auth' })
+useSeoMeta({ title: 'My Account — Thia', robots: 'noindex, nofollow' })
 
 const authStore = useAuthStore()
 const uiStore = useUiStore()
