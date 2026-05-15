@@ -11,14 +11,13 @@ const contactSchema = z.object({
   message: z.string().min(20),
 }) satisfies z.ZodType<ContactRequest>
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export default async function contactRoutes(fastify: FastifyInstance) {
   fastify.post('/contact', async (request, reply) => {
     const body = contactSchema.parse(request.body)
     const adminEmail = process.env.ADMIN_EMAIL ?? 'hello@thia.cm'
 
     if (process.env.RESEND_API_KEY) {
+      const resend = new Resend(process.env.RESEND_API_KEY)
       await resend.emails.send({
         from: 'notifications@thia.cm',
         to: adminEmail,

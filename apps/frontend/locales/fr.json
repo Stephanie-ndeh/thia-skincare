@@ -182,7 +182,7 @@
     "q_retours_1": "Puis-je retourner un produit ?",
     "a_retours_1": "Nous acceptons les retours dans les 7 jours suivant la réception, à condition que le produit soit non ouvert.",
     "q_retours_2": "Comment initier un retour ?",
-    "a_retours_2": "Contactez notre service client à hello@thia.cm avec votre numéro de commande.",
+    "a_retours_2": "Contactez notre service client à hello{'@'}thia.cm avec votre numéro de commande.",
     "q_compte_1": "Comment créer un compte ?",
     "a_compte_1": "Cliquez sur « Se connecter » puis « Créer un compte » en haut de la page.",
     "q_compte_2": "Puis-je modifier une commande après validation ?",

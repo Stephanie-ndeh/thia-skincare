@@ -182,7 +182,7 @@
     "q_retours_1": "Can I return a product?",
     "a_retours_1": "We accept returns within 7 days of receipt, provided the product is unopened.",
     "q_retours_2": "How do I initiate a return?",
-    "a_retours_2": "Contact our customer service at hello@thia.cm with your order number.",
+    "a_retours_2": "Contact our customer service at hello{'@'}thia.cm with your order number.",
     "q_compte_1": "How do I create an account?",
     "a_compte_1": "Click on \"Sign in\" then \"Create account\" at the top of the page.",
     "q_compte_2": "Can I modify an order after placing it?",
