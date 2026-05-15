@@ -192,15 +192,20 @@ const filterState = computed(() => ({
 
 // ── SEO ──────────────────────────────────────────────────────────────────────
 
+const config = useRuntimeConfig()
+const siteUrl = computed(() => config.public.siteUrl || 'https://thia.cm')
+
+useSeoMeta({
+  title: () => `${category.value.name} — Thia Skincare`,
+  description: () => category.value.description ?? `Shop ${category.value.name} products from Thia — natural skincare from Cameroon.`,
+  ogTitle: () => `${category.value.name} — Thia Skincare`,
+  ogDescription: () => category.value.description ?? `Shop ${category.value.name} products from Thia.`,
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+})
+
 useHead({
-  title: `${category.value.name} — Thia`,
-  meta: [
-    {
-      name: 'description',
-      content: category.value.description ?? `Shop ${category.value.name} products from Thia — natural skincare from Cameroon.`,
-    },
-    { property: 'og:title', content: `${category.value.name} — Thia` },
-  ],
+  link: [{ rel: 'canonical', href: () => `${siteUrl.value}/categories/${slug}` }],
 })
 </script>
 

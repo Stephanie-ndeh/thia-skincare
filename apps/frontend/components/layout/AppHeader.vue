@@ -36,18 +36,19 @@ async function handleLogout() {
           to="/categories"
           class="text-sm font-medium text-text-muted transition-colors hover:text-brand-dark"
         >
-          Categories
+          {{ $t('nav.categories') }}
         </NuxtLink>
         <NuxtLink
           to="/testimonials"
           class="text-sm font-medium text-text-muted transition-colors hover:text-brand-dark"
         >
-          Testimonials
+          {{ $t('nav.testimonials') }}
         </NuxtLink>
       </nav>
 
       <!-- Desktop right actions -->
       <div class="hidden items-center gap-3 md:flex">
+        <LanguageSwitcher />
         <SearchBar />
         <!-- Cart -->
         <button type="button" class="relative p-2" @click="uiStore.openCart()" aria-label="Open cart">
@@ -66,7 +67,7 @@ async function handleLogout() {
           to="/auth/login"
           class="text-sm font-medium text-brand-dark hover:text-brand-accent"
         >
-          Login
+          {{ $t('nav.login') }}
         </NuxtLink>
 
         <!-- Authenticated: Account dropdown -->
@@ -98,7 +99,7 @@ async function handleLogout() {
             </template>
             <DropdownMenuSeparator />
             <DropdownMenuItem class="text-red-600 focus:text-red-600" @click="handleLogout">
-              <LogOut class="mr-2 h-4 w-4" /> Logout
+              <LogOut class="mr-2 h-4 w-4" /> {{ $t('nav.logout') }}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

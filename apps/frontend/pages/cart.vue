@@ -5,8 +5,12 @@ definePageMeta({
 })
 
 const cartStore = useCartStore()
+const { t } = useI18n()
 
-useHead({ title: 'Cart — Thia' })
+useSeoMeta({
+  title: () => t('seo.cart_title'),
+  robots: 'noindex, nofollow',
+})
 </script>
 
 <template>

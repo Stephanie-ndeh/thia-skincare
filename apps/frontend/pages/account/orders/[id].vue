@@ -3,6 +3,7 @@ import type { OrderStatus } from '@thia/shared'
 import { formatXAF } from '@thia/shared'
 
 definePageMeta({ layout: 'default', ssr: false, middleware: 'auth' })
+useSeoMeta({ title: 'My Account — Thia', robots: 'noindex, nofollow' })
 
 const supabase = useSupabaseClient()
 const config = useRuntimeConfig()

@@ -4,6 +4,8 @@ import { LogOut } from 'lucide-vue-next'
 const authStore = useAuthStore()
 const router = useRouter()
 
+useSeoMeta({ robots: 'noindex, nofollow' })
+
 async function handleLogout() {
   await authStore.logout()
   router.push('/auth/login')

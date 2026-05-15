@@ -4,6 +4,12 @@ import type { DeliveryData } from '~/components/checkout/DeliveryForm.vue'
 
 definePageMeta({ layout: 'checkout', ssr: false, middleware: 'auth' })
 
+const { t } = useI18n()
+useSeoMeta({
+  title: () => t('seo.checkout_title'),
+  robots: 'noindex, nofollow',
+})
+
 const cartStore = useCartStore()
 const { state, calculateShipping, placeOrder } = useCheckout()
 

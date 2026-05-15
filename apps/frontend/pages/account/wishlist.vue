@@ -2,6 +2,7 @@
 import { Heart } from 'lucide-vue-next'
 
 definePageMeta({ layout: 'default', ssr: false, middleware: 'auth' })
+useSeoMeta({ title: 'My Account — Thia', robots: 'noindex, nofollow' })
 
 const wishlistStore = useWishlistStore()
 

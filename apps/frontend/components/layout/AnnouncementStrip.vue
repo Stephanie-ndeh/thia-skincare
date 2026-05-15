@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const { t } = useI18n()
+</script>
+
 <template>
   <div
     class="overflow-hidden border-b border-border py-2.5"
@@ -7,21 +11,21 @@
       class="animate-marquee flex gap-16 whitespace-nowrap text-xs tracking-widest uppercase"
       style="color: var(--color-brand-light, #F1EFE8);"
     >
-      <span>Free delivery above 15,000 XAF</span>
+      <span>{{ t('home.free_delivery') }}</span>
       <span>·</span>
-      <span>Mobile Money &amp; Orange Money accepted</span>
+      <span>{{ t('home.mobile_money') }}</span>
       <span>·</span>
-      <span>30 products available</span>
+      <span>{{ t('home.products_available') }}</span>
       <span>·</span>
-      <span>Nationwide shipping across Cameroon</span>
+      <span>{{ t('home.nationwide') }}</span>
       <span>·</span>
-      <span>Free delivery above 15,000 XAF</span>
+      <span>{{ t('home.free_delivery') }}</span>
       <span>·</span>
-      <span>Mobile Money &amp; Orange Money accepted</span>
+      <span>{{ t('home.mobile_money') }}</span>
       <span>·</span>
-      <span>30 products available</span>
+      <span>{{ t('home.products_available') }}</span>
       <span>·</span>
-      <span>Nationwide shipping across Cameroon</span>
+      <span>{{ t('home.nationwide') }}</span>
     </div>
   </div>
 </template>
