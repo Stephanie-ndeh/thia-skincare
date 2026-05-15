@@ -57,6 +57,13 @@ export default async function adminRoutes(fastify: FastifyInstance) {
         0,
       )
 
+      const { count: customersThisMonth, error: e7 } = await supabaseAdmin
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'customer')
+        .gte('created_at', startOfMonth)
+      if (e7) throw new AppError(500, 'DB_ERROR', e7.message)
+
       return reply.send({
         data: {
           total_orders: totalOrders ?? 0,
@@ -65,6 +72,7 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           total_customers: totalCustomers ?? 0,
           orders_this_month: ordersThisMonth ?? 0,
           revenue_this_month: revenueThisMonth,
+          customers_this_month: customersThisMonth ?? 0,
         },
       })
     },
