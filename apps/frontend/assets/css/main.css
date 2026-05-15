@@ -13,15 +13,129 @@
   --color-text-primary: var(--color-brand-dark);
   --color-text-muted: #6b7280;
 
+  /* Skeleton background tokens */
+  --color-background-secondary: #e5e7eb;
+  --color-background-primary: #f3f4f6;
+
   /* Brand fonts — placeholder until client provides style guide */
   --font-heading: ui-serif, Georgia, "Times New Roman", serif;
   --font-body: ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
+/* ── Page transitions ───────────────────────────────────────────────────── */
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* ── Layout transitions ─────────────────────────────────────────────────── */
+
+.layout-enter-active,
+.layout-leave-active {
+  transition: opacity 0.15s ease;
+}
+.layout-enter-from,
+.layout-leave-to {
+  opacity: 0;
+}
+
+/* ── Shimmer skeleton ───────────────────────────────────────────────────── */
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-background-secondary) 25%,
+    var(--color-background-primary)   50%,
+    var(--color-background-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ── Marquee ────────────────────────────────────────────────────────────── */
+
 @keyframes marquee {
-  0% { transform: translateX(0); }
+  0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 .animate-marquee {
-  animation: marquee 20s linear infinite;
+  animation: marquee 30s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* ── Button interactions ────────────────────────────────────────────────── */
+
+.btn-primary {
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+.btn-primary:hover  { filter: brightness(1.1); }
+.btn-primary:active { transform: scale(0.98); }
+
+/* ── Product card hover ─────────────────────────────────────────────────── */
+
+.product-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Toast slide-in from right ──────────────────────────────────────────── */
+
+.toast-enter-active { transition: all 0.3s ease-out; }
+.toast-leave-active { transition: all 0.2s ease-in; }
+.toast-enter-from,
+.toast-leave-to {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+/* ── Cart drawer slide-in from right ────────────────────────────────────── */
+
+.drawer-enter-active,
+.drawer-leave-active {
+  transition: transform 0.3s ease;
+}
+.drawer-enter-from,
+.drawer-leave-to {
+  transform: translateX(100%);
+}
+
+/* ── Mobile menu slide-in from left ─────────────────────────────────────── */
+
+.menu-enter-active,
+.menu-leave-active {
+  transition: transform 0.3s ease;
+}
+.menu-enter-from,
+.menu-leave-to {
+  transform: translateX(-100%);
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

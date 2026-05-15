@@ -136,6 +136,7 @@ const testimonials = computed((): Testimonial[] => testimonialsRaw.value ?? [])
 
 const { t } = useI18n()
 const config = useRuntimeConfig()
+
 const siteUrl = computed(() => config.public.siteUrl || 'https://thia.cm')
 
 useSeoMeta({
