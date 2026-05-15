@@ -1,22 +1,12 @@
 <script setup lang="ts">
 import { formatXAF } from '@thia/shared'
-import type { OrderStatus } from '@thia/shared'
-
-interface AdminOrderRow {
-  id: string
-  order_number: string
-  status: OrderStatus
-  payment_status: string
-  total: number
-  created_at: string
-  shipping_name: string
-}
+import type { OrderStatus, OrderListItem } from '@thia/shared'
 
 const supabase = useSupabaseClient()
 const config = useRuntimeConfig()
 const apiBase = config.public.apiBaseUrl as string
 
-const orders = ref<AdminOrderRow[]>([])
+const orders = ref<OrderListItem[]>([])
 const isLoading = ref(true)
 const fetchError = ref<string | null>(null)
 
@@ -47,7 +37,7 @@ onMounted(async () => {
     const token = session.data.session?.access_token
     if (!token) return
 
-    const res = await $fetch<{ data: AdminOrderRow[] }>(
+    const res = await $fetch<{ data: OrderListItem[] }>(
       `${apiBase}/admin/orders`,
       { headers: { Authorization: `Bearer ${token}` } },
     )
@@ -120,7 +110,7 @@ onMounted(async () => {
               {{ order.order_number }}
             </td>
             <td class="hidden px-4 py-3 text-text-muted sm:table-cell">
-              {{ order.shipping_name }}
+              {{ order.customer_name }}
             </td>
             <td class="hidden px-4 py-3 text-text-muted md:table-cell">
               {{ formatDate(order.created_at) }}

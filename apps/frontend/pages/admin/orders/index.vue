@@ -230,7 +230,7 @@ onMounted(fetchOrders)
             >
               <td class="px-4 py-3">
                 <span class="font-mono text-xs font-medium text-brand-dark">
-                  {{ order.reference }}
+                  {{ order.order_number }}
                 </span>
               </td>
 
