@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import type { Category, Testimonial } from '@thia/shared'
+import { defineAsyncComponent } from 'vue'
 
 definePageMeta({ layout: 'default' })
+
+const TestimonialCarousel = defineAsyncComponent(
+  () => import('~/components/testimonial/TestimonialCarousel.vue'),
+)
+const ClientPhotosGrid = defineAsyncComponent(
+  () => import('~/components/testimonial/ClientPhotosGrid.vue'),
+)
 
 const supabase = useSupabaseClient()
 

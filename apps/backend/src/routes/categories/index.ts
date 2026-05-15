@@ -2,14 +2,24 @@ import type { FastifyInstance } from 'fastify'
 import { supabaseAdmin } from '../../config/supabase'
 import { AppError } from '../../plugins/error-handler'
 
+const cache = new Map<string, { data: unknown; timestamp: number }>()
+const CACHE_TTL = 5 * 60 * 1000
+
 export default async function categoriesRoutes(fastify: FastifyInstance) {
   fastify.get('/categories', async (_request, reply) => {
+    const cacheKey = 'all-categories'
+    const cached = cache.get(cacheKey)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return reply.send({ data: cached.data })
+    }
+
     const { data, error } = await supabaseAdmin
       .from('categories')
       .select('*, products(count)')
       .order('display_order', { ascending: true })
 
     if (error) throw new AppError(500, 'DB_ERROR', error.message)
+    cache.set(cacheKey, { data, timestamp: Date.now() })
     return reply.send({ data })
   })
 

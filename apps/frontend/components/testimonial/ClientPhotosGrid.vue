@@ -21,12 +21,15 @@ const photosWithImages = computed<Testimonial[]>(() =>
       :key="testimonial.id"
       class="aspect-square overflow-hidden rounded-lg"
     >
-      <img
+      <NuxtImg
         :src="testimonial.photo_url!"
         :alt="testimonial.customer_name"
-        class="w-full h-full object-cover"
+        width="300"
+        height="300"
         loading="lazy"
-        @error="(e: Event) => (e.target as HTMLElement | null)?.parentElement?.classList.add('hidden')"
+        format="webp"
+        quality="75"
+        class="w-full h-full object-cover"
       />
     </div>
   </div>
