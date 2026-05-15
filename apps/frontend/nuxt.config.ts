@@ -18,12 +18,6 @@ export default defineNuxtConfig({
   ],
 
   image: {
-    providers: {
-      supabase: {
-        name: 'supabase',
-        provider: '~/providers/supabase.ts',
-      },
-    },
     domains: ['fudrvtugylvtnplykczs.supabase.co'],
     format: ['webp', 'jpg'],
     quality: 80,
