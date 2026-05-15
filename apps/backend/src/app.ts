@@ -1,5 +1,6 @@
 import Fastify from 'fastify'
 import multipart from '@fastify/multipart'
+import compress from '@fastify/compress'
 import { ZodError } from 'zod'
 import corsPlugin from './plugins/cors'
 import rateLimitPlugin from './plugins/rate-limit'
@@ -58,6 +59,7 @@ export async function buildApp() {
     })
   })
 
+  await fastify.register(compress, { global: true, threshold: 1024, encodings: ['gzip', 'deflate'] })
   await fastify.register(multipart, { limits: { fileSize: 5 * 1024 * 1024 } })
   await fastify.register(corsPlugin)
   await fastify.register(rateLimitPlugin)

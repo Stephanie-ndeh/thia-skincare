@@ -17,9 +17,9 @@
   --color-background-secondary: #e5e7eb;
   --color-background-primary: #f3f4f6;
 
-  /* Brand fonts — placeholder until client provides style guide */
-  --font-heading: ui-serif, Georgia, "Times New Roman", serif;
-  --font-body: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  /* Brand fonts */
+  --font-heading: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-body: "DM Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 /* ── Page transitions ───────────────────────────────────────────────────── */

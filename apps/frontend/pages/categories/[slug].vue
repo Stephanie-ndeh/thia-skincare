@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { LayoutGrid, List } from 'lucide-vue-next'
+import { defineAsyncComponent } from 'vue'
 
 definePageMeta({ layout: 'default' })
+
+const ProductGrid = defineAsyncComponent(
+  () => import('~/components/product/ProductGrid.vue'),
+)
 
 const supabase = useSupabaseClient()
 const route = useRoute()

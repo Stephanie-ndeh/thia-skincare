@@ -18,7 +18,22 @@ export default defineNuxtConfig({
   ],
 
   image: {
+    providers: {
+      supabase: {
+        name: 'supabase',
+        provider: '~/providers/supabase.ts',
+      },
+    },
     domains: ['fudrvtugylvtnplykczs.supabase.co'],
+    format: ['webp', 'jpg'],
+    quality: 80,
+    screens: {
+      xs: 320,
+      sm: 375,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+    },
   },
 
   css: ['~/assets/css/main.css'],
@@ -33,6 +48,19 @@ export default defineNuxtConfig({
       alias: {
         '@thia/shared': resolve(__dirname, '../../packages/shared/index.ts'),
       },
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['vue', 'pinia'],
+            ui: ['lucide-vue-next', 'reka-ui'],
+          },
+        },
+      },
+    },
+    optimizeDeps: {
+      include: ['@supabase/supabase-js'],
     },
   },
 
@@ -60,6 +88,12 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap',
+        },
       ],
     },
   },
@@ -73,8 +107,9 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/': { swr: 60 },
+    '/categories': { swr: 300 },
     '/categories/**': { swr: 60 },
-    '/products/**': { swr: 30 },
+    '/products/**': { swr: 60 },
     '/testimonials': { swr: 300 },
     '/cart': { ssr: false },
     '/checkout': { ssr: false },
