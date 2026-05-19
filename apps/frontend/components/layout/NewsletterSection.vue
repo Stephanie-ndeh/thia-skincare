@@ -21,49 +21,59 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <section class="bg-brand-primary py-16 px-4">
-    <div class="max-w-lg mx-auto text-center">
-      <h2 class="font-heading text-2xl sm:text-3xl font-semibold text-white mb-3">
-        Stay in the loop
-      </h2>
-      <p class="font-body text-sm text-white/75 mb-8">
-        Be the first to hear about new arrivals, offers, and skincare tips from Thia.
-      </p>
-
-      <template v-if="!submitted">
-        <form class="flex flex-col sm:flex-row gap-3 justify-center" @submit.prevent="handleSubmit">
-          <Input
-            v-model="email"
-            type="email"
-            placeholder="your@email.com"
-            required
-            class="flex-1 bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-brand-accent"
-          />
-          <button
-            type="submit"
-            :disabled="loading"
-            class="inline-flex items-center justify-center rounded-md bg-brand-accent text-white font-body font-medium text-sm px-6 py-2 hover:bg-brand-accent/90 disabled:opacity-60 transition-colors whitespace-nowrap"
-          >
-            <span
-              v-if="loading"
-              class="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
-            />
-            {{ loading ? 'Subscribing…' : 'Subscribe' }}
-          </button>
-        </form>
-      </template>
-
-      <template v-else>
-        <div class="flex flex-col items-center gap-2">
-          <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
-            <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <p class="font-body text-white font-medium">You're on the list!</p>
-          <p class="font-body text-sm text-white/70">We'll be in touch soon.</p>
+  <section class="py-16 sm:py-20 px-4 sm:px-8 bg-cream border-t border-brand-dark/[0.08]">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-10 md:gap-20 items-center">
+        <!-- Left: copy -->
+        <div>
+          <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-5 flex items-center gap-2">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
+            Letters from the Lab
+          </p>
+          <h2 class="font-heading text-4xl sm:text-5xl font-semibold text-brand-dark leading-[1.1] mb-4">
+            Slow beauty,<br>in your inbox.
+          </h2>
+          <p class="font-body text-sm text-text-muted leading-relaxed">
+            One letter a month. New drops, the botanicals we're sourcing, and the women behind them.
+          </p>
         </div>
-      </template>
+
+        <!-- Right: form -->
+        <div>
+          <template v-if="!submitted">
+            <form class="flex" @submit.prevent="handleSubmit">
+              <Input
+                v-model="email"
+                type="email"
+                placeholder="your@email.com"
+                required
+                class="flex-1 rounded-none border-r-0 border-brand-dark/20 bg-white text-brand-dark placeholder:text-text-muted focus-visible:ring-terracotta focus-visible:ring-offset-0 focus-visible:ring-1"
+              />
+              <button
+                type="submit"
+                :disabled="loading"
+                class="inline-flex items-center justify-center bg-brand-dark text-white font-body text-xs tracking-[0.12em] uppercase px-6 py-3 hover:bg-espresso disabled:opacity-60 transition-colors whitespace-nowrap shrink-0"
+              >
+                <span
+                  v-if="loading"
+                  class="mr-2 inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent"
+                />
+                {{ loading ? 'Subscribing…' : 'Subscribe →' }}
+              </button>
+            </form>
+            <p class="font-body text-[11px] text-text-muted mt-3">
+              We'll never share your email. Unsubscribe any time.
+            </p>
+          </template>
+
+          <template v-else>
+            <div class="flex flex-col gap-2">
+              <p class="font-heading text-2xl font-semibold text-brand-dark">You're on the list.</p>
+              <p class="font-body text-sm text-text-muted">We'll be in touch soon.</p>
+            </div>
+          </template>
+        </div>
+      </div>
     </div>
   </section>
 </template>
