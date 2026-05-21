@@ -38,21 +38,21 @@ async function handleLogout() {
           class="flex h-11 items-center rounded-md px-2 text-sm font-medium text-brand-dark hover:bg-brand-secondary"
           @click="close"
         >
-          Home
+          {{ $t('nav.home') }}
         </NuxtLink>
         <NuxtLink
           to="/categories"
           class="flex h-11 items-center rounded-md px-2 text-sm font-medium text-brand-dark hover:bg-brand-secondary"
           @click="close"
         >
-          Categories
+          {{ $t('nav.categories') }}
         </NuxtLink>
         <NuxtLink
           to="/testimonials"
           class="flex h-11 items-center rounded-md px-2 text-sm font-medium text-brand-dark hover:bg-brand-secondary"
           @click="close"
         >
-          Testimonials
+          {{ $t('nav.testimonials') }}
         </NuxtLink>
 
         <Separator class="my-3" />
@@ -64,14 +64,14 @@ async function handleLogout() {
             class="flex h-11 items-center rounded-md px-2 text-sm font-medium text-brand-dark hover:bg-brand-secondary"
             @click="close"
           >
-            Login
+            {{ $t('nav.login') }}
           </NuxtLink>
           <NuxtLink
             to="/auth/register"
             class="flex h-11 items-center rounded-md px-2 text-sm font-medium text-brand-dark hover:bg-brand-secondary"
             @click="close"
           >
-            Register
+            {{ $t('nav.register') }}
           </NuxtLink>
         </template>
 
@@ -82,14 +82,14 @@ async function handleLogout() {
             class="flex h-11 items-center gap-2 rounded-md px-2 text-sm font-medium text-brand-dark hover:bg-brand-secondary"
             @click="close"
           >
-            <User class="h-4 w-4" /> My Account
+            <User class="h-4 w-4" /> {{ $t('account.title') }}
           </NuxtLink>
           <NuxtLink
             to="/account/orders"
             class="flex h-11 items-center gap-2 rounded-md px-2 text-sm font-medium text-brand-dark hover:bg-brand-secondary"
             @click="close"
           >
-            <Package class="h-4 w-4" /> Order History
+            <Package class="h-4 w-4" /> {{ $t('nav.order_history') }}
           </NuxtLink>
           <NuxtLink
             v-if="authStore.isAdmin"
@@ -97,13 +97,13 @@ async function handleLogout() {
             class="flex h-11 items-center gap-2 rounded-md px-2 text-sm font-medium text-brand-dark hover:bg-brand-secondary"
             @click="close"
           >
-            <Settings class="h-4 w-4" /> Admin Panel
+            <Settings class="h-4 w-4" /> {{ $t('nav.admin_panel') }}
           </NuxtLink>
           <button
             class="flex h-11 items-center gap-2 rounded-md px-2 text-sm font-medium text-red-600 hover:bg-red-50"
             @click="handleLogout"
           >
-            <LogOut class="h-4 w-4" /> Logout
+            <LogOut class="h-4 w-4" /> {{ $t('nav.logout') }}
           </button>
         </template>
 
@@ -111,7 +111,7 @@ async function handleLogout() {
 
         <!-- Contact -->
         <div class="px-2 text-xs text-text-muted">
-          <p class="mb-1 font-medium text-brand-dark">Contact</p>
+          <p class="mb-1 font-medium text-brand-dark">{{ $t('nav.contact') }}</p>
           <p>+237 670 076 224</p>
           <p>+237 676 328 226</p>
         </div>

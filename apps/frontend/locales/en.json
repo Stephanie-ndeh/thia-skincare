@@ -1,12 +1,21 @@
 {
   "nav": {
+    "home": "Home",
     "categories": "Categories",
+    "our_story": "Our Story",
+    "journal": "Journal",
+    "contact": "Contact",
     "testimonials": "Testimonials",
-    "search": "Search products...",
+    "search": "Search products…",
+    "search_no_results": "No products found for \"{query}\"",
+    "search_see_all": "See all {count} results for \"{query}\"",
     "cart": "Cart",
     "account": "Account",
     "login": "Sign in",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "register": "Register",
+    "admin_panel": "Admin Panel",
+    "order_history": "Order History"
   },
   "home": {
     "hero_title": "Expert skincare for every skin type.",
@@ -56,7 +65,18 @@
     "payment_eyebrow": "Pay Your Way",
     "payment_body": "Confirm in seconds from your phone. No card needed. Cash on delivery available in Douala and Yaoundé.",
     "announcement_curated": "Dermatologist curated skincare",
-    "announcement_expert": "Expert advice on every order"
+    "announcement_expert": "Expert advice on every order",
+    "hero_cta": "Shop the collection",
+    "newsletter_eyebrow": "Letters from the Lab",
+    "newsletter_title_l1": "Slow beauty,",
+    "newsletter_title_l2": "in your inbox.",
+    "newsletter_body": "One letter a month. New drops, the botanicals we're sourcing, and the women behind them.",
+    "newsletter_placeholder": "Enter your email address",
+    "newsletter_loading": "Subscribing…",
+    "newsletter_cta": "Subscribe →",
+    "newsletter_disclaimer": "We'll never share your email. Unsubscribe any time.",
+    "newsletter_success_title": "You're on the list.",
+    "newsletter_success_body": "We'll be in touch soon."
   },
   "product": {
     "add_to_cart": "Add to Cart",
@@ -270,7 +290,7 @@
     "q_retours_1": "Can I return a product?",
     "a_retours_1": "We accept returns within 7 days of receipt, provided the product is unopened.",
     "q_retours_2": "How do I initiate a return?",
-    "a_retours_2": "Contact our customer service at hello{'@'}thia.cm with your order number.",
+    "a_retours_2": "Contact our customer service with your order number. You'll find our contact details on the Contact page.",
     "q_compte_1": "How do I create an account?",
     "a_compte_1": "Click on \"Sign in\" then \"Create account\" at the top of the page.",
     "q_compte_2": "Can I modify an order after placing it?",
@@ -336,7 +356,6 @@
     "card_1_subtitle": "Fastest · voice notes welcome",
     "card_1_cta": "OPEN CHAT →",
     "card_2_eyebrow": "— EMAIL",
-    "card_2_value": "hello{'@'}thia.cm",
     "card_2_subtitle": "Reviewed personally",
     "card_2_cta": "SEND A MESSAGE →",
     "card_3_eyebrow": "— PHONE",
@@ -347,5 +366,26 @@
     "card_4_value": "Bonamousadi, Douala",
     "card_4_subtitle": "Mon–Sat · 10h–18h",
     "card_4_cta": "GET DIRECTIONS →"
+  },
+  "footer": {
+    "tagline": "Premium skincare expertly curated for African skin. Your dermatologist-recommended destination in Cameroon.",
+    "shop_heading": "Shop",
+    "shop_1": "Cleanse",
+    "shop_2": "Treat",
+    "shop_3": "Hydrate",
+    "shop_4": "Body",
+    "shop_5": "Gift sets",
+    "care_heading": "Customer Care",
+    "care_1": "Shipping",
+    "care_2": "Returns",
+    "care_3": "FAQ",
+    "care_4": "Contact us",
+    "care_5": "Track order",
+    "thia_1": "Our expertise",
+    "thia_2": "Our story",
+    "thia_3": "Testimonials",
+    "thia_4": "Journal",
+    "thia_5": "Press",
+    "copyright": "© {year} Thia Cosmétiques SARL · Yaoundé, Cameroon"
   }
 }

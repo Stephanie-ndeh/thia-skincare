@@ -140,9 +140,9 @@ async function handleLogout() {
       <NuxtLink
         to="/categories"
         class="animated-link font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
-        active-class="text-brand-dark"
+        exact-active-class="text-brand-dark nav-link-active"
       >
-        Categories
+        {{ $t('nav.categories') }}
       </NuxtLink>
       <!-- Best Sellers link — re-enable when the page is ready -->
       <!-- <NuxtLink
@@ -154,30 +154,30 @@ async function handleLogout() {
       <NuxtLink
         to="/about"
         class="animated-link font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
-        active-class="text-brand-dark"
+        exact-active-class="text-brand-dark nav-link-active"
       >
-        Our Story
+        {{ $t('nav.our_story') }}
       </NuxtLink>
       <NuxtLink
         to="/faq"
         class="animated-link font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
-        active-class="text-brand-dark"
+        exact-active-class="text-brand-dark nav-link-active"
       >
-        Journal
+        {{ $t('nav.journal') }}
       </NuxtLink>
       <NuxtLink
         to="/testimonials"
         class="animated-link font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
-        active-class="text-brand-dark"
+        exact-active-class="text-brand-dark nav-link-active"
       >
         {{ $t('nav.testimonials') }}
       </NuxtLink>
       <NuxtLink
         to="/contact"
         class="animated-link font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
-        active-class="text-brand-dark"
+        exact-active-class="text-brand-dark nav-link-active"
       >
-        Contact
+        {{ $t('nav.contact') }}
       </NuxtLink>
     </nav>
   </header>

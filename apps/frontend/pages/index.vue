@@ -62,7 +62,7 @@ const heroSettings = computed((): HeroSettings => {
   return {
     image_url: val.image_url ?? '',
     cta_link: val.cta_link ?? '/categories',
-    cta_text: val.cta_text ?? 'Shop the collection',
+    cta_text: val.cta_text ?? t('home.hero_cta'),
     headline: val.headline ?? 'The botanicals of home, into your ritual.',
     subheadline: val.subheadline ?? 'Handcrafted with African botanicals for radiant, healthy skin.',
   }

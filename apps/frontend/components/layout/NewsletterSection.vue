@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const supabase = useSupabaseClient()
 
 const email = ref('')
@@ -28,13 +29,13 @@ async function handleSubmit() {
         <div>
           <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-5 flex items-center gap-2">
             <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
-            Letters from the Lab
+            {{ $t('home.newsletter_eyebrow') }}
           </p>
           <h2 class="font-heading text-4xl sm:text-5xl font-semibold text-brand-dark leading-[1.1] mb-4">
-            Slow beauty,<br>in your inbox.
+            {{ $t('home.newsletter_title_l1') }}<br>{{ $t('home.newsletter_title_l2') }}
           </h2>
           <p class="font-body text-sm text-text-muted leading-relaxed">
-            One letter a month. New drops, the botanicals we're sourcing, and the women behind them.
+            {{ $t('home.newsletter_body') }}
           </p>
         </div>
 
@@ -45,7 +46,7 @@ async function handleSubmit() {
               <Input
                 v-model="email"
                 type="email"
-                placeholder="your@email.com"
+                :placeholder="$t('home.newsletter_placeholder')"
                 required
                 class="flex-1 rounded-none border-r-0 border-brand-dark/20 bg-white text-brand-dark placeholder:text-text-muted focus-visible:ring-terracotta focus-visible:ring-offset-0 focus-visible:ring-1"
               />
@@ -58,18 +59,18 @@ async function handleSubmit() {
                   v-if="loading"
                   class="mr-2 inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent"
                 />
-                {{ loading ? 'Subscribing…' : 'Subscribe →' }}
+                {{ loading ? $t('home.newsletter_loading') : $t('home.newsletter_cta') }}
               </button>
             </form>
             <p class="font-body text-[11px] text-text-muted mt-3">
-              We'll never share your email. Unsubscribe any time.
+              {{ $t('home.newsletter_disclaimer') }}
             </p>
           </template>
 
           <template v-else>
             <div class="flex flex-col gap-2">
-              <p class="font-heading text-2xl font-semibold text-brand-dark">You're on the list.</p>
-              <p class="font-body text-sm text-text-muted">We'll be in touch soon.</p>
+              <p class="font-heading text-2xl font-semibold text-brand-dark">{{ $t('home.newsletter_success_title') }}</p>
+              <p class="font-body text-sm text-text-muted">{{ $t('home.newsletter_success_body') }}</p>
             </div>
           </template>
         </div>
