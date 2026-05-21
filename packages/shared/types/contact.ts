@@ -3,5 +3,6 @@ export interface ContactRequest {
   email: string
   phone?: string
   subject: string
+  subject_type?: string
   message: string
 }

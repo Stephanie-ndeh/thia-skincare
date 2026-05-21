@@ -144,12 +144,13 @@ async function handleLogout() {
       >
         Categories
       </NuxtLink>
-      <NuxtLink
+      <!-- Best Sellers link — re-enable when the page is ready -->
+      <!-- <NuxtLink
         to="/categories"
         class="font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
       >
         Best Sellers
-      </NuxtLink>
+      </NuxtLink> -->
       <NuxtLink
         to="/about"
         class="font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"

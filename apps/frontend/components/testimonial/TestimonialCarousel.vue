@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
-
-interface Testimonial {
-  id: string
-  customer_name: string
-  text: string
-  photo_url: string | null
-}
+import type { Testimonial } from '@thia/shared'
 
 const props = defineProps<{
   testimonials: Testimonial[]
