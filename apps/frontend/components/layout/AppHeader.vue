@@ -139,7 +139,7 @@ async function handleLogout() {
     <nav class="hidden md:flex items-center justify-center gap-10 px-6 py-3 border-t border-brand-dark/[0.08]">
       <NuxtLink
         to="/categories"
-        class="font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
+        class="animated-link font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
         active-class="text-brand-dark"
       >
         Categories
@@ -147,34 +147,34 @@ async function handleLogout() {
       <!-- Best Sellers link — re-enable when the page is ready -->
       <!-- <NuxtLink
         to="/categories"
-        class="font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
+        class="animated-link font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
       >
         Best Sellers
       </NuxtLink> -->
       <NuxtLink
         to="/about"
-        class="font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
+        class="animated-link font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
         active-class="text-brand-dark"
       >
         Our Story
       </NuxtLink>
       <NuxtLink
         to="/faq"
-        class="font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
+        class="animated-link font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
         active-class="text-brand-dark"
       >
         Journal
       </NuxtLink>
       <NuxtLink
         to="/testimonials"
-        class="font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
+        class="animated-link font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
         active-class="text-brand-dark"
       >
         {{ $t('nav.testimonials') }}
       </NuxtLink>
       <NuxtLink
         to="/contact"
-        class="font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
+        class="animated-link font-body text-[11px] tracking-[0.18em] uppercase text-brand-dark/60 hover:text-brand-dark transition-colors"
         active-class="text-brand-dark"
       >
         Contact

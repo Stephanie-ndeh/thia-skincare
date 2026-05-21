@@ -114,8 +114,8 @@ function isOpen(key: string) {
             >
               <span class="font-body text-sm font-medium text-brand-dark">{{ item.q }}</span>
               <span
-                class="shrink-0 text-text-muted transition-transform duration-200"
-                :class="isOpen(`${catIdx}-${itemIdx}`) ? 'rotate-45' : ''"
+                class="shrink-0 text-text-muted accordion-icon"
+                :class="{ open: isOpen(`${catIdx}-${itemIdx}`) }"
                 aria-hidden="true"
               >
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,10 +124,10 @@ function isOpen(key: string) {
               </span>
             </button>
             <div
-              v-show="isOpen(`${catIdx}-${itemIdx}`)"
-              class="px-6 pb-5"
+              class="accordion-content px-6"
+              :class="{ open: isOpen(`${catIdx}-${itemIdx}`) }"
             >
-              <p class="font-body text-sm text-text-muted leading-relaxed">{{ item.a }}</p>
+              <p class="font-body text-sm text-text-muted leading-relaxed pb-5">{{ item.a }}</p>
             </div>
           </div>
         </div>

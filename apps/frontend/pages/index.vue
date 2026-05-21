@@ -38,7 +38,6 @@ interface RawProduct {
   product_images: RawProductImage[]
 }
 
-
 interface HeroSettings {
   image_url: string
   cta_link: string
@@ -175,6 +174,70 @@ useSeoMeta({
 useHead({
   link: [{ rel: 'canonical', href: () => siteUrl.value }],
 })
+
+// ── Animation 7 — Hero entrance ──────────────────────────────────────────────
+
+const mounted = ref(false)
+onMounted(() => {
+  requestAnimationFrame(() => {
+    mounted.value = true
+  })
+})
+
+// ── Animation 1 — FadeUp (section reveals) ───────────────────────────────────
+
+const { el: catsSectionEl, visible: catsSectionVisible } = useFadeUp()
+const { el: bsSectionEl, visible: bsSectionVisible } = useFadeUp()
+const { el: brandStorySectionEl, visible: brandStorySectionVisible } = useFadeUp()
+const { el: ingredientSectionEl, visible: ingredientSectionVisible } = useFadeUp()
+const { el: whyThiaSectionEl, visible: whyThiaSectionVisible } = useFadeUp()
+const { el: testimonialsSectionEl, visible: testimonialsSectionVisible } = useFadeUp()
+const { el: paymentSectionEl, visible: paymentSectionVisible } = useFadeUp()
+
+// ── Animation 2 — Stagger (grid children) ────────────────────────────────────
+
+const { containerEl: catsStaggerEl, visible: catsStaggerVisible } = useStagger()
+const { containerEl: bsStaggerEl, visible: bsStaggerVisible } = useStagger()
+const { containerEl: whyStaggerEl, visible: whyStaggerVisible } = useStagger()
+
+// ── Animation 6 — CountUp (stats) ────────────────────────────────────────────
+
+const { el: stat9El, current: stat9Count } = useCountUp(9)
+const { el: stat100El, current: stat100Count } = useCountUp(100)
+
+// ── Animation 11 — Rotating ingredient card ──────────────────────────────────
+
+interface Ingredient {
+  name: string
+  number: string
+  region: string
+}
+
+const ingredients: Ingredient[] = [
+  { name: 'Shea', number: 'n°01', region: 'Adamawa Region' },
+  { name: 'Marula', number: 'n°02', region: 'North-West Region' },
+  { name: 'Baobab', number: 'n°03', region: 'Far-North Region' },
+  { name: 'Hibiscus', number: 'n°04', region: 'West Region' },
+]
+
+const ingredientIndex = ref(0)
+let ingredientInterval: ReturnType<typeof setInterval>
+
+function selectIngredient(i: number) {
+  ingredientIndex.value = i
+  clearInterval(ingredientInterval)
+  ingredientInterval = setInterval(() => {
+    ingredientIndex.value = (ingredientIndex.value + 1) % ingredients.length
+  }, 4500)
+}
+
+onMounted(() => {
+  ingredientInterval = setInterval(() => {
+    ingredientIndex.value = (ingredientIndex.value + 1) % ingredients.length
+  }, 4500)
+})
+
+onUnmounted(() => clearInterval(ingredientInterval))
 </script>
 
 <template>
@@ -184,18 +247,42 @@ useHead({
     <section class="grid md:grid-cols-2" style="min-height: min(88vh, 720px)">
       <!-- Left: editorial content -->
       <div class="bg-cream flex flex-col justify-center px-8 sm:px-12 md:px-16 lg:px-24 py-20 md:py-0">
-        <p class="font-body text-[10px] tracking-[0.28em] uppercase text-text-muted mb-8">
+        <p
+          class="hero-text font-body text-[10px] tracking-[0.28em] uppercase text-text-muted mb-8"
+          :class="{ mounted }"
+          :style="{ '--delay': '0ms' }"
+        >
           — {{ $t('home.strip_1').toUpperCase() }} —
         </p>
         <h1 class="font-heading text-[3.25rem] sm:text-6xl lg:text-[4.5rem] font-semibold text-brand-dark leading-[1.05] mb-6">
-          Your skin<br>
-          <em>deserves</em><br>
-          an expert.
+          <span
+            class="hero-text block"
+            :class="{ mounted }"
+            :style="{ '--delay': '120ms' }"
+          >Your skin</span>
+          <span
+            class="hero-text block"
+            :class="{ mounted }"
+            :style="{ '--delay': '200ms' }"
+          ><em>deserves</em></span>
+          <span
+            class="hero-text block"
+            :class="{ mounted }"
+            :style="{ '--delay': '280ms' }"
+          >an expert.</span>
         </h1>
-        <p class="font-body text-sm text-text-muted leading-relaxed mb-10 max-w-xs">
+        <p
+          class="hero-text font-body text-sm text-text-muted leading-relaxed mb-10 max-w-xs"
+          :class="{ mounted }"
+          :style="{ '--delay': '240ms' }"
+        >
           {{ $t('home.tagline') }}
         </p>
-        <div class="flex flex-wrap items-center gap-5">
+        <div
+          class="hero-text flex flex-wrap items-center gap-5"
+          :class="{ mounted }"
+          :style="{ '--delay': '360ms' }"
+        >
           <NuxtLink
             :to="heroSettings.cta_link"
             class="inline-flex items-center justify-center bg-brand-dark text-cream font-body text-xs tracking-[0.18em] uppercase px-8 py-4 hover:bg-espresso transition-colors duration-200"
@@ -204,7 +291,7 @@ useHead({
           </NuxtLink>
           <NuxtLink
             to="/about"
-            class="font-body text-sm text-brand-dark hover:text-terracotta transition-colors underline underline-offset-4"
+            class="animated-link font-body text-sm text-brand-dark hover:text-terracotta transition-colors"
           >
             Meet our expert →
           </NuxtLink>
@@ -212,7 +299,10 @@ useHead({
       </div>
 
       <!-- Right: product image -->
-      <div class="relative bg-sand overflow-hidden min-h-[55vw] sm:min-h-[45vw] md:min-h-0">
+      <div
+        class="hero-image relative bg-sand min-h-[55vw] sm:min-h-[45vw] md:min-h-0"
+        :class="{ mounted }"
+      >
         <NuxtImg
           v-if="heroSettings.image_url"
           :src="heroSettings.image_url"
@@ -231,7 +321,12 @@ useHead({
     <AnnouncementStrip />
 
     <!-- ── 3. Categories — Shop by ritual ────────────────────────────────── -->
-    <section v-if="categories.length > 0" class="py-16 sm:py-20 px-4 sm:px-8 bg-cream">
+    <section
+      v-if="categories.length > 0"
+      ref="catsSectionEl"
+      class="fade-up py-16 sm:py-20 px-4 sm:px-8 bg-cream"
+      :class="{ visible: catsSectionVisible }"
+    >
       <div class="max-w-7xl mx-auto">
         <div class="flex items-start justify-between mb-10 sm:mb-14">
           <div>
@@ -245,22 +340,23 @@ useHead({
           </div>
           <NuxtLink
             to="/categories"
-            class="hidden sm:flex items-center gap-1 font-body text-sm text-brand-dark hover:text-terracotta transition-colors mt-3 shrink-0"
+            class="animated-link hidden sm:flex items-center gap-1 font-body text-sm text-brand-dark hover:text-terracotta transition-colors mt-3 shrink-0"
           >
             Shop the collection <span class="ml-1">→</span>
           </NuxtLink>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div ref="catsStaggerEl" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           <NuxtLink
             v-for="(category, idx) in categories.slice(0, 4)"
             :key="category.id"
             :to="`/categories/${category.slug}`"
-            class="group"
+            class="group stagger-item hover-lift"
+            :class="{ visible: catsStaggerVisible }"
           >
-            <!-- Portrait card -->
+            <!-- Portrait card with zoom -->
             <div
-              class="aspect-[3/4] relative overflow-hidden mb-4"
+              class="aspect-[3/4] relative zoom-image-host mb-4"
               :class="categoryBgClass(idx)"
             >
               <div class="texture-diagonal absolute inset-0" />
@@ -268,12 +364,11 @@ useHead({
                 v-if="category.image_url"
                 :src="category.image_url"
                 :alt="category.name"
-                class="absolute inset-0 w-full h-full object-cover"
+                class="zoom-image absolute inset-0 w-full h-full object-cover"
                 loading="lazy"
                 width="300"
                 height="400"
               />
-              <!-- Name label centered -->
               <div class="absolute inset-0 flex items-center justify-center">
                 <span class="font-body text-[10px] tracking-[0.35em] uppercase text-brand-dark/50">
                   {{ category.name }}
@@ -294,7 +389,7 @@ useHead({
         <div class="sm:hidden mt-8 text-center">
           <NuxtLink
             to="/categories"
-            class="font-body text-sm text-brand-dark underline underline-offset-4 hover:text-terracotta transition-colors"
+            class="animated-link font-body text-sm text-brand-dark underline underline-offset-4 hover:text-terracotta transition-colors"
           >
             Shop the collection →
           </NuxtLink>
@@ -303,7 +398,12 @@ useHead({
     </section>
 
     <!-- ── 4. Best sellers — Loved across the regions ─────────────────────── -->
-    <section v-if="featuredProducts.length > 0" class="py-16 sm:py-20 px-4 sm:px-8 bg-cream border-t border-brand-dark/[0.07]">
+    <section
+      v-if="featuredProducts.length > 0"
+      ref="bsSectionEl"
+      class="fade-up py-16 sm:py-20 px-4 sm:px-8 bg-cream border-t border-brand-dark/[0.07]"
+      :class="{ visible: bsSectionVisible }"
+    >
       <div class="max-w-7xl mx-auto">
         <div class="mb-10 sm:mb-14">
           <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-3 flex items-center gap-2">
@@ -315,20 +415,21 @@ useHead({
           </h2>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+        <div ref="bsStaggerEl" class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           <div
             v-for="(product, idx) in featuredProducts.slice(0, 4)"
             :key="product.id"
-            class="group"
+            class="group stagger-item hover-lift"
+            :class="{ visible: bsStaggerVisible }"
           >
-            <!-- Image area (linked) -->
-            <NuxtLink :to="`/products/${product.slug}`" class="block relative aspect-square overflow-hidden bg-sand mb-3">
+            <!-- Image area with zoom (linked) -->
+            <NuxtLink :to="`/products/${product.slug}`" class="block relative aspect-square zoom-image-host bg-sand mb-3">
               <div class="texture-diagonal absolute inset-0" />
               <NuxtImg
                 v-if="product.primaryImageUrl"
                 :src="product.primaryImageUrl"
                 :alt="product.name"
-                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                class="zoom-image absolute inset-0 w-full h-full object-cover"
                 loading="lazy"
                 width="400"
                 height="400"
@@ -372,7 +473,7 @@ useHead({
               <p class="font-body text-xs text-text-muted">{{ product.categoryName }}</p>
             </NuxtLink>
 
-            <!-- Add to cart (navigates to PDP for variant selection) -->
+            <!-- Add to cart -->
             <NuxtLink
               :to="`/products/${product.slug}`"
               class="block border border-brand-dark/25 text-brand-dark font-body text-[10px] tracking-[0.18em] uppercase py-2.5 text-center hover:bg-brand-dark hover:text-white hover:border-brand-dark transition-colors duration-200"
@@ -385,7 +486,11 @@ useHead({
     </section>
 
     <!-- ── 5. Brand story ─────────────────────────────────────────────────── -->
-    <section class="py-20 sm:py-24 px-4 sm:px-8 bg-espresso">
+    <section
+      ref="brandStorySectionEl"
+      class="fade-up py-20 sm:py-24 px-4 sm:px-8 bg-espresso"
+      :class="{ visible: brandStorySectionVisible }"
+    >
       <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 md:gap-20 items-end">
         <div>
           <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-6 flex items-center gap-2">
@@ -398,23 +503,39 @@ useHead({
           <p class="font-body text-sm text-white/60 leading-relaxed mb-12 max-w-md">
             {{ $t('about.brand_p1') }}
           </p>
+          <!-- Stats with CountUp -->
           <div class="grid grid-cols-3 gap-6 mb-12">
+            <!-- 2023 — fades with section, no countup -->
             <div>
-              <p class="font-heading text-4xl sm:text-5xl font-semibold text-white">{{ $t('about.stats_cooperatives_num') }}</p>
-              <p class="font-body text-[11px] text-white/45 mt-1.5 leading-tight">{{ $t('about.stats_cooperatives_label') }}</p>
+              <p class="font-heading text-4xl sm:text-5xl font-semibold text-white">
+                {{ $t('about.stats_cooperatives_num') }}
+              </p>
+              <p class="font-body text-[11px] text-white/45 mt-1.5 leading-tight">
+                {{ $t('about.stats_cooperatives_label') }}
+              </p>
             </div>
+            <!-- 100% — count up -->
             <div>
-              <p class="font-heading text-4xl sm:text-5xl font-semibold text-white">{{ $t('about.stats_ingredients_num') }}</p>
-              <p class="font-body text-[11px] text-white/45 mt-1.5 leading-tight">{{ $t('about.stats_ingredients_label') }}</p>
+              <p class="font-heading text-4xl sm:text-5xl font-semibold text-white">
+                <span ref="stat100El">{{ stat100Count }}</span>%
+              </p>
+              <p class="font-body text-[11px] text-white/45 mt-1.5 leading-tight">
+                {{ $t('about.stats_ingredients_label') }}
+              </p>
             </div>
+            <!-- 9 — count up -->
             <div>
-              <p class="font-heading text-4xl sm:text-5xl font-semibold text-white">{{ $t('about.stats_founded_num') }}</p>
-              <p class="font-body text-[11px] text-white/45 mt-1.5 leading-tight">{{ $t('about.stats_founded_label') }}</p>
+              <p class="font-heading text-4xl sm:text-5xl font-semibold text-white">
+                <span ref="stat9El">{{ stat9Count }}</span>
+              </p>
+              <p class="font-body text-[11px] text-white/45 mt-1.5 leading-tight">
+                {{ $t('about.stats_founded_label') }}
+              </p>
             </div>
           </div>
           <NuxtLink
             to="/about"
-            class="font-body text-sm text-white/70 hover:text-white transition-colors underline underline-offset-4"
+            class="animated-link font-body text-sm text-white/70 hover:text-white transition-colors"
           >
             Meet our expert →
           </NuxtLink>
@@ -431,8 +552,75 @@ useHead({
       </div>
     </section>
 
-    <!-- ── 6. Why Thia — 3 cards ──────────────────────────────────────────── -->
-    <section class="py-16 sm:py-24 px-4 sm:px-8 bg-cream border-t border-brand-dark/[0.07]">
+    <!-- ── 6. Ingredient feature ──────────────────────────────────────────── -->
+    <section
+      ref="ingredientSectionEl"
+      class="fade-up py-16 sm:py-24 px-4 sm:px-8 bg-cream border-t border-brand-dark/[0.07]"
+      :class="{ visible: ingredientSectionVisible }"
+    >
+      <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+        <!-- Left: photo placeholder — keyed so it remounts on change -->
+        <div
+          :key="ingredientIndex"
+          class="relative aspect-square bg-sand overflow-hidden flex items-center justify-center"
+          style="animation: thia-fade-swap 0.5s ease-out;"
+        >
+          <div class="texture-diagonal absolute inset-0" />
+          <span class="absolute top-4 left-4 font-body text-[10px] text-brand-dark/40 tracking-wider z-10">
+            {{ ingredients[ingredientIndex].number }}
+          </span>
+          <span
+            class="font-heading font-semibold text-brand-dark/[0.07] leading-none pointer-events-none select-none"
+            style="font-size: clamp(8rem, 18vw, 14rem);"
+          >
+            {{ ingredients[ingredientIndex].name.charAt(0) }}
+          </span>
+        </div>
+
+        <!-- Right: ingredient info -->
+        <div>
+          <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-5 flex items-center gap-2">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
+            Key Ingredient
+          </p>
+          <h2
+            :key="ingredientIndex"
+            class="font-heading text-5xl sm:text-6xl font-semibold text-brand-dark mb-3"
+            style="animation: thia-fade-swap 0.5s ease-out;"
+          >
+            {{ ingredients[ingredientIndex].name }}
+          </h2>
+          <p class="font-body text-xs uppercase tracking-[0.2em] text-terracotta mb-3">
+            {{ ingredients[ingredientIndex].region }}
+          </p>
+          <p class="font-body text-sm text-text-muted leading-relaxed mb-10 max-w-sm">
+            Sourced from Cameroon's rich natural regions, expertly formulated for African skin.
+          </p>
+          <!-- Indicator pills -->
+          <div class="flex flex-wrap gap-2">
+            <button
+              v-for="(ing, i) in ingredients"
+              :key="ing.number"
+              type="button"
+              class="font-body text-[10px] tracking-wider uppercase px-3 py-1.5 transition-colors duration-200"
+              :class="ingredientIndex === i
+                ? 'bg-brand-dark text-cream'
+                : 'border border-brand-dark/20 text-brand-dark hover:border-brand-dark/50'"
+              @click="selectIngredient(i)"
+            >
+              {{ ing.number }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 7. Why Thia — 3 cards ──────────────────────────────────────────── -->
+    <section
+      ref="whyThiaSectionEl"
+      class="fade-up py-16 sm:py-24 px-4 sm:px-8 bg-cream border-t border-brand-dark/[0.07]"
+      :class="{ visible: whyThiaSectionVisible }"
+    >
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-14 sm:mb-20">
           <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-4 flex items-center justify-center gap-2">
@@ -444,8 +632,11 @@ useHead({
           </h2>
         </div>
 
-        <div class="grid sm:grid-cols-3 gap-8 sm:gap-12">
-          <div class="text-center">
+        <div ref="whyStaggerEl" class="grid sm:grid-cols-3 gap-8 sm:gap-12">
+          <div
+            class="stagger-item hover-lift-sm text-center"
+            :class="{ visible: whyStaggerVisible }"
+          >
             <div class="w-12 h-12 mx-auto mb-6 flex items-center justify-center border border-brand-dark/15">
               <span class="font-body text-lg">✦</span>
             </div>
@@ -456,7 +647,10 @@ useHead({
               {{ $t('home.card_1_body') }}
             </p>
           </div>
-          <div class="text-center">
+          <div
+            class="stagger-item hover-lift-sm text-center"
+            :class="{ visible: whyStaggerVisible }"
+          >
             <div class="w-12 h-12 mx-auto mb-6 flex items-center justify-center border border-brand-dark/15">
               <span class="font-body text-lg">◈</span>
             </div>
@@ -467,7 +661,10 @@ useHead({
               {{ $t('home.card_2_body') }}
             </p>
           </div>
-          <div class="text-center">
+          <div
+            class="stagger-item hover-lift-sm text-center"
+            :class="{ visible: whyStaggerVisible }"
+          >
             <div class="w-12 h-12 mx-auto mb-6 flex items-center justify-center border border-brand-dark/15">
               <span class="font-body text-lg">◉</span>
             </div>
@@ -482,8 +679,13 @@ useHead({
       </div>
     </section>
 
-    <!-- ── 7. Testimonials — What our customers say ───────────────────────── -->
-    <section v-if="testimonials.length > 0" class="py-16 sm:py-20 px-4 sm:px-8 bg-brand-light">
+    <!-- ── 8. Testimonials — What our customers say ───────────────────────── -->
+    <section
+      v-if="testimonials.length > 0"
+      ref="testimonialsSectionEl"
+      class="fade-up py-16 sm:py-20 px-4 sm:px-8 bg-brand-light"
+      :class="{ visible: testimonialsSectionVisible }"
+    >
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-12">
           <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-4 flex items-center justify-center gap-2">
@@ -500,13 +702,18 @@ useHead({
             v-for="testimonial in testimonials.slice(0, 3)"
             :key="testimonial.id"
             :testimonial="testimonial"
+            class="hover-lift-sm"
           />
         </div>
       </div>
     </section>
 
-    <!-- ── 8. Payment ─────────────────────────────────────────────────────── -->
-    <section class="py-16 px-4 sm:px-8 bg-cream">
+    <!-- ── 9. Payment ─────────────────────────────────────────────────────── -->
+    <section
+      ref="paymentSectionEl"
+      class="fade-up py-16 px-4 sm:px-8 bg-cream"
+      :class="{ visible: paymentSectionVisible }"
+    >
       <div class="max-w-4xl mx-auto border border-brand-dark/[0.11] p-8 sm:p-12">
         <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-8">
           <div class="flex-1">
@@ -540,7 +747,7 @@ useHead({
       </div>
     </section>
 
-    <!-- ── 9. Newsletter ──────────────────────────────────────────────────── -->
+    <!-- ── 10. Newsletter ──────────────────────────────────────────────────── -->
     <NewsletterSection />
 
   </div>
