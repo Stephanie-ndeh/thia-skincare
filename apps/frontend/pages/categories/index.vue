@@ -114,6 +114,10 @@ function cardNumberLabel(idx: number): string {
   return `n°${String(idx + 1).padStart(2, '0')}`
 }
 
+// ── Stagger animation ─────────────────────────────────────────────────────────
+
+const { containerEl: catsStaggerEl, visible: catsStaggerVisible } = useStagger()
+
 // ── SEO ──────────────────────────────────────────────────────────────────────
 
 useHead({
@@ -193,17 +197,19 @@ useHead({
     <div class="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-14">
       <div
         v-if="sortedCategories.length > 0"
+        ref="catsStaggerEl"
         class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
       >
         <div
           v-for="(category, idx) in sortedCategories"
           :key="category.id"
-          class="group cursor-pointer"
+          class="group cursor-pointer stagger-item hover-lift"
+          :class="{ visible: catsStaggerVisible }"
           @click="navigateTo(`/categories/${category.slug}`)"
         >
           <!-- Card image area -->
           <div
-            class="aspect-[3/4] relative overflow-hidden mb-3 sm:mb-4"
+            class="zoom-image-host aspect-[3/4] relative overflow-hidden mb-3 sm:mb-4"
             :style="{ backgroundColor: cardColor(idx) }"
           >
             <!-- Diagonal texture overlay -->
@@ -214,7 +220,7 @@ useHead({
               v-if="category.image_url"
               :src="category.image_url"
               :alt="category.name"
-              class="absolute inset-0 w-full h-full object-cover opacity-70"
+              class="zoom-image absolute inset-0 w-full h-full object-cover opacity-70"
               loading="lazy"
               width="400"
               height="533"

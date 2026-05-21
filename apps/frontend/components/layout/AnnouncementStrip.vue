@@ -1,6 +1,29 @@
 <script setup lang="ts">
 const { t } = useI18n()
 
+// ── Rotating announcement bar ─────────────────────────────────────────────
+
+const announcements = [
+  'Free delivery above 15,000 XAF',
+  'Dermatologist curated skincare',
+  'Mobile Money & Orange Money accepted',
+  'Nationwide delivery across Cameroon',
+  'Expert advice on every order',
+]
+
+const currentIndex = ref(0)
+let rotatorInterval: ReturnType<typeof setInterval>
+
+onMounted(() => {
+  rotatorInterval = setInterval(() => {
+    currentIndex.value = (currentIndex.value + 1) % announcements.length
+  }, 3800)
+})
+
+onUnmounted(() => clearInterval(rotatorInterval))
+
+// ── Marquee ticker items ──────────────────────────────────────────────────
+
 const items = computed(() => [
   t('home.strip_1'),
   t('home.strip_2'),
@@ -14,6 +37,18 @@ const doubled = computed(() => [...items.value, ...items.value])
 </script>
 
 <template>
+  <!-- Rotating announcement bar -->
+  <div class="bg-espresso py-2.5 text-center overflow-hidden">
+    <span
+      :key="currentIndex"
+      class="font-body text-[11px] tracking-[0.2em] uppercase text-cream/80"
+      style="animation: thia-fade-swap 0.5s ease-out;"
+    >
+      {{ announcements[currentIndex] }}
+    </span>
+  </div>
+
+  <!-- Marquee ticker strip -->
   <div class="overflow-hidden border-b border-brand-dark/10 bg-white py-3.5">
     <div class="animate-marquee flex whitespace-nowrap">
       <div
