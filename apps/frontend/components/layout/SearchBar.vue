@@ -51,7 +51,7 @@ function onEscape() {
         ref="inputRef"
         v-model="query"
         type="search"
-        placeholder="Search products…"
+        :placeholder="$t('nav.search')"
         class="font-body text-sm pl-9 pr-8 py-2 rounded-lg border border-brand-dark/20 bg-white w-52 lg:w-64 focus:outline-none focus:ring-2 focus:ring-brand-dark/20 focus:border-brand-dark/40 transition-colors"
         @keydown.enter="onEnter"
         @keydown.escape="onEscape"
@@ -88,7 +88,7 @@ function onEscape() {
         ref="inputRef"
         v-model="query"
         type="search"
-        placeholder="Search products…"
+        :placeholder="$t('nav.search')"
         class="flex-1 font-body text-sm focus:outline-none bg-transparent"
         @keydown.enter="onEnter"
         @keydown.escape="onEscape"
@@ -123,7 +123,7 @@ function onEscape() {
         />
 
         <div v-if="previewItems.length === 0" class="px-4 py-3 font-body text-sm text-text-muted">
-          No products found for "{{ debouncedQuery }}"
+          {{ $t('nav.search_no_results', { query: debouncedQuery }) }}
         </div>
 
         <NuxtLink
@@ -132,7 +132,7 @@ function onEscape() {
           class="flex items-center justify-between px-4 py-2.5 border-t border-brand-dark/10 font-body text-sm text-brand-dark hover:bg-brand-light transition-colors"
           @click="clear"
         >
-          See all {{ results.length }} results for "{{ debouncedQuery }}"
+          {{ $t('nav.search_see_all', { count: results.length, query: debouncedQuery }) }}
           <span class="text-text-muted">→</span>
         </NuxtLink>
       </template>

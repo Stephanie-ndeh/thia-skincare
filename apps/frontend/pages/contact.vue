@@ -341,7 +341,7 @@ function resetForm() {
             {{ $t('contact.card_2_eyebrow') }}
           </p>
           <p class="font-heading font-bold text-brand-dark mb-1" style="font-size: 22px; word-break: break-all;">
-            {{ $t('contact.card_2_value') }}
+            hello@thia.cm
           </p>
           <p class="font-body text-text-muted mb-4" style="font-size: 11px;">
             {{ $t('contact.card_2_subtitle') }}

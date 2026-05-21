@@ -62,7 +62,7 @@ const heroSettings = computed((): HeroSettings => {
   return {
     image_url: val.image_url ?? '',
     cta_link: val.cta_link ?? '/categories',
-    cta_text: val.cta_text ?? 'Shop the collection',
+    cta_text: val.cta_text ?? t('home.hero_cta'),
     headline: val.headline ?? 'The botanicals of home, into your ritual.',
     subheadline: val.subheadline ?? 'Handcrafted with African botanicals for radiant, healthy skin.',
   }
@@ -145,10 +145,15 @@ function categoryBgClass(idx: number): string {
 
 // ── Product badge labels ──────────────────────────────────────────────────────
 
-const badgeLabels = ['BESTSELLER', 'EXPERT PICK', 'NEW', 'LIMITED']
+const badgeLabels = computed(() => [
+  t('home.badge_bestseller'),
+  t('home.badge_expert_pick'),
+  t('home.badge_new'),
+  t('home.badge_limited'),
+])
 
 function productBadge(idx: number): string {
-  return badgeLabels[idx % badgeLabels.length] ?? 'BESTSELLER'
+  return badgeLabels.value[idx % badgeLabels.value.length] ?? t('home.badge_bestseller')
 }
 
 // ── SEO ──────────────────────────────────────────────────────────────────────
@@ -213,12 +218,12 @@ interface Ingredient {
   region: string
 }
 
-const ingredients: Ingredient[] = [
-  { name: 'Shea', number: 'n°01', region: 'Adamawa Region' },
-  { name: 'Marula', number: 'n°02', region: 'North-West Region' },
-  { name: 'Baobab', number: 'n°03', region: 'Far-North Region' },
-  { name: 'Hibiscus', number: 'n°04', region: 'West Region' },
-]
+const ingredients = computed((): Ingredient[] => [
+  { name: 'Shea', number: 'n°01', region: t('home.ingredient_region_1') },
+  { name: 'Marula', number: 'n°02', region: t('home.ingredient_region_2') },
+  { name: 'Baobab', number: 'n°03', region: t('home.ingredient_region_3') },
+  { name: 'Hibiscus', number: 'n°04', region: t('home.ingredient_region_4') },
+])
 
 const ingredientIndex = ref(0)
 let ingredientInterval: ReturnType<typeof setInterval>
@@ -227,13 +232,13 @@ function selectIngredient(i: number) {
   ingredientIndex.value = i
   clearInterval(ingredientInterval)
   ingredientInterval = setInterval(() => {
-    ingredientIndex.value = (ingredientIndex.value + 1) % ingredients.length
+    ingredientIndex.value = (ingredientIndex.value + 1) % ingredients.value.length
   }, 4500)
 }
 
 onMounted(() => {
   ingredientInterval = setInterval(() => {
-    ingredientIndex.value = (ingredientIndex.value + 1) % ingredients.length
+    ingredientIndex.value = (ingredientIndex.value + 1) % ingredients.value.length
   }, 4500)
 })
 
@@ -259,17 +264,17 @@ onUnmounted(() => clearInterval(ingredientInterval))
             class="hero-text block"
             :class="{ mounted }"
             :style="{ '--delay': '120ms' }"
-          >Your skin</span>
+          >{{ $t('home.hero_l1') }}</span>
           <span
             class="hero-text block"
             :class="{ mounted }"
             :style="{ '--delay': '200ms' }"
-          ><em>deserves</em></span>
+          ><em>{{ $t('home.hero_l2') }}</em></span>
           <span
             class="hero-text block"
             :class="{ mounted }"
             :style="{ '--delay': '280ms' }"
-          >an expert.</span>
+          >{{ $t('home.hero_l3') }}</span>
         </h1>
         <p
           class="hero-text font-body text-sm text-text-muted leading-relaxed mb-10 max-w-xs"
@@ -293,7 +298,7 @@ onUnmounted(() => clearInterval(ingredientInterval))
             to="/about"
             class="animated-link font-body text-sm text-brand-dark hover:text-terracotta transition-colors"
           >
-            Meet our expert →
+            {{ $t('home.meet_expert') }}
           </NuxtLink>
         </div>
       </div>
@@ -332,17 +337,17 @@ onUnmounted(() => clearInterval(ingredientInterval))
           <div>
             <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-3 flex items-center gap-2">
               <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
-              The Everyday
+              {{ $t('home.cats_eyebrow') }}
             </p>
             <h2 class="font-heading text-4xl sm:text-5xl font-semibold text-brand-dark">
-              Shop by ritual
+              {{ $t('home.cats_title') }}
             </h2>
           </div>
           <NuxtLink
             to="/categories"
             class="animated-link hidden sm:flex items-center gap-1 font-body text-sm text-brand-dark hover:text-terracotta transition-colors mt-3 shrink-0"
           >
-            Shop the collection <span class="ml-1">→</span>
+            {{ $t('home.cats_view_all') }} <span class="ml-1">→</span>
           </NuxtLink>
         </div>
 
@@ -380,8 +385,8 @@ onUnmounted(() => clearInterval(ingredientInterval))
             </h3>
             <p class="font-body text-xs text-text-muted">
               {{ getProductCount(category) > 0
-                ? `${getProductCount(category)} products`
-                : 'Coming soon' }}
+                ? `${getProductCount(category)} ${$t('common.products')}`
+                : $t('common.coming_soon') }}
             </p>
           </NuxtLink>
         </div>
@@ -391,7 +396,7 @@ onUnmounted(() => clearInterval(ingredientInterval))
             to="/categories"
             class="animated-link font-body text-sm text-brand-dark underline underline-offset-4 hover:text-terracotta transition-colors"
           >
-            Shop the collection →
+            {{ $t('home.cats_view_all') }} →
           </NuxtLink>
         </div>
       </div>
@@ -408,10 +413,10 @@ onUnmounted(() => clearInterval(ingredientInterval))
         <div class="mb-10 sm:mb-14">
           <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-3 flex items-center gap-2">
             <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
-            Best Sellers
+            {{ $t('home.best_sellers') }}
           </p>
           <h2 class="font-heading text-4xl sm:text-5xl font-semibold text-brand-dark">
-            Loved across the regions
+            {{ $t('home.bs_title') }}
           </h2>
         </div>
 
@@ -478,7 +483,7 @@ onUnmounted(() => clearInterval(ingredientInterval))
               :to="`/products/${product.slug}`"
               class="block border border-brand-dark/25 text-brand-dark font-body text-[10px] tracking-[0.18em] uppercase py-2.5 text-center hover:bg-brand-dark hover:text-white hover:border-brand-dark transition-colors duration-200"
             >
-              + Add to cart
+              + {{ $t('product.add_to_cart') }}
             </NuxtLink>
           </div>
         </div>
@@ -537,7 +542,7 @@ onUnmounted(() => clearInterval(ingredientInterval))
             to="/about"
             class="animated-link font-body text-sm text-white/70 hover:text-white transition-colors"
           >
-            Meet our expert →
+            {{ $t('home.meet_expert') }}
           </NuxtLink>
         </div>
 
@@ -581,7 +586,7 @@ onUnmounted(() => clearInterval(ingredientInterval))
         <div>
           <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-5 flex items-center gap-2">
             <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
-            Key Ingredient
+            {{ $t('home.ingredient_eyebrow') }}
           </p>
           <h2
             :key="ingredientIndex"
@@ -594,7 +599,7 @@ onUnmounted(() => clearInterval(ingredientInterval))
             {{ ingredients[ingredientIndex].region }}
           </p>
           <p class="font-body text-sm text-text-muted leading-relaxed mb-10 max-w-sm">
-            Sourced from Cameroon's rich natural regions, expertly formulated for African skin.
+            {{ $t('home.ingredient_body') }}
           </p>
           <!-- Indicator pills -->
           <div class="flex flex-wrap gap-2">
@@ -719,14 +724,13 @@ onUnmounted(() => clearInterval(ingredientInterval))
           <div class="flex-1">
             <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-4 flex items-center gap-2">
               <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
-              Pay Your Way
+              {{ $t('home.payment_eyebrow') }}
             </p>
             <h2 class="font-heading text-2xl sm:text-3xl font-semibold text-brand-dark mb-3 leading-tight">
-              Mobile Money & Orange Money accepted
+              {{ $t('home.mobile_money') }}
             </h2>
             <p class="font-body text-sm text-text-muted leading-relaxed max-w-sm">
-              Confirm in seconds from your phone. No card needed.
-              Cash on delivery available in Douala and Yaoundé.
+              {{ $t('home.payment_body') }}
             </p>
           </div>
           <div class="flex flex-col gap-2 shrink-0">

@@ -3,20 +3,20 @@ const { t } = useI18n()
 
 // ── Rotating announcement bar ─────────────────────────────────────────────
 
-const announcements = [
-  'Free delivery above 15,000 XAF',
-  'Dermatologist curated skincare',
-  'Mobile Money & Orange Money accepted',
-  'Nationwide delivery across Cameroon',
-  'Expert advice on every order',
-]
+const announcements = computed(() => [
+  t('home.free_delivery'),
+  t('home.announcement_curated'),
+  t('home.mobile_money'),
+  t('home.nationwide'),
+  t('home.announcement_expert'),
+])
 
 const currentIndex = ref(0)
 let rotatorInterval: ReturnType<typeof setInterval>
 
 onMounted(() => {
   rotatorInterval = setInterval(() => {
-    currentIndex.value = (currentIndex.value + 1) % announcements.length
+    currentIndex.value = (currentIndex.value + 1) % announcements.value.length
   }, 3800)
 })
 
