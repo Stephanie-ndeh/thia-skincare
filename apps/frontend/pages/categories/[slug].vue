@@ -215,37 +215,50 @@ useHead({
 </script>
 
 <template>
-  <div class="min-h-screen bg-brand-light">
-    <!-- Category hero -->
-    <div
-      class="relative bg-brand-dark overflow-hidden"
-      :class="category.image_url ? 'min-h-[240px] sm:min-h-[300px]' : 'py-12 sm:py-16'"
-    >
-      <NuxtImg
-        v-if="category.image_url"
-        :src="category.image_url"
-        :alt="category.name"
-        class="absolute inset-0 w-full h-full object-cover opacity-30"
-        loading="eager"
-        fetchpriority="high"
-        width="1440"
-        height="300"
-      />
-      <div v-if="category.image_url" class="absolute inset-0 bg-brand-dark/60" />
+  <div class="min-h-screen bg-cream">
+    <!-- Category header -->
+    <div class="bg-cream border-b border-brand-dark/[0.08]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8">
 
-      <div class="relative z-10 max-w-7xl mx-auto px-4 py-12 sm:py-16">
-        <div class="mb-4">
-          <Breadcrumb
-            :items="breadcrumb"
-            class="[&_a]:text-white/70 [&_a:hover]:text-white [&_span]:text-white [&_svg]:text-white/50"
-          />
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 font-body text-[10px] uppercase tracking-[0.2em] text-text-muted py-4 border-b border-brand-dark/[0.07]">
+          <NuxtLink to="/" class="hover:text-brand-dark transition-colors">Home</NuxtLink>
+          <span class="text-text-muted/50">/</span>
+          <NuxtLink to="/categories" class="hover:text-brand-dark transition-colors">Categories</NuxtLink>
+          <span class="text-text-muted/50">/</span>
+          <span class="text-brand-dark">{{ category.name }}</span>
+        </nav>
+
+        <!-- Editorial header -->
+        <div class="pt-10 pb-10 sm:pb-14">
+          <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-4 flex items-center gap-2">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
+            {{ category.name }}
+          </p>
+          <h1 class="font-heading text-5xl sm:text-6xl font-semibold text-brand-dark leading-tight mb-4">
+            {{ category.name }}
+          </h1>
+          <p v-if="category.description" class="font-body text-sm text-text-muted leading-relaxed max-w-lg mb-8">
+            {{ category.description }}
+          </p>
+          <!-- Stats row -->
+          <div class="flex items-center gap-6 sm:gap-10">
+            <div>
+              <p class="font-heading text-2xl font-semibold text-brand-dark">{{ totalCount }}</p>
+              <p class="font-body text-[11px] text-text-muted mt-0.5">products</p>
+            </div>
+            <div class="w-px h-8 bg-brand-dark/10" />
+            <div>
+              <p class="font-heading text-2xl font-semibold text-brand-dark">100%</p>
+              <p class="font-body text-[11px] text-text-muted mt-0.5">natural formula</p>
+            </div>
+            <div class="w-px h-8 bg-brand-dark/10" />
+            <div>
+              <p class="font-body text-sm font-medium text-brand-dark">Cameroon</p>
+              <p class="font-body text-[11px] text-text-muted mt-0.5">origin</p>
+            </div>
+          </div>
         </div>
-        <h1 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-semibold text-white mb-3">
-          {{ category.name }}
-        </h1>
-        <p v-if="category.description" class="font-body text-sm sm:text-base text-white/75 max-w-xl">
-          {{ category.description }}
-        </p>
       </div>
     </div>
 

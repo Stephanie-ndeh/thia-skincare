@@ -6,6 +6,7 @@ definePageMeta({ layout: 'default' })
 
 const supabase = useSupabaseClient()
 const route = useRoute()
+const { t } = useI18n()
 const slug = route.params.slug as string
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -41,6 +42,7 @@ interface RawProduct {
   ingredients: string | null
   usage_instructions: string | null
   category_id: string
+  is_featured: boolean
   categories: RawCategory | null
   product_variants: RawVariant[]
   product_images: RawImage[]
@@ -60,7 +62,7 @@ interface RelatedProduct {
 const { data: product } = await useAsyncData<RawProduct | null>(`product-${slug}`, async () => {
   const { data } = await supabase
     .from('products')
-    .select('id,name,slug,description,ingredients,usage_instructions,category_id,categories(id,name,slug),product_variants(id,sku,size_label,scent_label,price,stock_quantity,display_order),product_images(id,url,is_primary,display_order)')
+    .select('id,name,slug,description,ingredients,usage_instructions,category_id,is_featured,categories(id,name,slug),product_variants(id,sku,size_label,scent_label,price,stock_quantity,display_order),product_images(id,url,is_primary,display_order)')
     .eq('slug', slug)
     .eq('is_published', true)
     .single()
@@ -89,11 +91,91 @@ const selectedVariant = computed(() =>
   sortedVariants.value.find(v => v.id === selectedVariantId.value) ?? sortedVariants.value[0] ?? null
 )
 
+// Unique size variants (one per unique size_label)
+const sizeVariants = computed(() => {
+  const seen = new Set<string>()
+  return sortedVariants.value.filter(v => {
+    if (v.size_label && !seen.has(v.size_label)) {
+      seen.add(v.size_label)
+      return true
+    }
+    return false
+  })
+})
+
+// Unique scent variants (one per unique scent_label)
+const scentVariants = computed(() => {
+  const seen = new Set<string>()
+  return sortedVariants.value.filter(v => {
+    if (v.scent_label && !seen.has(v.scent_label)) {
+      seen.add(v.scent_label)
+      return true
+    }
+    return false
+  })
+})
+
+function selectBySize(size: string) {
+  const current = selectedVariant.value
+  const match =
+    sortedVariants.value.find(v =>
+      v.size_label === size && (current?.scent_label === null || v.scent_label === current?.scent_label)
+    ) ?? sortedVariants.value.find(v => v.size_label === size)
+  if (match) selectedVariantId.value = match.id
+}
+
+function selectByScent(scent: string) {
+  const current = selectedVariant.value
+  const match =
+    sortedVariants.value.find(v =>
+      v.scent_label === scent && (current?.size_label === null || v.size_label === current?.size_label)
+    ) ?? sortedVariants.value.find(v => v.scent_label === scent)
+  if (match) selectedVariantId.value = match.id
+}
+
+function variantLabel(v: RawVariant): string {
+  if (v.size_label === '15ml') return t('product.travel')
+  if (v.size_label === '30ml') return t('product.daily')
+  if (v.size_label === '50ml') return t('product.refill')
+  return ''
+}
+
 // ── Quantity ──────────────────────────────────────────────────────────────────
 
 const quantity = ref(1)
 
 watch(selectedVariant, () => { quantity.value = 1 })
+
+function decreaseQty() {
+  if (quantity.value > 1) quantity.value--
+}
+
+function increaseQty() {
+  const max = selectedVariant.value?.stock_quantity ?? 1
+  if (quantity.value < max) quantity.value++
+}
+
+// ── Derived product state ─────────────────────────────────────────────────────
+
+const inStock = computed(() => (selectedVariant.value?.stock_quantity ?? 0) > 0)
+
+const lineTotal = computed(() => (selectedVariant.value?.price ?? 0) * quantity.value)
+
+const pricePerMl = computed((): number | null => {
+  const v = selectedVariant.value
+  if (!v?.size_label) return null
+  const num = parseFloat(v.size_label.replace(/[^0-9.]/g, ''))
+  if (!num || isNaN(num)) return null
+  return Math.round(v.price / num)
+})
+
+const productTagline = computed((): string => {
+  if (!product.value?.description) return ''
+  const first = product.value.description.split('.')[0] ?? ''
+  return first.length > 70 ? first.substring(0, 70) + '...' : first
+})
+
+const isFeatured = computed(() => product.value?.is_featured ?? false)
 
 // ── Add to cart ───────────────────────────────────────────────────────────────
 
@@ -102,7 +184,6 @@ const uiStore = useUiStore()
 const authStore = useAuthStore()
 const wishlistStore = useWishlistStore()
 
-const reviewListRef = useTemplateRef<{ refresh: () => Promise<void> }>('reviewList')
 const isAddingToCart = ref(false)
 
 async function addToCart() {
@@ -171,15 +252,29 @@ const relatedProducts = computed((): RelatedProduct[] => {
   })
 })
 
-// ── Breadcrumb ────────────────────────────────────────────────────────────────
+// ── Review summary ────────────────────────────────────────────────────────────
 
-const breadcrumb = computed(() => [
-  { label: 'Home', href: '/' },
-  ...(product.value?.categories
-    ? [{ label: product.value.categories.name, href: `/categories/${product.value.categories.slug}` }]
-    : []),
-  { label: product.value!.name },
-])
+interface ReviewRating {
+  rating: number
+}
+
+const { data: reviewSummary } = await useAsyncData(`review-summary-${slug}`, async () => {
+  if (!product.value) return { avg: 0, count: 0 }
+  const { data, count } = await supabase
+    .from('reviews')
+    .select('rating', { count: 'exact' })
+    .eq('product_id', product.value.id)
+    .eq('status', 'approved')
+    .limit(1000)
+  const ratings = (data as ReviewRating[] | null) ?? []
+  const avg = ratings.length > 0
+    ? ratings.reduce((s, r) => s + r.rating, 0) / ratings.length
+    : 0
+  return { avg: Math.round(avg * 10) / 10, count: count ?? 0 }
+})
+
+const averageRating = computed(() => reviewSummary.value?.avg ?? 0)
+const reviewCount = computed(() => reviewSummary.value?.count ?? 0)
 
 // ── SEO + JSON-LD ─────────────────────────────────────────────────────────────
 
@@ -215,7 +310,7 @@ useHead({
           '@type': 'Offer',
           price: selectedVariant.value?.price ?? 0,
           priceCurrency: 'XAF',
-          availability: (selectedVariant.value?.stock_quantity ?? 0) > 0
+          availability: inStock.value
             ? 'https://schema.org/InStock'
             : 'https://schema.org/OutOfStock',
         },
@@ -226,134 +321,285 @@ useHead({
 </script>
 
 <template>
-  <div class="min-h-screen bg-brand-light">
-    <div class="max-w-7xl mx-auto px-4 py-8 sm:py-12">
-      <!-- Breadcrumb -->
-      <div class="mb-6">
-        <Breadcrumb :items="breadcrumb" />
+  <div class="min-h-screen bg-cream">
+
+    <!-- ── Breadcrumb (full width) ────────────────────────────────────────── -->
+    <nav class="border-b border-brand-dark/[0.08] bg-cream">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 py-3 flex items-center gap-2 font-body text-[10px] uppercase tracking-[0.2em] text-text-muted">
+        <NuxtLink to="/" class="hover:text-brand-dark transition-colors">Home</NuxtLink>
+        <span class="text-text-muted/40">/</span>
+        <NuxtLink
+          v-if="product!.categories"
+          :to="`/categories/${product!.categories.slug}`"
+          class="hover:text-brand-dark transition-colors"
+        >
+          {{ product!.categories.name }}
+        </NuxtLink>
+        <span v-if="product!.categories" class="text-text-muted/40">/</span>
+        <span class="text-brand-dark">{{ product!.name }}</span>
       </div>
+    </nav>
 
-      <!-- Main product layout -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 mb-16">
-        <!-- Image gallery -->
-        <ProductImageGallery :images="sortedImages" />
+    <!-- ── Main two-column layout ─────────────────────────────────────────── -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-14">
+      <div class="grid grid-cols-1 lg:grid-cols-[45fr_55fr] gap-10 lg:gap-16 mb-16 lg:mb-20">
 
-        <!-- Product info -->
-        <div class="space-y-5">
-          <!-- Category link -->
-          <NuxtLink
+        <!-- Left 45%: Image gallery -->
+        <ProductImageGallery
+          :images="sortedImages"
+          :badge="isFeatured ? $t('product.bestseller') : null"
+        />
+
+        <!-- Right 55%: Product info -->
+        <div>
+
+          <!-- Eyebrow -->
+          <p
             v-if="product!.categories"
-            :to="`/categories/${product!.categories.slug}`"
-            class="font-body text-xs text-text-muted hover:text-brand-accent transition-colors uppercase tracking-wider"
+            class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-3 flex items-center gap-2"
           >
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
             {{ product!.categories.name }}
-          </NuxtLink>
+          </p>
 
-          <!-- Name -->
-          <h1 class="font-heading text-3xl sm:text-4xl font-semibold text-brand-dark leading-tight">
-            {{ product!.name }}
+          <!-- Product name -->
+          <h1 class="font-heading text-4xl sm:text-5xl font-semibold text-brand-dark leading-tight mb-2">
+            {{ product!.name }}<span class="text-terracotta">.</span>
           </h1>
 
-          <!-- Price -->
-          <div class="flex items-baseline gap-3">
-            <span class="font-body text-2xl font-semibold text-brand-dark">
-              {{ selectedVariant ? formatXAF(selectedVariant.price) : '—' }}
+          <!-- Italic tagline from first sentence of description -->
+          <p
+            v-if="productTagline"
+            class="font-heading italic text-terracotta text-lg mb-5"
+          >
+            "{{ productTagline }}"
+          </p>
+
+          <!-- Rating + stock row -->
+          <div class="flex items-center gap-3 mb-5 flex-wrap">
+            <StarRating :rating="averageRating" size="sm" />
+            <span class="font-body text-xs text-text-muted">
+              {{ averageRating > 0 ? averageRating.toFixed(1) : '—' }}
+              <template v-if="reviewCount > 0">· {{ reviewCount }} {{ reviewCount === 1 ? 'review' : 'reviews' }}</template>
+            </span>
+            <span class="text-text-muted/40">·</span>
+            <span class="flex items-center gap-1.5 font-body text-xs">
+              <span
+                class="w-2 h-2 rounded-full inline-block shrink-0"
+                :class="inStock ? 'bg-green-500' : 'bg-red-400'"
+              />
+              <span :class="inStock ? 'text-green-700' : 'text-red-600'">
+                {{ inStock ? $t('product.in_stock') : $t('product.out_of_stock') }}
+              </span>
+              <span class="text-text-muted">· {{ $t('product.ships_from') }}</span>
             </span>
           </div>
 
-          <!-- Variant selector -->
-          <VariantSelector
-            v-if="sortedVariants.length > 1"
-            :variants="sortedVariants"
-            :model-value="selectedVariantId"
-            @update:model-value="selectedVariantId = $event"
-          />
+          <!-- Short description -->
+          <p
+            v-if="product!.description"
+            class="font-body text-sm text-text-muted leading-relaxed mb-6 max-w-md"
+          >
+            {{ product!.description }}
+          </p>
 
-          <!-- Stock -->
-          <StockIndicator
-            v-if="selectedVariant"
-            :stock="selectedVariant.stock_quantity"
-          />
+          <div class="border-t border-brand-dark/[0.08] pt-6 mb-6">
+            <!-- Price row -->
+            <div class="flex items-baseline gap-3 mb-6">
+              <span class="font-heading text-4xl font-semibold text-brand-dark">
+                {{ selectedVariant ? formatXAF(selectedVariant.price) : '—' }}
+              </span>
+              <span
+                v-if="pricePerMl"
+                class="font-body text-xs text-text-muted"
+              >
+                {{ formatXAF(pricePerMl) }} / ml
+              </span>
+            </div>
 
-          <!-- Quantity + Add to cart -->
-          <div class="flex items-center gap-3 flex-wrap">
-            <QuantitySelector
-              v-model="quantity"
-              :max="selectedVariant?.stock_quantity ?? 1"
-              :disabled="!selectedVariant || selectedVariant.stock_quantity === 0"
-            />
+            <!-- Size selector -->
+            <div v-if="sizeVariants.length > 1" class="mb-5">
+              <p class="font-body text-[10px] tracking-[0.2em] uppercase text-brand-dark mb-3">
+                {{ $t('product.size') }}<template v-if="selectedVariant?.size_label"> · {{ selectedVariant.size_label.toUpperCase() }} ·</template>
+              </p>
+              <div class="flex gap-2 flex-wrap">
+                <button
+                  v-for="v in sizeVariants"
+                  :key="v.id"
+                  type="button"
+                  class="px-4 py-3 border text-left transition-all min-w-[90px]"
+                  :class="selectedVariant?.size_label === v.size_label
+                    ? 'border-espresso bg-espresso text-cream'
+                    : 'border-brand-dark/20 hover:border-espresso text-brand-dark'"
+                  @click="selectBySize(v.size_label!)"
+                >
+                  <div class="font-body text-sm font-medium">{{ v.size_label }}</div>
+                  <div
+                    class="font-body text-[10px] mt-0.5 leading-tight"
+                    :class="selectedVariant?.size_label === v.size_label ? 'text-cream/70' : 'text-text-muted'"
+                  >
+                    {{ variantLabel(v) }}
+                  </div>
+                  <div class="font-body text-xs font-medium mt-1">{{ formatXAF(v.price) }}</div>
+                </button>
+              </div>
+            </div>
 
+            <!-- Scent selector -->
+            <div v-if="scentVariants.length > 1" class="mb-5">
+              <p class="font-body text-[10px] tracking-[0.2em] uppercase text-brand-dark mb-3">
+                {{ $t('product.scent') }}<template v-if="selectedVariant?.scent_label"> · {{ selectedVariant.scent_label.toUpperCase() }} ·</template>
+              </p>
+              <div class="flex gap-2 flex-wrap">
+                <button
+                  v-for="v in scentVariants"
+                  :key="v.id"
+                  type="button"
+                  class="px-4 py-2 border font-body text-sm transition-all"
+                  :class="selectedVariant?.scent_label === v.scent_label
+                    ? 'border-espresso bg-espresso text-cream'
+                    : 'border-brand-dark/20 hover:border-espresso text-brand-dark'"
+                  @click="selectByScent(v.scent_label!)"
+                >
+                  {{ v.scent_label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Quantity + Add to cart -->
+            <div class="flex gap-3 mb-3">
+              <!-- Qty stepper -->
+              <div class="flex items-center border border-brand-dark/20 shrink-0">
+                <button
+                  type="button"
+                  class="w-11 h-11 flex items-center justify-center hover:bg-brand-dark/5 transition-colors text-brand-dark disabled:opacity-40"
+                  :disabled="quantity <= 1"
+                  aria-label="Decrease quantity"
+                  @click="decreaseQty"
+                >
+                  <span class="text-lg leading-none">−</span>
+                </button>
+                <span class="w-10 text-center font-body text-sm font-medium text-brand-dark select-none">
+                  {{ quantity }}
+                </span>
+                <button
+                  type="button"
+                  class="w-11 h-11 flex items-center justify-center hover:bg-brand-dark/5 transition-colors text-brand-dark disabled:opacity-40"
+                  :disabled="quantity >= (selectedVariant?.stock_quantity ?? 1)"
+                  aria-label="Increase quantity"
+                  @click="increaseQty"
+                >
+                  <span class="text-lg leading-none">+</span>
+                </button>
+              </div>
+
+              <!-- Add to cart -->
+              <button
+                type="button"
+                class="flex-1 h-11 bg-espresso text-cream font-body text-[10px] tracking-[0.18em] uppercase flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                :disabled="!inStock || isAddingToCart"
+                @click="addToCart"
+              >
+                <Loader2 v-if="isAddingToCart" class="w-4 h-4 animate-spin" />
+                <ShoppingBag v-else class="w-4 h-4" />
+                <span v-if="inStock">{{ $t('product.add_to_cart') }} · {{ formatXAF(lineTotal) }}</span>
+                <span v-else>{{ $t('product.out_of_stock') }}</span>
+              </button>
+            </div>
+
+            <!-- Add to wishlist -->
             <button
               type="button"
-              class="flex-1 min-w-[180px] inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-body text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              :class="selectedVariant && selectedVariant.stock_quantity > 0
-                ? 'bg-brand-dark text-white hover:bg-brand-accent'
-                : 'bg-brand-dark/10 text-text-muted cursor-not-allowed'"
-              :disabled="!selectedVariant || selectedVariant.stock_quantity === 0 || isAddingToCart"
-              @click="addToCart"
-            >
-              <Loader2 v-if="isAddingToCart" class="w-4 h-4 animate-spin" />
-              <ShoppingBag v-else class="w-4 h-4" />
-              {{ selectedVariant && selectedVariant.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart' }}
-            </button>
-
-            <!-- Wishlist toggle (authenticated users only) -->
-            <button
-              v-if="authStore.isAuthenticated"
-              type="button"
-              class="flex items-center justify-center w-12 h-12 rounded-lg border border-brand-dark/20 hover:border-brand-accent transition-colors shrink-0"
-              :aria-label="wishlistStore.isWishlisted(product!.id) ? 'Remove from wishlist' : 'Add to wishlist'"
+              class="w-full h-10 border border-brand-dark/20 text-brand-dark font-body text-[10px] tracking-[0.18em] uppercase flex items-center justify-center gap-2 hover:border-espresso transition-colors mb-6"
               @click="wishlistStore.toggleWishlist(product!.id)"
             >
               <Heart
-                class="w-5 h-5 transition-colors"
+                class="w-4 h-4 transition-colors"
                 :class="wishlistStore.isWishlisted(product!.id)
-                  ? 'fill-red-500 text-red-500'
+                  ? 'fill-terracotta text-terracotta'
                   : 'text-brand-dark'"
               />
+              {{ wishlistStore.isWishlisted(product!.id)
+                ? $t('product.remove_from_wishlist')
+                : $t('product.add_to_wishlist') }}
             </button>
           </div>
+
+          <!-- Delivery + payment row -->
+          <div class="grid grid-cols-2 gap-4 pt-4 border-t border-brand-dark/[0.08] mb-6">
+            <div>
+              <p class="font-body text-[9px] tracking-[0.2em] uppercase text-brand-dark mb-1.5">
+                {{ $t('product.delivery') }}
+              </p>
+              <p class="font-body text-xs text-text-muted leading-relaxed">
+                {{ $t('product.free_delivery') }}
+              </p>
+            </div>
+            <div>
+              <p class="font-body text-[9px] tracking-[0.2em] uppercase text-brand-dark mb-1.5">
+                {{ $t('product.we_accept') }}
+              </p>
+              <div class="flex gap-1.5 flex-wrap">
+                <span class="inline-flex items-center bg-[#FFCB05] text-[#1a1a1a] font-body text-[9px] font-bold px-2 py-1">MTN</span>
+                <span class="inline-flex items-center bg-[#F05A28] text-white font-body text-[9px] font-bold px-2 py-1">Orange</span>
+                <span class="inline-flex items-center bg-brand-dark/8 text-text-muted font-body text-[9px] px-2 py-1">COD</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trust badges -->
+          <div class="grid grid-cols-3 gap-3 pt-4 border-t border-brand-dark/[0.08]">
+            <div class="text-center">
+              <p class="font-body text-[10px] font-medium text-brand-dark mb-1">
+                01 {{ $t('product.trust_1_title') }}
+              </p>
+              <p class="font-body text-[10px] text-text-muted leading-tight">
+                {{ $t('product.trust_1_body') }}
+              </p>
+            </div>
+            <div class="text-center">
+              <p class="font-body text-[10px] font-medium text-brand-dark mb-1">
+                02 {{ $t('product.trust_2_title') }}
+              </p>
+              <p class="font-body text-[10px] text-text-muted leading-tight">
+                {{ $t('product.trust_2_body') }}
+              </p>
+            </div>
+            <div class="text-center">
+              <p class="font-body text-[10px] font-medium text-brand-dark mb-1">
+                03 {{ $t('product.trust_3_title') }}
+              </p>
+              <p class="font-body text-[10px] text-text-muted leading-tight">
+                {{ $t('product.trust_3_body') }}
+              </p>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <!-- Tabs: Description, Ingredients, How to Use -->
-      <div class="bg-white rounded-xl p-6 sm:p-8 mb-12">
+      <!-- ── Tabs: Description | Ingredients | How to Use | Reviews ──────── -->
+      <div class="border-t border-brand-dark/[0.07] pt-10 sm:pt-14 mb-16 sm:mb-20">
         <ProductTabs
           :description="product!.description"
           :ingredients="product!.ingredients"
           :usage="product!.usage_instructions"
+          :product-id="product!.id"
+          :is-authenticated="authStore.isAuthenticated"
         />
       </div>
 
-      <!-- Reviews -->
-      <div class="bg-white rounded-xl p-6 sm:p-8 mb-12">
-        <ReviewList ref="reviewList" :product-id="product!.id" />
-
-        <div class="mt-8 border-t border-brand-dark/10 pt-8">
-          <WriteReviewForm
-            v-if="authStore.isAuthenticated"
-            :product-id="product!.id"
-            @submitted="reviewListRef?.refresh()"
-          />
-          <p v-else class="text-sm text-text-muted">
-            <NuxtLink
-              to="/auth/login"
-              class="font-medium text-brand-dark hover:underline"
-            >
-              Login
-            </NuxtLink>
-            to write a review
-          </p>
-        </div>
-      </div>
-
-      <!-- Related products -->
+      <!-- ── You might also like ─────────────────────────────────────────── -->
       <div v-if="relatedProducts.length > 0">
-        <h2 class="font-heading text-2xl font-semibold text-brand-dark mb-6">
-          You might also like
-        </h2>
+        <div class="flex items-center gap-3 mb-8">
+          <span class="font-heading text-3xl text-terracotta leading-none">§</span>
+          <h2 class="font-heading text-3xl font-semibold text-brand-dark">
+            {{ $t('product.you_might_like') }}
+          </h2>
+        </div>
         <ProductGrid :products="relatedProducts" :columns="4" />
       </div>
+
     </div>
   </div>
 </template>

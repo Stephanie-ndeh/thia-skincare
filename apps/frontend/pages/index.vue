@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import type { Category, Testimonial } from '@thia/shared'
-import { defineAsyncComponent } from 'vue'
+import { formatXAF } from '@thia/shared'
+import { Heart } from 'lucide-vue-next'
 
 definePageMeta({ layout: 'default' })
 
-const TestimonialCarousel = defineAsyncComponent(
-  () => import('~/components/testimonial/TestimonialCarousel.vue'),
-)
-const ClientPhotosGrid = defineAsyncComponent(
-  () => import('~/components/testimonial/ClientPhotosGrid.vue'),
-)
-
 const supabase = useSupabaseClient()
+const authStore = useAuthStore()
+const wishlistStore = useWishlistStore()
 
 // ── Types for raw Supabase rows ──────────────────────────────────────────────
 
@@ -67,8 +63,8 @@ const heroSettings = computed((): HeroSettings => {
   return {
     image_url: val.image_url ?? '',
     cta_link: val.cta_link ?? '/categories',
-    cta_text: val.cta_text ?? 'Shop Now',
-    headline: val.headline ?? 'Natural Skincare from Cameroon',
+    cta_text: val.cta_text ?? 'Shop the collection',
+    headline: val.headline ?? 'The botanicals of home, into your ritual.',
     subheadline: val.subheadline ?? 'Handcrafted with African botanicals for radiant, healthy skin.',
   }
 })
@@ -140,6 +136,22 @@ const { data: testimonialsRaw } = await useAsyncData('featured-testimonials', as
 
 const testimonials = computed((): Testimonial[] => testimonialsRaw.value ?? [])
 
+// ── Category card tonal backgrounds ─────────────────────────────────────────
+
+const categoryBgClasses = ['bg-[#EEE8DF]', 'bg-[#DECCBA]', 'bg-[#CAAD96]', 'bg-[#B09070]']
+
+function categoryBgClass(idx: number): string {
+  return categoryBgClasses[idx % categoryBgClasses.length] ?? 'bg-sand'
+}
+
+// ── Product badge labels ──────────────────────────────────────────────────────
+
+const badgeLabels = ['BESTSELLER', 'EXPERT PICK', 'NEW', 'LIMITED']
+
+function productBadge(idx: number): string {
+  return badgeLabels[idx % badgeLabels.length] ?? 'BESTSELLER'
+}
+
 // ── SEO ──────────────────────────────────────────────────────────────────────
 
 const { t } = useI18n()
@@ -167,99 +179,369 @@ useHead({
 
 <template>
   <div>
-    <!-- 1. Hero section -->
-    <HeroSection
-      :image-url="heroSettings.image_url"
-      :headline="heroSettings.headline ?? 'Natural Skincare from Cameroon'"
-      :subheadline="heroSettings.subheadline ?? 'Handcrafted with African botanicals for radiant, healthy skin.'"
-      :cta-text="heroSettings.cta_text"
-      :cta-link="heroSettings.cta_link"
-    />
 
-    <!-- 2. Announcement strip -->
+    <!-- ── 1. Hero ─────────────────────────────────────────────────────────── -->
+    <section class="grid md:grid-cols-2" style="min-height: min(88vh, 720px)">
+      <!-- Left: editorial content -->
+      <div class="bg-cream flex flex-col justify-center px-8 sm:px-12 md:px-16 lg:px-24 py-20 md:py-0">
+        <p class="font-body text-[10px] tracking-[0.28em] uppercase text-text-muted mb-8">
+          — {{ $t('home.strip_1').toUpperCase() }} —
+        </p>
+        <h1 class="font-heading text-[3.25rem] sm:text-6xl lg:text-[4.5rem] font-semibold text-brand-dark leading-[1.05] mb-6">
+          Your skin<br>
+          <em>deserves</em><br>
+          an expert.
+        </h1>
+        <p class="font-body text-sm text-text-muted leading-relaxed mb-10 max-w-xs">
+          {{ $t('home.tagline') }}
+        </p>
+        <div class="flex flex-wrap items-center gap-5">
+          <NuxtLink
+            :to="heroSettings.cta_link"
+            class="inline-flex items-center justify-center bg-brand-dark text-cream font-body text-xs tracking-[0.18em] uppercase px-8 py-4 hover:bg-espresso transition-colors duration-200"
+          >
+            {{ heroSettings.cta_text }}
+          </NuxtLink>
+          <NuxtLink
+            to="/about"
+            class="font-body text-sm text-brand-dark hover:text-terracotta transition-colors underline underline-offset-4"
+          >
+            Meet our expert →
+          </NuxtLink>
+        </div>
+      </div>
+
+      <!-- Right: product image -->
+      <div class="relative bg-sand overflow-hidden min-h-[55vw] sm:min-h-[45vw] md:min-h-0">
+        <NuxtImg
+          v-if="heroSettings.image_url"
+          :src="heroSettings.image_url"
+          :alt="heroSettings.headline ?? 'Thia Skincare'"
+          class="absolute inset-0 w-full h-full object-cover"
+          loading="eager"
+          fetchpriority="high"
+          width="800"
+          height="900"
+        />
+        <div v-else class="texture-diagonal absolute inset-0 bg-sand" />
+      </div>
+    </section>
+
+    <!-- ── 2. Announcement strip ──────────────────────────────────────────── -->
     <AnnouncementStrip />
 
-    <!-- 3. Featured categories -->
-    <section v-if="categories.length > 0" class="py-16 px-4 bg-brand-light">
+    <!-- ── 3. Categories — Shop by ritual ────────────────────────────────── -->
+    <section v-if="categories.length > 0" class="py-16 sm:py-20 px-4 sm:px-8 bg-cream">
       <div class="max-w-7xl mx-auto">
-        <h2 class="font-heading text-2xl sm:text-3xl font-semibold text-brand-dark mb-8 text-center">
-          {{ $t('home.shop_by_category') }}
-        </h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div class="flex items-start justify-between mb-10 sm:mb-14">
+          <div>
+            <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-3 flex items-center gap-2">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
+              The Everyday
+            </p>
+            <h2 class="font-heading text-4xl sm:text-5xl font-semibold text-brand-dark">
+              Shop by ritual
+            </h2>
+          </div>
           <NuxtLink
-            v-for="category in categories"
+            to="/categories"
+            class="hidden sm:flex items-center gap-1 font-body text-sm text-brand-dark hover:text-terracotta transition-colors mt-3 shrink-0"
+          >
+            Shop the collection <span class="ml-1">→</span>
+          </NuxtLink>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <NuxtLink
+            v-for="(category, idx) in categories.slice(0, 4)"
             :key="category.id"
             :to="`/categories/${category.slug}`"
-            class="group flex flex-col items-center gap-3"
+            class="group"
           >
-            <div class="w-full aspect-square rounded-full overflow-hidden bg-brand-secondary relative">
+            <!-- Portrait card -->
+            <div
+              class="aspect-[3/4] relative overflow-hidden mb-4"
+              :class="categoryBgClass(idx)"
+            >
+              <div class="texture-diagonal absolute inset-0" />
               <NuxtImg
                 v-if="category.image_url"
                 :src="category.image_url"
                 :alt="category.name"
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                class="absolute inset-0 w-full h-full object-cover"
                 loading="lazy"
-                width="200"
-                height="200"
+                width="300"
+                height="400"
               />
-              <div
-                v-else
-                class="w-full h-full flex items-center justify-center"
-              >
-                <span class="font-heading text-3xl font-semibold text-brand-accent/40">
-                  {{ category.name.charAt(0) }}
+              <!-- Name label centered -->
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="font-body text-[10px] tracking-[0.35em] uppercase text-brand-dark/50">
+                  {{ category.name }}
                 </span>
               </div>
             </div>
-            <span class="font-body text-sm font-medium text-brand-dark text-center group-hover:text-brand-accent transition-colors">
+            <h3 class="font-heading text-xl font-semibold text-brand-dark group-hover:text-terracotta transition-colors mb-1">
               {{ category.name }}
-            </span>
-            <span class="font-body text-xs text-text-muted text-center">
+            </h3>
+            <p class="font-body text-xs text-text-muted">
               {{ getProductCount(category) > 0
                 ? `${getProductCount(category)} products`
                 : 'Coming soon' }}
-            </span>
+            </p>
           </NuxtLink>
         </div>
-      </div>
-    </section>
 
-    <!-- 4. Best sellers / featured products -->
-    <section v-if="featuredProducts.length > 0" class="py-16 px-4 bg-white">
-      <div class="max-w-7xl mx-auto">
-        <h2 class="font-heading text-2xl sm:text-3xl font-semibold text-brand-dark mb-2 text-center">
-          {{ $t('home.best_sellers') }}
-        </h2>
-        <p class="font-body text-sm text-text-muted text-center mb-8">
-          Our most loved natural skincare picks
-        </p>
-        <ProductGrid :products="featuredProducts" :columns="4" />
-        <div class="text-center mt-10">
+        <div class="sm:hidden mt-8 text-center">
           <NuxtLink
             to="/categories"
-            class="inline-flex items-center justify-center rounded-md border border-brand-dark text-brand-dark font-body font-medium text-sm px-8 py-3 hover:bg-brand-dark hover:text-white transition-colors"
+            class="font-body text-sm text-brand-dark underline underline-offset-4 hover:text-terracotta transition-colors"
           >
-            View All Products
+            Shop the collection →
           </NuxtLink>
         </div>
       </div>
     </section>
 
-    <!-- 5. Testimonials carousel + client photos -->
-    <section v-if="testimonials.length > 0" class="py-16 px-4 bg-brand-secondary">
+    <!-- ── 4. Best sellers — Loved across the regions ─────────────────────── -->
+    <section v-if="featuredProducts.length > 0" class="py-16 sm:py-20 px-4 sm:px-8 bg-cream border-t border-brand-dark/[0.07]">
       <div class="max-w-7xl mx-auto">
-        <h2 class="font-heading text-2xl sm:text-3xl font-semibold text-brand-dark mb-2 text-center">
-          {{ $t('home.customers_say') }}
-        </h2>
-        <p class="font-body text-sm text-text-muted text-center mb-10">
-          Real results from real people
-        </p>
-        <TestimonialCarousel :testimonials="testimonials" />
-        <!-- <ClientPhotosGrid :testimonials="testimonials" /> -->
+        <div class="mb-10 sm:mb-14">
+          <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-3 flex items-center gap-2">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
+            Best Sellers
+          </p>
+          <h2 class="font-heading text-4xl sm:text-5xl font-semibold text-brand-dark">
+            Loved across the regions
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          <div
+            v-for="(product, idx) in featuredProducts.slice(0, 4)"
+            :key="product.id"
+            class="group"
+          >
+            <!-- Image area (linked) -->
+            <NuxtLink :to="`/products/${product.slug}`" class="block relative aspect-square overflow-hidden bg-sand mb-3">
+              <div class="texture-diagonal absolute inset-0" />
+              <NuxtImg
+                v-if="product.primaryImageUrl"
+                :src="product.primaryImageUrl"
+                :alt="product.name"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+                width="400"
+                height="400"
+              />
+              <div v-else class="absolute inset-0 flex items-center justify-center">
+                <span class="font-body text-[9px] tracking-[0.3em] uppercase text-brand-dark/30">
+                  {{ product.name }}
+                </span>
+              </div>
+              <!-- Badge -->
+              <div class="absolute top-2 left-2">
+                <span class="font-body text-[9px] tracking-[0.12em] uppercase bg-brand-dark text-white px-2 py-0.5">
+                  {{ productBadge(idx) }}
+                </span>
+              </div>
+              <!-- Wishlist -->
+              <button
+                v-if="authStore.isAuthenticated"
+                type="button"
+                class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/80 hover:bg-white flex items-center justify-center shadow-sm transition-colors"
+                aria-label="Toggle wishlist"
+                @click.prevent="wishlistStore.toggleWishlist(product.id)"
+              >
+                <Heart
+                  class="w-3.5 h-3.5 transition-colors"
+                  :class="wishlistStore.isWishlisted(product.id) ? 'fill-red-500 text-red-500' : 'text-brand-dark'"
+                />
+              </button>
+            </NuxtLink>
+
+            <!-- Info (linked) -->
+            <NuxtLink :to="`/products/${product.slug}`" class="block mb-3">
+              <div class="flex items-baseline justify-between gap-2 mb-0.5">
+                <h3 class="font-heading text-base font-semibold text-brand-dark leading-snug group-hover:text-terracotta transition-colors line-clamp-1">
+                  {{ product.name }}
+                </h3>
+                <span class="font-body text-sm font-medium text-brand-dark shrink-0">
+                  {{ formatXAF(product.price) }}
+                </span>
+              </div>
+              <p class="font-body text-xs text-text-muted">{{ product.categoryName }}</p>
+            </NuxtLink>
+
+            <!-- Add to cart (navigates to PDP for variant selection) -->
+            <NuxtLink
+              :to="`/products/${product.slug}`"
+              class="block border border-brand-dark/25 text-brand-dark font-body text-[10px] tracking-[0.18em] uppercase py-2.5 text-center hover:bg-brand-dark hover:text-white hover:border-brand-dark transition-colors duration-200"
+            >
+              + Add to cart
+            </NuxtLink>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- 6. Newsletter signup -->
+    <!-- ── 5. Brand story ─────────────────────────────────────────────────── -->
+    <section class="py-20 sm:py-24 px-4 sm:px-8 bg-espresso">
+      <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 md:gap-20 items-end">
+        <div>
+          <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-6 flex items-center gap-2">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
+            {{ $t('about.hero_label') }}
+          </p>
+          <h2 class="font-heading text-4xl sm:text-5xl font-semibold text-white leading-[1.1] mb-8">
+            {{ $t('about.brand_title') }}
+          </h2>
+          <p class="font-body text-sm text-white/60 leading-relaxed mb-12 max-w-md">
+            {{ $t('about.brand_p1') }}
+          </p>
+          <div class="grid grid-cols-3 gap-6 mb-12">
+            <div>
+              <p class="font-heading text-4xl sm:text-5xl font-semibold text-white">{{ $t('about.stats_cooperatives_num') }}</p>
+              <p class="font-body text-[11px] text-white/45 mt-1.5 leading-tight">{{ $t('about.stats_cooperatives_label') }}</p>
+            </div>
+            <div>
+              <p class="font-heading text-4xl sm:text-5xl font-semibold text-white">{{ $t('about.stats_ingredients_num') }}</p>
+              <p class="font-body text-[11px] text-white/45 mt-1.5 leading-tight">{{ $t('about.stats_ingredients_label') }}</p>
+            </div>
+            <div>
+              <p class="font-heading text-4xl sm:text-5xl font-semibold text-white">{{ $t('about.stats_founded_num') }}</p>
+              <p class="font-body text-[11px] text-white/45 mt-1.5 leading-tight">{{ $t('about.stats_founded_label') }}</p>
+            </div>
+          </div>
+          <NuxtLink
+            to="/about"
+            class="font-body text-sm text-white/70 hover:text-white transition-colors underline underline-offset-4"
+          >
+            Meet our expert →
+          </NuxtLink>
+        </div>
+
+        <!-- Tagline block -->
+        <div class="flex items-end md:justify-end">
+          <div class="bg-terracotta px-8 py-7">
+            <p class="font-heading text-xl sm:text-2xl italic text-white">
+              "{{ $t('home.tagline') }}"
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 6. Why Thia — 3 cards ──────────────────────────────────────────── -->
+    <section class="py-16 sm:py-24 px-4 sm:px-8 bg-cream border-t border-brand-dark/[0.07]">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-14 sm:mb-20">
+          <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-4 flex items-center justify-center gap-2">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
+            {{ $t('home.why_thia_eyebrow') }}
+          </p>
+          <h2 class="font-heading text-4xl sm:text-5xl font-semibold text-brand-dark">
+            {{ $t('home.why_thia_title') }}
+          </h2>
+        </div>
+
+        <div class="grid sm:grid-cols-3 gap-8 sm:gap-12">
+          <div class="text-center">
+            <div class="w-12 h-12 mx-auto mb-6 flex items-center justify-center border border-brand-dark/15">
+              <span class="font-body text-lg">✦</span>
+            </div>
+            <h3 class="font-heading text-xl font-semibold text-brand-dark mb-3">
+              {{ $t('home.card_1_title') }}
+            </h3>
+            <p class="font-body text-sm text-text-muted leading-relaxed">
+              {{ $t('home.card_1_body') }}
+            </p>
+          </div>
+          <div class="text-center">
+            <div class="w-12 h-12 mx-auto mb-6 flex items-center justify-center border border-brand-dark/15">
+              <span class="font-body text-lg">◈</span>
+            </div>
+            <h3 class="font-heading text-xl font-semibold text-brand-dark mb-3">
+              {{ $t('home.card_2_title') }}
+            </h3>
+            <p class="font-body text-sm text-text-muted leading-relaxed">
+              {{ $t('home.card_2_body') }}
+            </p>
+          </div>
+          <div class="text-center">
+            <div class="w-12 h-12 mx-auto mb-6 flex items-center justify-center border border-brand-dark/15">
+              <span class="font-body text-lg">◉</span>
+            </div>
+            <h3 class="font-heading text-xl font-semibold text-brand-dark mb-3">
+              {{ $t('home.card_3_title') }}
+            </h3>
+            <p class="font-body text-sm text-text-muted leading-relaxed">
+              {{ $t('home.card_3_body') }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 7. Testimonials — What our customers say ───────────────────────── -->
+    <section v-if="testimonials.length > 0" class="py-16 sm:py-20 px-4 sm:px-8 bg-brand-light">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+          <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-4 flex items-center justify-center gap-2">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
+            {{ $t('home.strip_2') }}
+          </p>
+          <h2 class="font-heading text-4xl sm:text-5xl font-semibold text-brand-dark">
+            {{ $t('home.customers_say') }}
+          </h2>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <TestimonialCard
+            v-for="testimonial in testimonials.slice(0, 3)"
+            :key="testimonial.id"
+            :testimonial="testimonial"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 8. Payment ─────────────────────────────────────────────────────── -->
+    <section class="py-16 px-4 sm:px-8 bg-cream">
+      <div class="max-w-4xl mx-auto border border-brand-dark/[0.11] p-8 sm:p-12">
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-8">
+          <div class="flex-1">
+            <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-4 flex items-center gap-2">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
+              Pay Your Way
+            </p>
+            <h2 class="font-heading text-2xl sm:text-3xl font-semibold text-brand-dark mb-3 leading-tight">
+              Mobile Money & Orange Money accepted
+            </h2>
+            <p class="font-body text-sm text-text-muted leading-relaxed max-w-sm">
+              Confirm in seconds from your phone. No card needed.
+              Cash on delivery available in Douala and Yaoundé.
+            </p>
+          </div>
+          <div class="flex flex-col gap-2 shrink-0">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-[#FFCB05] text-[#1a1a1a]">
+              <span class="font-body text-xs font-bold tracking-wider">MTN</span>
+              <span class="font-body text-xs">MoMo</span>
+            </div>
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-[#F05A28] text-white">
+              <span class="font-body text-xs font-bold tracking-wider">Orange</span>
+              <span class="font-body text-xs">Money</span>
+            </div>
+            <div class="inline-flex items-center gap-2 px-4 py-2 border border-brand-dark/20 text-brand-dark">
+              <span class="font-body text-[10px] text-text-muted">✕</span>
+              <span class="font-body text-xs">COD</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 9. Newsletter ──────────────────────────────────────────────────── -->
     <NewsletterSection />
+
   </div>
 </template>

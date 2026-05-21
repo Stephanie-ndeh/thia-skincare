@@ -1,108 +1,134 @@
 <script setup lang="ts">
-const categories = [
-  { name: 'Cleansers', slug: 'cleansers' },
-  { name: 'Moisturizers', slug: 'moisturizers' },
-  { name: 'Serums', slug: 'serums' },
-  { name: 'Sunscreens', slug: 'sunscreens' },
-  { name: 'Body Lotions', slug: 'body-lotions' },
-  { name: 'Body Scrubs', slug: 'body-scrubs' },
-  { name: 'Shower Gels', slug: 'shower-gels' },
-  { name: 'Bar Soaps', slug: 'bar-soaps' },
-  { name: 'Scents', slug: 'scents' },
-]
 </script>
 
 <template>
   <footer class="bg-brand-dark text-white">
-    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 gap-10 md:grid-cols-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 pt-16 pb-10">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8 mb-14">
+
         <!-- Brand column -->
-        <div>
-          <p class="font-heading text-2xl font-semibold">Thia</p>
-          <p class="mt-2 text-sm text-gray-400">
-            Cameroonian skincare, crafted with care.
+        <div class="col-span-2 md:col-span-1">
+          <NuxtLink to="/" class="font-heading text-2xl font-semibold text-white">
+            Thia<span class="text-terracotta">.</span>
+          </NuxtLink>
+          <p class="font-body text-xs text-white/45 mt-3 leading-relaxed max-w-[190px]">
+            Premium skincare expertly curated for African skin. Your dermatologist-recommended destination in Cameroon.
           </p>
-          <!-- Social links (placeholders) -->
-          <div class="mt-4 flex gap-4">
-            <a href="#" aria-label="Instagram" class="text-gray-400 hover:text-white">
-              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-            </a>
-            <a href="#" aria-label="Facebook" class="text-gray-400 hover:text-white">
-              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-              </svg>
-            </a>
-            <a href="#" aria-label="TikTok" class="text-gray-400 hover:text-white">
-              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
-              </svg>
-            </a>
+          <div class="flex gap-2 mt-5 flex-wrap">
+            <div class="inline-flex items-center gap-1.5 bg-[#FFCB05] text-[#1a1a1a] px-3 py-1.5">
+              <span class="font-body text-[10px] font-bold tracking-wider">MTN</span>
+              <span class="font-body text-[10px]">MoMo</span>
+            </div>
+            <div class="inline-flex items-center gap-1.5 bg-[#F05A28] text-white px-3 py-1.5">
+              <span class="font-body text-[10px] font-bold tracking-wider">Orange</span>
+              <span class="font-body text-[10px]">Money</span>
+            </div>
           </div>
         </div>
 
-        <!-- Quick links column -->
+        <!-- Shop column -->
         <div>
-          <p class="text-sm font-semibold uppercase tracking-wider text-gray-300">
-            Shop
-          </p>
-          <ul class="mt-4 space-y-2">
+          <p class="font-body text-[10px] tracking-[0.22em] uppercase text-white/35 mb-5">Shop</p>
+          <ul class="space-y-3">
             <li>
-              <NuxtLink to="/" class="text-sm text-gray-400 hover:text-white">Home</NuxtLink>
-            </li>
-            <li v-for="cat in categories" :key="cat.slug">
-              <NuxtLink
-                :to="`/categories/${cat.slug}`"
-                class="text-sm text-gray-400 hover:text-white"
-              >
-                {{ cat.name }}
+              <NuxtLink to="/categories" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Cleanse
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/testimonials" class="text-sm text-gray-400 hover:text-white">
-                Testimonials
+              <NuxtLink to="/categories" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Treat
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/categories" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Hydrate
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/categories" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Body
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/categories" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Gift sets
               </NuxtLink>
             </li>
           </ul>
         </div>
 
-        <!-- Company + Contact column -->
+        <!-- Customer care column -->
         <div>
-          <p class="text-sm font-semibold uppercase tracking-wider text-gray-300">
-            Company
-          </p>
-          <ul class="mt-4 space-y-2">
+          <p class="font-body text-[10px] tracking-[0.22em] uppercase text-white/35 mb-5">Customer Care</p>
+          <ul class="space-y-3">
             <li>
-              <NuxtLink to="/about" class="text-sm text-gray-400 hover:text-white">Notre Histoire</NuxtLink>
+              <NuxtLink to="/faq" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Shipping
+              </NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/faq" class="text-sm text-gray-400 hover:text-white">FAQ</NuxtLink>
+              <NuxtLink to="/faq" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Returns
+              </NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/contact" class="text-sm text-gray-400 hover:text-white">Contact</NuxtLink>
+              <NuxtLink to="/faq" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                FAQ
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/contact" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Contact us
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/account/orders" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Track order
+              </NuxtLink>
             </li>
           </ul>
-          <p class="mt-6 text-sm font-semibold uppercase tracking-wider text-gray-300">
-            Contact
-          </p>
-          <ul class="mt-4 space-y-2 text-sm text-gray-400">
+        </div>
+
+        <!-- Thia column -->
+        <div>
+          <p class="font-body text-[10px] tracking-[0.22em] uppercase text-white/35 mb-5">Thia</p>
+          <ul class="space-y-3">
             <li>
-              <a href="tel:+237670076224" class="hover:text-white">+237 670 076 224</a>
+              <NuxtLink to="/about" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Our expertise
+              </NuxtLink>
             </li>
             <li>
-              <a href="tel:+237676328226" class="hover:text-white">+237 676 328 226</a>
+              <NuxtLink to="/about" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Our story
+              </NuxtLink>
             </li>
             <li>
-              <a href="mailto:hello@thia.cm" class="hover:text-white">hello@thia.cm</a>
+              <NuxtLink to="/testimonials" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Testimonials
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/faq" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Journal
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/contact" class="font-body text-sm text-white/65 hover:text-white transition-colors">
+                Press
+              </NuxtLink>
             </li>
           </ul>
         </div>
       </div>
 
       <!-- Bottom bar -->
-      <div class="mt-10 border-t border-gray-700 pt-6 text-center text-xs text-gray-500">
-        © {{ new Date().getFullYear() }} Thia. All rights reserved.
+      <div class="border-t border-white/10 pt-6 flex items-center justify-between">
+        <p class="font-body text-xs text-white/30">
+          © {{ new Date().getFullYear() }} Thia Cosmétiques SARL · Yaoundé, Cameroon
+        </p>
+        <LanguageSwitcher />
       </div>
     </div>
   </footer>
