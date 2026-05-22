@@ -302,11 +302,22 @@ input:focus, textarea:focus {
 
 .menu-enter-active,
 .menu-leave-active {
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.2, 0.65, 0.3, 1);
 }
 .menu-enter-from,
 .menu-leave-to {
   transform: translateX(-100%);
+}
+
+/* ── Mobile menu overlay fade ────────────────────────────────────────────── */
+
+.overlay-enter-active,
+.overlay-leave-active {
+  transition: opacity 0.3s ease;
+}
+.overlay-enter-from,
+.overlay-leave-to {
+  opacity: 0;
 }
 
 /* ── Diagonal stripe texture ────────────────────────────────────────────── */

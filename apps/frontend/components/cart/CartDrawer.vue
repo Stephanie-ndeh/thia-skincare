@@ -1,26 +1,16 @@
 <script setup lang="ts">
-import { X } from 'lucide-vue-next'
-
 const uiStore = useUiStore()
 const cartStore = useCartStore()
 </script>
 
 <template>
   <Sheet :open="uiStore.isCartOpen" @update:open="(v) => !v && uiStore.closeCart()">
-    <SheetContent side="right" class="flex flex-col w-full max-w-sm p-0">
+    <SheetContent side="right" class="flex flex-col w-full max-w-sm p-0 bg-white">
       <!-- Header -->
-      <div class="flex items-center justify-between px-5 py-4 border-b border-brand-dark/10">
+      <div class="flex items-center px-5 py-4 border-b border-brand-dark/10">
         <h2 class="font-heading text-lg font-semibold text-brand-dark">
-          Your Cart ({{ cartStore.itemCount }})
+          {{ $t('cart.title') }} ({{ cartStore.itemCount }})
         </h2>
-        <button
-          type="button"
-          class="text-text-muted hover:text-brand-dark transition-colors"
-          @click="uiStore.closeCart()"
-          aria-label="Close cart"
-        >
-          <X class="w-5 h-5" />
-        </button>
       </div>
 
       <!-- Body — scrollable items -->

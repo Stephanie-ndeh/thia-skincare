@@ -31,27 +31,19 @@ async function handleLogout() {
       </p>
       <div class="flex items-center gap-5">
         <p class="font-body text-[10px] tracking-[0.15em] uppercase text-text-muted">
-          Free delivery above 15,000 XAF
+          {{ $t('home.free_delivery') }}
         </p>
         <LanguageSwitcher />
       </div>
     </div>
 
     <!-- Logo bar -->
-    <div class="grid grid-cols-3 items-center px-4 sm:px-6 py-4">
-      <!-- Left: mobile hamburger -->
-      <div class="flex items-center">
-        <button
-          class="p-1 text-brand-dark md:hidden"
-          aria-label="Open menu"
-          @click="uiStore.toggleMobileMenu()"
-        >
-          <Menu class="h-5 w-5" />
-        </button>
-      </div>
+    <div class="flex items-center justify-between md:grid md:grid-cols-3 px-4 sm:px-6 py-4">
+      <!-- Spacer: occupies left column on desktop to push logo to center -->
+      <div class="hidden md:block" />
 
-      <!-- Center: wordmark -->
-      <div class="flex justify-center">
+      <!-- Wordmark: left on mobile, centered on desktop -->
+      <div class="md:flex md:justify-center">
         <NuxtLink to="/" class="font-heading text-3xl font-semibold text-brand-dark tracking-tight leading-none">
           Thia<span class="text-terracotta">.</span>
         </NuxtLink>
@@ -79,47 +71,50 @@ async function handleLogout() {
           </span>
         </button>
 
-        <!-- Guest: login -->
-        <NuxtLink
-          v-if="!authStore.isAuthenticated"
-          to="/auth/login"
-          class="hidden md:flex font-body text-[11px] tracking-[0.15em] uppercase text-brand-dark hover:text-terracotta transition-colors"
-        >
-          {{ $t('nav.login') }}
-        </NuxtLink>
+        <!-- Auth-dependent: ClientOnly prevents SSR/CSR hydration mismatch -->
+        <ClientOnly>
+          <!-- Guest: login -->
+          <NuxtLink
+            v-if="!authStore.isAuthenticated"
+            to="/auth/login"
+            class="hidden md:flex font-body text-[11px] tracking-[0.15em] uppercase text-brand-dark hover:text-terracotta transition-colors"
+          >
+            {{ $t('nav.login') }}
+          </NuxtLink>
 
-        <!-- Authenticated: account dropdown -->
-        <DropdownMenu v-else>
-          <DropdownMenuTrigger as-child>
-            <Button variant="ghost" size="sm" class="p-1 h-auto hover:bg-transparent">
-              <User class="h-5 w-5 text-brand-dark" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" class="w-48">
-            <DropdownMenuItem as-child>
-              <NuxtLink to="/account" class="flex items-center gap-2">
-                <User class="h-4 w-4" /> My Account
-              </NuxtLink>
-            </DropdownMenuItem>
-            <DropdownMenuItem as-child>
-              <NuxtLink to="/account/orders" class="flex items-center gap-2">
-                <Package class="h-4 w-4" /> Order History
-              </NuxtLink>
-            </DropdownMenuItem>
-            <template v-if="authStore.isAdmin">
-              <DropdownMenuSeparator />
+          <!-- Authenticated: account dropdown -->
+          <DropdownMenu v-else>
+            <DropdownMenuTrigger as-child>
+              <Button variant="ghost" size="sm" class="p-1 h-auto hover:bg-transparent">
+                <User class="h-5 w-5 text-brand-dark" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" class="w-48">
               <DropdownMenuItem as-child>
-                <NuxtLink to="/admin" class="flex items-center gap-2">
-                  <Settings class="h-4 w-4" /> Admin Panel
+                <NuxtLink to="/account" class="flex items-center gap-2">
+                  <User class="h-4 w-4" /> My Account
                 </NuxtLink>
               </DropdownMenuItem>
-            </template>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem class="text-red-600 focus:text-red-600" @click="handleLogout">
-              <LogOut class="mr-2 h-4 w-4" /> {{ $t('nav.logout') }}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuItem as-child>
+                <NuxtLink to="/account/orders" class="flex items-center gap-2">
+                  <Package class="h-4 w-4" /> Order History
+                </NuxtLink>
+              </DropdownMenuItem>
+              <template v-if="authStore.isAdmin">
+                <DropdownMenuSeparator />
+                <DropdownMenuItem as-child>
+                  <NuxtLink to="/admin" class="flex items-center gap-2">
+                    <Settings class="h-4 w-4" /> Admin Panel
+                  </NuxtLink>
+                </DropdownMenuItem>
+              </template>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem class="text-red-600 focus:text-red-600" @click="handleLogout">
+                <LogOut class="mr-2 h-4 w-4" /> {{ $t('nav.logout') }}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </ClientOnly>
 
         <!-- Mobile search + hamburger -->
         <div class="flex items-center gap-1 md:hidden">
