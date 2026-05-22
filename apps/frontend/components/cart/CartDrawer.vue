@@ -1,0 +1,42 @@
+<script setup lang="ts">
+const uiStore = useUiStore()
+const cartStore = useCartStore()
+</script>
+
+<template>
+  <Sheet :open="uiStore.isCartOpen" @update:open="(v) => !v && uiStore.closeCart()">
+    <SheetContent side="right" class="flex flex-col w-full max-w-sm p-0 bg-white">
+      <!-- Header -->
+      <div class="flex items-center px-5 py-4 border-b border-brand-dark/10">
+        <h2 class="font-heading text-lg font-semibold text-brand-dark">
+          {{ $t('cart.title') }} ({{ cartStore.itemCount }})
+        </h2>
+      </div>
+
+      <!-- Body — scrollable items -->
+      <div class="flex-1 overflow-y-auto px-5">
+        <EmptyCartState v-if="cartStore.isEmpty" />
+
+        <div v-else>
+          <CartItem
+            v-for="item in cartStore.items"
+            :key="item.id"
+            :item="item"
+          />
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div v-if="!cartStore.isEmpty" class="px-5 pb-6 border-t border-brand-dark/10">
+        <DiscountCodeInput />
+        <CartSummary
+          :subtotal="cartStore.subtotal"
+          :discount-amount="cartStore.discountAmount"
+          :total="cartStore.total"
+          :is-empty="cartStore.isEmpty"
+          :discount-code="cartStore.discountCode"
+        />
+      </div>
+    </SheetContent>
+  </Sheet>
+</template>

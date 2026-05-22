@@ -1,12 +1,14 @@
 {
   "name": "@thia/shared",
   "version": "0.0.1",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./index.ts",
+  "types": "./index.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./index.ts",
+      "import": "./index.ts",
+      "default": "./index.ts",
+      "types": "./index.ts"
     }
   },
   "scripts": {

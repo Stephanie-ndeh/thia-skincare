@@ -1,0 +1,111 @@
+<script setup lang="ts">
+import { formatXAF } from '@thia/shared'
+import { Heart } from 'lucide-vue-next'
+
+interface ProductCardData {
+  id: string
+  name: string
+  slug: string
+  price: number
+  categoryName: string
+  primaryImageUrl: string | null
+  reviews?: Array<{ rating: number }>
+}
+
+const props = defineProps<{
+  product?: ProductCardData
+  loading?: boolean
+}>()
+
+const authStore = useAuthStore()
+const wishlistStore = useWishlistStore()
+
+const averageRating = computed<number>(() => {
+  const reviews = props.product?.reviews
+  if (!reviews || reviews.length === 0) return 0
+  const sum = reviews.reduce((acc: number, r: { rating: number }) => acc + r.rating, 0)
+  return Math.round((sum / reviews.length) * 10) / 10
+})
+
+const reviewCount = computed<number>(() => props.product?.reviews?.length ?? 0)
+
+function handleWishlistToggle(event: MouseEvent) {
+  event.preventDefault()
+  event.stopPropagation()
+  if (props.product) {
+    wishlistStore.toggleWishlist(props.product.id)
+  }
+}
+
+</script>
+
+<template>
+  <!-- Skeleton state -->
+  <div
+    v-if="loading || !product"
+    class="flex flex-col rounded-lg overflow-hidden bg-white"
+  >
+    <div class="aspect-[4/5] skeleton w-full rounded-t-lg" />
+    <div class="p-3 space-y-2">
+      <div class="h-3 skeleton rounded w-1/3" />
+      <div class="h-4 skeleton rounded w-3/4" />
+      <div class="h-4 skeleton rounded w-1/2" />
+    </div>
+  </div>
+
+  <!-- Card state -->
+  <NuxtLink
+    v-else
+    :to="`/products/${product.slug}`"
+    class="product-card group flex flex-col rounded-lg overflow-hidden bg-white"
+  >
+    <div class="aspect-[4/5] overflow-hidden bg-brand-secondary relative">
+      <NuxtImg
+        v-if="product.primaryImageUrl"
+        :src="product.primaryImageUrl"
+        :alt="product.name"
+        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        loading="lazy"
+        width="400"
+        height="500"
+      />
+      <div
+        v-else
+        class="w-full h-full flex items-center justify-center"
+      >
+        <span class="font-heading text-4xl font-semibold text-brand-accent/30">
+          {{ product.name.charAt(0) }}
+        </span>
+      </div>
+
+      <!-- Wishlist heart button (authenticated users only) -->
+      <button
+        v-if="authStore.isAuthenticated"
+        type="button"
+        class="absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-full bg-white/80 hover:bg-white transition-colors shadow-sm"
+        :aria-label="wishlistStore.isWishlisted(product.id) ? 'Remove from wishlist' : 'Add to wishlist'"
+        @click="handleWishlistToggle"
+      >
+        <Heart
+          class="w-4 h-4 transition-colors"
+          :class="wishlistStore.isWishlisted(product.id)
+            ? 'fill-red-500 text-red-500'
+            : 'text-gray-400'"
+        />
+      </button>
+    </div>
+
+    <div class="p-3 flex flex-col gap-1">
+      <Badge variant="secondary" class="self-start text-xs">
+        {{ product.categoryName }}
+      </Badge>
+      <h3 class="font-body text-sm font-medium text-brand-dark leading-snug line-clamp-2">
+        {{ product.name }}
+      </h3>
+      <p class="font-body text-sm text-brand-accent font-semibold">
+        {{ formatXAF(product.price) }}
+      </p>
+      <StarRating v-if="reviewCount > 0" :rating="averageRating" size="sm" />
+    </div>
+  </NuxtLink>
+</template>
