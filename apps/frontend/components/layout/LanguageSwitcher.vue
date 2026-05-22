@@ -1,5 +1,11 @@
 <script setup lang="ts">
 const { locale, setLocale } = useI18n()
+const localeCookie = useCookie<'en' | 'fr'>('thia-locale', { maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' })
+
+function switchTo(code: 'en' | 'fr') {
+  localeCookie.value = code
+  setLocale(code)
+}
 </script>
 
 <template>
@@ -11,7 +17,7 @@ const { locale, setLocale } = useI18n()
         ? 'text-brand-dark font-semibold'
         : 'text-text-muted hover:text-brand-dark'"
       aria-label="Switch to English"
-      @click="setLocale('en')"
+      @click="switchTo('en')"
     >
       EN
     </button>
@@ -23,7 +29,7 @@ const { locale, setLocale } = useI18n()
         ? 'text-brand-dark font-semibold'
         : 'text-text-muted hover:text-brand-dark'"
       aria-label="Passer en français"
-      @click="setLocale('fr')"
+      @click="switchTo('fr')"
     >
       FR
     </button>

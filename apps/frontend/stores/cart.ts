@@ -182,28 +182,19 @@ export const useCartStore = defineStore('cart', () => {
 
     // TODO: syncToServer() — push merged cart to DB once API is ready
     await syncToServer()
-
-    if (import.meta.client) clearCartStorage()
+    // Do not clear storage here — the watch already saved the merged result
   }
 
   // ── Persistence ─────────────────────────────────────────────────────────────
 
-  // Load from localStorage on client init (guest mode)
-  if (import.meta.client && !isAuthenticated.value) {
+  // Load on init — covers both guest and returning authenticated users
+  if (import.meta.client) {
     items.value = loadCartFromStorage()
   }
 
-  // Persist to localStorage on every change (guest only)
+  // Always save on any change, regardless of auth state
   if (import.meta.client) {
-    watch(
-      items,
-      (newItems) => {
-        if (!isAuthenticated.value) {
-          saveCartToStorage(newItems)
-        }
-      },
-      { deep: true },
-    )
+    watch(items, saveCartToStorage, { deep: true })
   }
 
   return {
