@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: thia-api
+    runtime: node
+    rootDir: apps/backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: NOTCHPAY_PUBLIC_KEY
+        sync: false
+      - key: NOTCHPAY_PRIVATE_KEY
+        sync: false
+      - key: NOTCHPAY_WEBHOOK_SECRET
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: ADMIN_EMAIL
+        value: hello@thia.cm

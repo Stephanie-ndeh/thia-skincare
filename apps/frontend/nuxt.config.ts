@@ -94,8 +94,9 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBaseUrl: '',  // overridden by NUXT_PUBLIC_API_BASE_URL
-      siteUrl: '',     // overridden by NUXT_PUBLIC_SITE_URL
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:3001',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+      appName: process.env.NUXT_PUBLIC_APP_NAME || 'Thia',
     },
   },
 
