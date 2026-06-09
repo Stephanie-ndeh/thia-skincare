@@ -1,6 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "cd ../.. && npm install && npm run build --workspace=packages/shared && npm run build --workspace=apps/frontend",
   "outputDirectory": ".output/public",
-  "installCommand": "npm install",
-  "devCommand": "npm run dev"
+  "installCommand": "echo 'install handled in buildCommand'"
 }
