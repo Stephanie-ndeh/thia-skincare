@@ -43,7 +43,8 @@ async function handleSubmit() {
   try {
     await authStore.login(email.value, password.value)
     const redirect = route.query.redirect as string | undefined
-    router.push(redirect || '/account')
+    const defaultRedirect = authStore.isAdmin ? '/admin' : '/account'
+    router.push(redirect || defaultRedirect)
   } catch (err: unknown) {
     errorMsg.value = mapError(err instanceof Error ? err.message : 'Login failed')
   }
