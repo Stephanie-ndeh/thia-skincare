@@ -38,15 +38,15 @@ const doubled = computed(() => [...items.value, ...items.value])
 
 <template>
   <!-- Rotating announcement bar -->
-  <div class="bg-espresso py-2.5 text-center overflow-hidden">
-    <span
-      :key="currentIndex"
-      class="font-body text-[11px] tracking-[0.2em] uppercase text-cream/80"
-      style="animation: thia-fade-swap 0.5s ease-out;"
-    >
-      {{ announcements[currentIndex] }}
-    </span>
-  </div>
+<!--  <div class="bg-espresso py-2.5 text-center overflow-hidden">-->
+<!--    <span-->
+<!--      :key="currentIndex"-->
+<!--      class="font-body text-[11px] tracking-[0.2em] uppercase text-cream/80"-->
+<!--      style="animation: thia-fade-swap 0.5s ease-out;"-->
+<!--    >-->
+<!--      {{ announcements[currentIndex] }}-->
+<!--    </span>-->
+<!--  </div>-->
 
   <!-- Marquee ticker strip -->
   <div class="overflow-hidden border-b border-brand-dark/10 bg-white py-3.5">

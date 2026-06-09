@@ -121,6 +121,28 @@ const featuredProducts = computed((): ProductCardData[] => {
   })
 })
 
+// ── Hero image — featured product → first published → site settings ─────────
+
+const { data: firstPublishedRaw } = await useAsyncData('hero-fallback', async () => {
+  const { data } = await supabase
+    .from('products')
+    .select('id, product_images(url, is_primary)')
+    .eq('is_published', true)
+    .limit(1)
+  return data as Array<{ id: string; product_images: RawProductImage[] }> | null
+})
+
+const heroImageUrl = computed((): string | null => {
+  const featuredImg = featuredProducts.value[0]?.primaryImageUrl
+  if (featuredImg) return featuredImg
+  const fallback = firstPublishedRaw.value?.[0]
+  const fallbackImg = fallback?.product_images?.find(i => i.is_primary)?.url
+    ?? fallback?.product_images?.[0]?.url
+    ?? null
+  if (fallbackImg) return fallbackImg
+  return heroSettings.value.image_url || null
+})
+
 // ── Fetch featured testimonials ──────────────────────────────────────────────
 
 const { data: testimonialsRaw } = await useAsyncData('featured-testimonials', async () => {
@@ -253,7 +275,7 @@ onUnmounted(() => clearInterval(ingredientInterval))
       <!-- Left: editorial content -->
       <div class="bg-cream flex flex-col justify-center px-8 sm:px-12 md:px-16 lg:px-24 py-20 md:py-0">
         <p
-          class="hero-text font-body text-[10px] tracking-[0.28em] uppercase text-text-muted mb-8"
+          class="hero-text font-body text-[10px] tracking-[0.28em] uppercase text-terracotta mb-8"
           :class="{ mounted }"
           :style="{ '--delay': '0ms' }"
         >
@@ -305,20 +327,28 @@ onUnmounted(() => clearInterval(ingredientInterval))
 
       <!-- Right: product image -->
       <div
-        class="hero-image relative bg-sand min-h-[55vw] sm:min-h-[45vw] md:min-h-0"
+        class="hero-image hidden md:block relative bg-sand overflow-hidden"
         :class="{ mounted }"
       >
         <NuxtImg
-          v-if="heroSettings.image_url"
-          :src="heroSettings.image_url"
-          :alt="heroSettings.headline ?? 'Thia Skincare'"
-          class="absolute inset-0 w-full h-full object-cover"
+          v-if="heroImageUrl"
+          :src="heroImageUrl"
+          alt="Thia featured product"
+          class="absolute inset-0 w-full h-full object-cover object-center"
           loading="eager"
           fetchpriority="high"
-          width="800"
-          height="900"
+          width="600"
+          height="700"
         />
-        <div v-else class="texture-diagonal absolute inset-0 bg-sand" />
+        <div v-else class="absolute inset-0 flex items-center justify-center">
+          <span
+            class="font-heading font-semibold text-brand-dark/[0.07] leading-none pointer-events-none select-none"
+            style="font-size: clamp(8rem, 18vw, 14rem);"
+          >n°01</span>
+        </div>
+        <div class="absolute bottom-12 left-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 font-body text-xs tracking-widest uppercase">
+          recipe n°01
+        </div>
       </div>
     </section>
 
@@ -361,7 +391,7 @@ onUnmounted(() => clearInterval(ingredientInterval))
           >
             <!-- Portrait card with zoom -->
             <div
-              class="aspect-[3/4] relative zoom-image-host mb-4"
+              class="aspect-3/4 relative zoom-image-host mb-4"
               :class="categoryBgClass(idx)"
             >
               <div class="texture-diagonal absolute inset-0" />
@@ -719,7 +749,7 @@ onUnmounted(() => clearInterval(ingredientInterval))
       class="fade-up py-16 px-4 sm:px-8 bg-cream"
       :class="{ visible: paymentSectionVisible }"
     >
-      <div class="max-w-4xl mx-auto border border-brand-dark/[0.11] p-8 sm:p-12">
+      <div class="max-w-4xl mx-auto border border-brand-dark/11 rounded-xl p-8 sm:p-12">
         <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-8">
           <div class="flex-1">
             <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-4 flex items-center gap-2">
@@ -733,16 +763,16 @@ onUnmounted(() => clearInterval(ingredientInterval))
               {{ $t('home.payment_body') }}
             </p>
           </div>
-          <div class="flex flex-col gap-2 shrink-0">
-            <div class="inline-flex items-center gap-2 px-4 py-2 bg-[#FFCB05] text-[#1a1a1a]">
+          <div class="flex lg:flex-col gap-2 shrink-0">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-[#FFCB05] text-brand-primary rounded-lg">
               <span class="font-body text-xs font-bold tracking-wider">MTN</span>
               <span class="font-body text-xs">MoMo</span>
             </div>
-            <div class="inline-flex items-center gap-2 px-4 py-2 bg-[#F05A28] text-white">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-[#F05A28] text-white rounded-lg">
               <span class="font-body text-xs font-bold tracking-wider">Orange</span>
               <span class="font-body text-xs">Money</span>
             </div>
-            <div class="inline-flex items-center gap-2 px-4 py-2 border border-brand-dark/20 text-brand-dark">
+            <div class="inline-flex items-center gap-2 px-4 py-2 border border-brand-dark/20 text-brand-dark rounded-lg">
               <span class="font-body text-[10px] text-text-muted">✕</span>
               <span class="font-body text-xs">COD</span>
             </div>
