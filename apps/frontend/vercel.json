@@ -1,8 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "cd ../.. && npm install && npm run build --workspace=packages/shared && npm run build --workspace=apps/frontend",
   "outputDirectory": ".output/public",
-  "framework": "nuxt",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ]
+  "installCommand": "echo 'install handled in buildCommand'"
 }
