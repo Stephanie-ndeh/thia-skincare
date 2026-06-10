@@ -332,6 +332,26 @@ input:focus, textarea:focus {
   );
 }
 
+/* ── Mobile inputs — prevent iOS zoom on focus ──────────────────────────── */
+
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* ── Scrollbar hide ─────────────────────────────────────────────────────── */
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* ── Reduced motion — clamp ALL durations to 0.001ms ───────────────────── */
 
 @media (prefers-reduced-motion: reduce) {

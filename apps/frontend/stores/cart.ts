@@ -9,14 +9,14 @@ type AddItemInput = Omit<CartItemWithProduct, 'id' | 'userId' | 'createdAt' | 'u
 // ── localStorage helpers ────────────────────────────────────────────────────
 
 function saveCartToStorage(items: CartItemWithProduct[]) {
+  if (!import.meta.client) return
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
-  } catch {
-    // Storage quota exceeded or unavailable — fail silently
-  }
+  } catch {}
 }
 
 function loadCartFromStorage(): CartItemWithProduct[] {
+  if (!import.meta.client) return []
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return []
@@ -27,11 +27,10 @@ function loadCartFromStorage(): CartItemWithProduct[] {
 }
 
 function clearCartStorage() {
+  if (!import.meta.client) return
   try {
     localStorage.removeItem(STORAGE_KEY)
-  } catch {
-    // Fail silently
-  }
+  } catch {}
 }
 
 // ── Store ───────────────────────────────────────────────────────────────────
