@@ -91,12 +91,8 @@ export const useAuthStore = defineStore('auth', () => {
   async function logout() {
     loading.value = true
     try {
-      const { useCartStore } = await import('./cart')
-      const cartStore = useCartStore()
-
       await supabase.auth.signOut()
       profile.value = null
-      cartStore.clearCart()
     } finally {
       loading.value = false
     }
