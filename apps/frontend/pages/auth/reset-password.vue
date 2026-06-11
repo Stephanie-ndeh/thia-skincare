@@ -1,5 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'auth' })
+useSeoMeta({ title: 'New Password — Thia', robots: 'noindex, nofollow' })
 
 const authStore = useAuthStore()
 const uiStore = useUiStore()
