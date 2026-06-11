@@ -173,7 +173,7 @@ useHead({
         </div>
 
         <!-- Right: sort options (horizontally scrollable on mobile) -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap">
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
           <span class="font-body text-[10px] tracking-[0.2em] uppercase text-text-muted hidden sm:block flex-shrink-0">
             {{ $t('categories.sort') }}
           </span>
