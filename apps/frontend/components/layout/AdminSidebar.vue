@@ -2,15 +2,10 @@
 import {
   LayoutDashboard,
   Package,
-  Tag,
   ShoppingCart,
   Ticket,
   Star,
   MessageSquare,
-  Truck,
-  Users,
-  BarChart2,
-  Settings,
   Store,
   Menu,
   X,
@@ -20,17 +15,12 @@ const route = useRoute()
 const isOpen = ref(false)
 
 const navItems = [
-  { label: 'Dashboard',    to: '/admin',              icon: LayoutDashboard },
-  { label: 'Products',     to: '/admin/products',     icon: Package },
-  { label: 'Categories',   to: '/admin/categories',   icon: Tag },
-  { label: 'Orders',       to: '/admin/orders',       icon: ShoppingCart },
+  { label: 'Dashboard',      to: '/admin',           icon: LayoutDashboard },
+  { label: 'Products',       to: '/admin/products',  icon: Package },
+  { label: 'Orders',         to: '/admin/orders',    icon: ShoppingCart },
+  { label: 'Reviews',        to: '/admin/reviews',   icon: Star },
+  { label: 'Client Photos',  to: '/admin/photos',    icon: MessageSquare },
   { label: 'Discount Codes', to: '/admin/discounts', icon: Ticket },
-  { label: 'Reviews',        to: '/admin/reviews',        icon: Star },
-  { label: 'Client Photos',  to: '/admin/photos',  icon: MessageSquare },
-  { label: 'Shipping',     to: '/admin/shipping',     icon: Truck },
-  { label: 'Customers',    to: '/admin/customers',    icon: Users },
-  { label: 'Analytics',    to: '/admin/analytics',    icon: BarChart2 },
-  { label: 'Settings',     to: '/admin/settings',     icon: Settings },
 ]
 
 function isActive(to: string) {
