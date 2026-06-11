@@ -172,16 +172,16 @@ useHead({
           </span>
         </div>
 
-        <!-- Right: sort options -->
-        <div class="flex items-center gap-2 sm:gap-3">
-          <span class="font-body text-[10px] tracking-[0.2em] uppercase text-text-muted hidden sm:block">
+        <!-- Right: sort options (horizontally scrollable on mobile) -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+          <span class="font-body text-[10px] tracking-[0.2em] uppercase text-text-muted hidden sm:block flex-shrink-0">
             {{ $t('categories.sort') }}
           </span>
           <button
             v-for="opt in sortOptions"
             :key="opt.value"
             type="button"
-            class="font-body text-xs px-3 py-1.5 transition-colors duration-150"
+            class="flex-shrink-0 font-body text-xs px-3 py-1.5 transition-colors duration-150"
             :class="activeSort === opt.value
               ? 'bg-brand-dark text-cream'
               : 'border border-brand-dark/20 text-brand-dark hover:border-brand-dark/50'"
