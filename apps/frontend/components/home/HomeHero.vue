@@ -133,7 +133,7 @@ onMounted(() => {
 
     <!-- Right: product image -->
     <div
-      class="hero-image relative w-full h-full min-h-[500px] overflow-hidden bg-[var(--color-sand)]"
+      class="hidden lg:block hero-image relative w-full h-full min-h-125 overflow-hidden bg-sand"
       :class="{ mounted }"
     >
       <NuxtImg
@@ -147,7 +147,7 @@ onMounted(() => {
         class="w-full h-full object-cover object-center"
       />
       <div v-else class="absolute inset-0 flex items-center justify-center">
-        <span class="font-serif text-9xl font-light text-black/[0.08] select-none">n°01</span>
+        <span class="font-serif text-9xl font-light text-black/8 select-none">n°01</span>
       </div>
       <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 text-[10px] uppercase tracking-widest text-espresso">
         featured product
