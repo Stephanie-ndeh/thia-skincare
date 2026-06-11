@@ -1,5 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'auth' })
+useSeoMeta({ title: 'Confirm Email — Thia', robots: 'noindex, nofollow' })
 
 const supabaseUser = useSupabaseUser()
 

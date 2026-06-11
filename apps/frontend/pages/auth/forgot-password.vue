@@ -1,5 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'auth' })
+useSeoMeta({ title: 'Reset Password — Thia', robots: 'noindex, nofollow' })
 
 const authStore = useAuthStore()
 
