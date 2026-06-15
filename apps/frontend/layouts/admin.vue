@@ -6,7 +6,10 @@ const router = useRouter()
 
 useSeoMeta({ robots: 'noindex, nofollow' })
 
+const showLogoutConfirm = ref(false)
+
 async function handleLogout() {
+  showLogoutConfirm.value = false
   await authStore.logout()
   router.push('/auth/login')
 }
@@ -29,7 +32,7 @@ async function handleLogout() {
           </span>
           <button
             class="flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700"
-            @click="handleLogout"
+            @click="showLogoutConfirm = true"
           >
             <LogOut class="h-4 w-4" />
             <span class="hidden sm:inline">Logout</span>
@@ -43,4 +46,34 @@ async function handleLogout() {
       </main>
     </div>
   </div>
+
+  <!-- Sign out confirmation -->
+  <Teleport to="body">
+    <div
+      v-if="showLogoutConfirm"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      @click.self="showLogoutConfirm = false"
+    >
+      <div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl">
+        <h3 class="text-base font-semibold text-brand-dark">Sign out?</h3>
+        <p class="mt-1 text-sm text-text-muted">You'll be redirected to the login page.</p>
+        <div class="mt-4 flex justify-end gap-3">
+          <button
+            type="button"
+            class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-brand-dark transition-colors hover:bg-gray-50"
+            @click="showLogoutConfirm = false"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-80"
+            @click="handleLogout"
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
