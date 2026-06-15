@@ -13,6 +13,10 @@
   --color-text-primary: var(--color-brand-dark);
   --color-text-muted: #6b7280;
 
+  /* Popover / dropdown tokens (used by shadcn DropdownMenu, Select, etc.) */
+  --color-popover: #ffffff;
+  --color-popover-foreground: var(--color-brand-dark);
+
   /* Skeleton background tokens */
   --color-background-secondary: #e5e7eb;
   --color-background-primary: #f3f4f6;

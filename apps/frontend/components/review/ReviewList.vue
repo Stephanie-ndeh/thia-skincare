@@ -3,6 +3,7 @@ import { ChevronDown } from 'lucide-vue-next'
 
 const props = defineProps<{
   productId: string
+  refreshKey?: number
 }>()
 
 const supabase = useSupabaseClient()
@@ -47,7 +48,7 @@ async function fetchReviews(reset = false) {
 
 await fetchReviews(true)
 
-defineExpose({ refresh: () => fetchReviews(true) })
+watch(() => props.refreshKey, () => fetchReviews(true))
 
 const averageRating = computed(() => {
   if (reviews.value.length === 0) return 0

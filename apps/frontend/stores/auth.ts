@@ -32,9 +32,38 @@ export const useAuthStore = defineStore('auth', () => {
         .from('profiles')
         .select('id, full_name, phone, role, created_at, updated_at')
         .eq('id', supabaseUser.value.id)
-        .single()
+        .maybeSingle()
 
       if (error) throw error
+
+      if (!data) {
+        // Profile row missing (trigger didn't fire) — create it now
+        const meta = supabaseUser.value.user_metadata ?? {}
+        const { data: created, error: insertError } = await supabase
+          .from('profiles')
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .insert({
+            id: supabaseUser.value.id,
+            full_name: (meta.full_name as string) || supabaseUser.value.email?.split('@')[0] || 'User',
+            phone: (meta.phone as string | null) ?? null,
+            role: 'customer',
+          } as any)
+          .select('id, full_name, phone, role, created_at, updated_at')
+          .single()
+
+        if (insertError) throw insertError
+
+        const row = created as unknown as ProfileRow
+        profile.value = {
+          id: row.id,
+          fullName: row.full_name,
+          phone: row.phone,
+          role: row.role,
+          createdAt: row.created_at,
+          updatedAt: row.updated_at,
+        }
+        return
+      }
 
       const row = data as unknown as ProfileRow
       profile.value = {
@@ -93,6 +122,8 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       await supabase.auth.signOut()
       profile.value = null
+      const { useCartStore } = await import('./cart')
+      useCartStore().clearCart()
     } finally {
       loading.value = false
     }

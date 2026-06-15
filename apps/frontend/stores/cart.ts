@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, skipHydrate } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import type { CartItemWithProduct, DiscountValidateResponse } from '@thia/shared'
 
@@ -39,7 +39,7 @@ function clearCartStorage() {
 export const useCartStore = defineStore('cart', () => {
   const supabaseUser = useSupabaseUser()
 
-  const items = ref<CartItemWithProduct[]>([])
+  const items = skipHydrate(ref<CartItemWithProduct[]>([]))
   const discountCode = ref<string | null>(null)
   const discountAmount = ref(0)
   const isLoading = ref(false)
