@@ -100,6 +100,7 @@ export default defineNuxtConfig({
     '/': { swr: 60 },
     '/categories': { swr: 300 },
     '/categories/**': { swr: 60 },
+    '/products': { swr: 60 },
     '/products/**': { swr: 60 },
     '/testimonials': { swr: 300 },
     '/cart': { ssr: false },

@@ -1,0 +1,353 @@
+<script setup lang="ts">
+import { LayoutGrid, List } from 'lucide-vue-next'
+import { defineAsyncComponent } from 'vue'
+
+definePageMeta({ layout: 'default' })
+
+const ProductGrid = defineAsyncComponent(
+  () => import('~/components/product/ProductGrid.vue'),
+)
+
+const supabase = useSupabaseClient()
+
+const { sortBy, minPrice, maxPrice, page, viewMode, updateFilters, clearFilters, activeFilters } =
+  useProductFilters()
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+interface RawProductVariant {
+  price: number
+}
+
+interface RawProductImage {
+  url: string
+  is_primary: boolean
+}
+
+interface RawCategoryName {
+  name: string
+}
+
+interface RawProduct {
+  id: string
+  name: string
+  slug: string
+  categories: RawCategoryName | null
+  product_variants: RawProductVariant[]
+  product_images: RawProductImage[]
+}
+
+interface RawAllCategory {
+  id: string
+  name: string
+  slug: string
+}
+
+interface ProductCardData {
+  id: string
+  name: string
+  slug: string
+  price: number
+  categoryName: string
+  primaryImageUrl: string | null
+}
+
+// ── Fetch ─────────────────────────────────────────────────────────────────────
+
+const { data: pageData } = await useAsyncData('all-products', async () => {
+  const [{ data: prods }, { data: allCats }] = await Promise.all([
+    supabase
+      .from('products')
+      .select('id,name,slug,categories(name),product_variants(price),product_images(url,is_primary)')
+      .eq('is_published', true)
+      .order('created_at', { ascending: false }),
+
+    supabase
+      .from('categories')
+      .select('id,name,slug')
+      .order('display_order'),
+  ])
+
+  const rawProducts = (prods as RawProduct[] | null) ?? []
+  const products: ProductCardData[] = rawProducts.map(p => {
+    const prices = p.product_variants.map(v => v.price)
+    const lowestPrice = prices.length > 0 ? Math.min(...prices) : 0
+    const primaryImg = p.product_images.find(i => i.is_primary) ?? p.product_images[0] ?? null
+    return {
+      id: p.id,
+      name: p.name,
+      slug: p.slug,
+      price: lowestPrice,
+      categoryName: p.categories?.name ?? '',
+      primaryImageUrl: primaryImg?.url ?? null,
+    }
+  })
+
+  return {
+    products,
+    allCategories: (allCats as RawAllCategory[] | null) ?? [],
+  }
+})
+
+// ── Client-side filter + sort + paginate ──────────────────────────────────────
+
+const PAGE_SIZE = 12
+
+const filteredProducts = computed((): ProductCardData[] => {
+  let result = [...(pageData.value?.products ?? [])]
+
+  if (minPrice.value !== null) {
+    result = result.filter(p => p.price >= minPrice.value!)
+  }
+  if (maxPrice.value !== null) {
+    result = result.filter(p => p.price <= maxPrice.value!)
+  }
+
+  switch (sortBy.value) {
+    case 'price_asc':
+      result.sort((a, b) => a.price - b.price)
+      break
+    case 'price_desc':
+      result.sort((a, b) => b.price - a.price)
+      break
+    case 'name_asc':
+      result.sort((a, b) => a.name.localeCompare(b.name))
+      break
+    default:
+      break
+  }
+
+  return result
+})
+
+const totalCount = computed(() => filteredProducts.value.length)
+const totalPages = computed(() => Math.ceil(totalCount.value / PAGE_SIZE))
+
+const paginatedProducts = computed(() => {
+  const start = (page.value - 1) * PAGE_SIZE
+  return filteredProducts.value.slice(start, start + PAGE_SIZE)
+})
+
+const showingFrom = computed(() => (page.value - 1) * PAGE_SIZE + 1)
+const showingTo = computed(() => Math.min(page.value * PAGE_SIZE, totalCount.value))
+
+const pageNumbers = computed(() => {
+  const total = totalPages.value
+  const current = page.value
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+
+  const pages: (number | '...')[] = [1]
+  if (current > 3) pages.push('...')
+  for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
+    pages.push(i)
+  }
+  if (current < total - 2) pages.push('...')
+  pages.push(total)
+  return pages
+})
+
+const allCategories = computed(() => pageData.value?.allCategories ?? [])
+
+const filterState = computed(() => ({
+  sortBy: sortBy.value,
+  minPrice: minPrice.value,
+  maxPrice: maxPrice.value,
+}))
+
+// ── SEO ───────────────────────────────────────────────────────────────────────
+
+const config = useRuntimeConfig()
+const siteUrl = config.public.siteUrl || 'https://thia.cm'
+
+useSeoMeta({
+  title: 'All Products — Thia Skincare',
+  description: 'Browse all Thia skincare products — cleansers, moisturizers, serums, and more. Natural skincare from Cameroon.',
+  ogTitle: 'All Products — Thia Skincare',
+  ogDescription: 'Browse all Thia skincare products. Natural skincare from Cameroon.',
+  ogType: 'website',
+  twitterCard: 'summary_large_image',
+})
+
+useHead({
+  link: [{ rel: 'canonical', href: `${siteUrl}/products` }],
+})
+</script>
+
+<template>
+  <div class="min-h-screen bg-cream">
+    <!-- Page header -->
+    <div class="bg-cream border-b border-brand-dark/[0.08]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8">
+
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 font-body text-[10px] uppercase tracking-[0.2em] text-text-muted py-4 border-b border-brand-dark/[0.07]">
+          <NuxtLink to="/" class="hover:text-brand-dark transition-colors">Home</NuxtLink>
+          <span class="text-text-muted/50">/</span>
+          <span class="text-brand-dark">All Products</span>
+        </nav>
+
+        <!-- Editorial header -->
+        <div class="pt-10 pb-10 sm:pb-14">
+          <p class="font-body text-[10px] tracking-[0.25em] uppercase text-terracotta mb-4 flex items-center gap-2">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-terracotta" />
+            Collection
+          </p>
+          <h1 class="font-heading text-5xl sm:text-6xl font-semibold text-brand-dark leading-tight mb-4">
+            All Products
+          </h1>
+          <p class="font-body text-sm text-text-muted leading-relaxed max-w-lg mb-8">
+            Discover our full range of natural skincare, crafted with ingredients rooted in Cameroonian heritage.
+          </p>
+          <div class="flex items-center gap-6 sm:gap-10">
+            <div>
+              <p class="font-heading text-2xl font-semibold text-brand-dark">{{ totalCount }}</p>
+              <p class="font-body text-[11px] text-text-muted mt-0.5">products</p>
+            </div>
+            <div class="w-px h-8 bg-brand-dark/10" />
+            <div>
+              <p class="font-heading text-2xl font-semibold text-brand-dark">100%</p>
+              <p class="font-body text-[11px] text-text-muted mt-0.5">natural formula</p>
+            </div>
+            <div class="w-px h-8 bg-brand-dark/10" />
+            <div>
+              <p class="font-body text-sm font-medium text-brand-dark">Cameroon</p>
+              <p class="font-body text-[11px] text-text-muted mt-0.5">origin</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="max-w-7xl mx-auto px-4 py-10 sm:py-14">
+      <!-- Sort + view toggle toolbar -->
+      <div class="flex items-center justify-between gap-3 mb-6">
+        <span class="font-body text-sm text-text-muted">
+          <template v-if="totalCount > 0">
+            Showing {{ showingFrom }}–{{ showingTo }} of {{ totalCount }}
+            {{ totalCount === 1 ? 'product' : 'products' }}
+          </template>
+        </span>
+
+        <div class="flex items-center gap-3">
+          <ProductSortSelect
+            :model-value="sortBy"
+            @update:model-value="updateFilters({ sort: $event })"
+          />
+
+          <div class="flex items-center border border-brand-dark/20 rounded-lg overflow-hidden">
+            <button
+              type="button"
+              class="p-2 transition-colors"
+              :class="viewMode === 'grid' ? 'bg-brand-dark text-white' : 'text-text-muted hover:text-brand-dark'"
+              @click="viewMode = 'grid'"
+              aria-label="Grid view"
+            >
+              <LayoutGrid class="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              class="p-2 transition-colors"
+              :class="viewMode === 'list' ? 'bg-brand-dark text-white' : 'text-text-muted hover:text-brand-dark'"
+              @click="viewMode = 'list'"
+              aria-label="List view"
+            >
+              <List class="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main layout: sidebar + product area -->
+      <div class="flex gap-8">
+        <ProductFilters
+          :categories="allCategories"
+          current-category-slug=""
+          :model-value="filterState"
+          @update:model-value="updateFilters($event as Record<string, string | number | null | undefined>)"
+        />
+
+        <!-- Product column -->
+        <div class="flex-1 min-w-0">
+          <ActiveFilterTags
+            :filters="activeFilters"
+            class="mb-4"
+            @remove="updateFilters({ [$event]: null })"
+          />
+
+          <!-- Grid view -->
+          <ProductGrid
+            v-if="viewMode === 'grid' && paginatedProducts.length > 0"
+            :products="paginatedProducts"
+            :columns="3"
+          />
+
+          <!-- List view -->
+          <div
+            v-else-if="viewMode === 'list' && paginatedProducts.length > 0"
+            class="space-y-3"
+          >
+            <ProductListItem
+              v-for="product in paginatedProducts"
+              :key="product.id"
+              :product="product"
+            />
+          </div>
+
+          <!-- Empty state -->
+          <div v-else class="text-center py-20">
+            <p class="font-body text-text-muted mb-4">
+              {{ activeFilters.length > 0 ? 'No products match your filters.' : 'No products available yet.' }}
+            </p>
+            <button
+              v-if="activeFilters.length > 0"
+              type="button"
+              class="inline-flex items-center justify-center rounded-md border border-brand-dark text-brand-dark font-body text-sm px-6 py-2.5 hover:bg-brand-dark hover:text-white transition-colors"
+              @click="clearFilters"
+            >
+              Clear filters
+            </button>
+          </div>
+
+          <!-- Pagination -->
+          <div v-if="totalPages > 1" class="flex items-center justify-center gap-1 mt-10">
+            <button
+              type="button"
+              class="w-9 h-9 flex items-center justify-center rounded-lg border border-brand-dark/20 text-brand-dark hover:bg-brand-dark hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              :disabled="page <= 1"
+              @click="updateFilters({ page: page - 1 })"
+              aria-label="Previous page"
+            >
+              ‹
+            </button>
+
+            <template v-for="(p, i) in pageNumbers" :key="i">
+              <span v-if="p === '...'" class="w-9 h-9 flex items-center justify-center text-text-muted text-sm">…</span>
+              <button
+                v-else
+                type="button"
+                class="w-9 h-9 flex items-center justify-center rounded-lg border font-body text-sm transition-colors"
+                :class="p === page
+                  ? 'bg-brand-dark text-white border-brand-dark'
+                  : 'border-brand-dark/20 text-brand-dark hover:bg-brand-dark hover:text-white'"
+                @click="updateFilters({ page: p })"
+              >
+                {{ p }}
+              </button>
+            </template>
+
+            <button
+              type="button"
+              class="w-9 h-9 flex items-center justify-center rounded-lg border border-brand-dark/20 text-brand-dark hover:bg-brand-dark hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              :disabled="page >= totalPages"
+              @click="updateFilters({ page: page + 1 })"
+              aria-label="Next page"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

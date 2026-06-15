@@ -22,6 +22,8 @@ export const useWishlistStore = defineStore('wishlist', () => {
         { headers: { Authorization: `Bearer ${token}` } },
       )
       items.value = response.data
+    } catch {
+      // preserve existing items on network error
     } finally {
       isLoading.value = false
     }
@@ -56,6 +58,8 @@ export const useWishlistStore = defineStore('wishlist', () => {
           body: { product_id: productId },
         },
       )
+      // Refresh from server so items have populated product data
+      await fetchWishlist()
     } catch {
       // Revert optimistic update on error
       if (wasWishlisted) {
