@@ -80,8 +80,7 @@ function onEscape() {
     <!-- Mobile expanded input -->
     <div
       v-if="isMobileOpen"
-      class="md:hidden absolute top-0 right-0 left-0 z-50 flex items-center gap-2 bg-white border border-brand-dark/20 rounded-lg px-3 py-2 shadow-md"
-      style="width: 100vw; right: 0; left: auto; transform: translateX(0);"
+      class="md:hidden fixed inset-x-0 top-0 z-[60] flex items-center gap-3 bg-white border-b border-brand-dark/20 px-4 py-3 shadow-md"
     >
       <Search class="shrink-0 w-4 h-4 text-text-muted" />
       <input

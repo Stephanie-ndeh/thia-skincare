@@ -9,7 +9,7 @@ defineProps<{
   isAuthenticated: boolean
 }>()
 
-const reviewListRef = useTemplateRef<{ refresh: () => Promise<void> }>('reviewList')
+const reviewRefreshKey = ref(0)
 </script>
 
 <template>
@@ -74,12 +74,12 @@ const reviewListRef = useTemplateRef<{ refresh: () => Promise<void> }>('reviewLi
 
     <!-- Reviews tab -->
     <TabsContent value="reviews">
-      <ReviewList ref="reviewList" :product-id="productId" />
+      <ReviewList :product-id="productId" :refresh-key="reviewRefreshKey" />
       <div class="mt-8 border-t border-brand-dark/10 pt-8">
         <WriteReviewForm
           v-if="isAuthenticated"
           :product-id="productId"
-          @submitted="reviewListRef?.refresh()"
+          @submitted="reviewRefreshKey++"
         />
         <p v-else class="font-body text-sm text-text-muted">
           <NuxtLink

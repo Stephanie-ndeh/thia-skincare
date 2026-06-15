@@ -267,9 +267,74 @@ onMounted(async () => {
       {{ fetchError }}
     </div>
 
-    <!-- Table -->
+    <!-- Mobile + Desktop views -->
     <template v-else>
-      <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+    <div class="space-y-3 sm:hidden">
+      <p v-if="reviews.length === 0" class="py-10 text-center text-sm text-text-muted">
+        {{ emptyLabel(activeStatus) }}
+      </p>
+      <div
+        v-for="review in reviews"
+        :key="review.id"
+        class="rounded-xl border border-gray-200 bg-white p-4"
+      >
+        <div class="flex items-start gap-3">
+          <input
+            type="checkbox"
+            :checked="isSelected(review.id)"
+            class="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 accent-brand-dark"
+            @change="toggleSelect(review.id)"
+          />
+          <div class="min-w-0 flex-1">
+            <div class="flex items-start justify-between gap-2">
+              <NuxtLink
+                :to="`/products/${review.product_slug}`"
+                class="truncate font-medium text-brand-dark hover:underline"
+              >
+                {{ review.product_name }}
+              </NuxtLink>
+              <span
+                :class="[
+                  'shrink-0 rounded-full px-2 py-0.5 text-xs font-medium capitalize',
+                  statusBadgeClass(review.status),
+                ]"
+              >
+                {{ review.status }}
+              </span>
+            </div>
+            <div class="mt-1 flex items-center gap-2">
+              <StarRating :rating="review.rating" size="sm" />
+              <span class="text-xs text-text-muted">{{ review.customer_name }}</span>
+              <span class="text-xs text-text-muted">· {{ formatDate(review.created_at) }}</span>
+            </div>
+            <p class="mt-2 text-sm text-text-muted">
+              {{ review.text.length > 120 ? review.text.slice(0, 120) + '…' : review.text }}
+            </p>
+            <div class="mt-3 flex gap-2">
+              <button
+                v-if="review.status !== 'approved'"
+                type="button"
+                class="rounded-lg border border-green-200 px-3 py-1.5 text-xs font-semibold text-green-700 transition-colors hover:bg-green-50"
+                @click="updateStatus(review, 'approved')"
+              >
+                Approve
+              </button>
+              <button
+                v-if="review.status !== 'rejected'"
+                type="button"
+                class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition-colors hover:bg-red-50"
+                @click="updateStatus(review, 'rejected')"
+              >
+                Reject
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop table -->
+      <div class="hidden overflow-x-auto rounded-xl border border-gray-200 bg-white sm:block">
         <table class="w-full text-sm">
           <thead class="border-b border-gray-100 bg-gray-50">
             <tr>
