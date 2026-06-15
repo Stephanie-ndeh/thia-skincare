@@ -14,7 +14,10 @@ const cartStore = useCartStore()
 const uiStore = useUiStore()
 const router = useRouter()
 
+const showLogoutConfirm = ref(false)
+
 async function handleLogout() {
+  showLogoutConfirm.value = false
   await authStore.logout()
   router.push('/')
 }
@@ -109,7 +112,7 @@ async function handleLogout() {
                 </DropdownMenuItem>
               </template>
               <DropdownMenuSeparator />
-              <DropdownMenuItem class="text-red-600 focus:text-red-600" @click="handleLogout">
+              <DropdownMenuItem class="text-red-600 focus:text-red-600" @click="showLogoutConfirm = true">
                 <LogOut class="mr-2 h-4 w-4" /> {{ $t('nav.logout') }}
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -176,4 +179,34 @@ async function handleLogout() {
       </NuxtLink>
     </nav>
   </header>
+
+  <!-- Sign out confirmation -->
+  <Teleport to="body">
+    <div
+      v-if="showLogoutConfirm"
+      class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50"
+      @click.self="showLogoutConfirm = false"
+    >
+      <div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl">
+        <h3 class="text-base font-semibold text-brand-dark">Sign out?</h3>
+        <p class="mt-1 text-sm text-text-muted">You'll need to sign back in to access your account.</p>
+        <div class="mt-4 flex justify-end gap-3">
+          <button
+            type="button"
+            class="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-brand-dark transition-colors hover:bg-gray-50"
+            @click="showLogoutConfirm = false"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="rounded-lg bg-brand-dark px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-80"
+            @click="handleLogout"
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
